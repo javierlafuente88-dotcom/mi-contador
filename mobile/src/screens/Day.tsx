@@ -38,6 +38,10 @@ export function Day({
     return sum + (f ? kcalOf(f, e.grams) : 0);
   }, 0);
 
+  // Entradas que apuntan a un alimento que ya no esta en la base: pasa si la
+  // base cambia bajo los pies del usuario. NUNCA se descartan en silencio.
+  const huerfanas = entries.filter((e) => !foodById(e.foodId)).length;
+
   const { low, high, left, exact } = remainingRange(goal.kcalTarget, eaten);
   const over = high < 0;
 
@@ -73,12 +77,11 @@ export function Day({
               <>
                 {mine.map((e) => {
                   const f = foodById(e.foodId);
-                  if (!f) return null;
                   return (
                     <MenuLine
                       key={e.id}
-                      name={f.name}
-                      value={`${kcalOf(f, e.grams)} kcal`}
+                      name={f ? f.name : "Alimento que ya no está en la base"}
+                      value={f ? `${kcalOf(f, e.grams)} kcal` : "sin datos"}
                       accessibilityHint="Mantén pulsado para quitarlo"
                       onLongPress={() => onRemove(e.id)}
                     />
@@ -105,6 +108,14 @@ export function Day({
       </View>
 
       <Text style={[s.left, over && { color: color.danger }]}>{remainingText}</Text>
+
+      {huerfanas > 0 && (
+        <Body muted style={{ marginTop: space[3], ...type.sm, color: color.danger }}>
+          {huerfanas === 1
+            ? "Hay 1 registro cuyo alimento ya no está en la base, así que no suma. Mantén pulsado para quitarlo."
+            : `Hay ${huerfanas} registros cuyo alimento ya no está en la base, así que no suman. Mantén pulsado para quitarlos.`}
+        </Body>
+      )}
 
       {!exact && (
         <Body muted style={{ marginTop: space[3], ...type.sm }}>

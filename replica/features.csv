@@ -29,7 +29,7 @@ Comparar dos alimentos,nutricion,could,yes,no,Icono VS. Premium en la original
 Reportar alimento con datos erroneos,datos,should,yes,no,S25. Existe pero no responden
 Base de alimentos por pais,datos,must,yes,no,La original la particiona por pais. Es arquitectura no un extra
 Base de alimentos abierta Open Food Facts,datos,must,no,no,Nuestra via. Peor cobertura inicial. Riesgo numero 1
-Base de alimentos USDA FoodData Central,datos,must,no,partial,Dominio publico. Cubre alimento generico | 18 alimentos verificados a mano. 23 pendientes en replica/seed
+Base de alimentos USDA FoodData Central,datos,must,no,yes,"49 alimentos genericos, emparejados por fdcId con 4 filtros y verificados con Atwater"
 Numero de comidas al dia configurable,plan,must,yes,partial,Hasta 5 en la original. 4 en el plan gratis | 4 comidas por defecto sin tope en el modelo; falta la pantalla para editarlas
 Merienda y comidas culturales propias,plan,should,no,no,10 resenas. Un usuario pide hasta 10 comidas
 Porcentaje de calorias por comida,plan,should,yes,no,S14

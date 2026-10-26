@@ -72,3 +72,68 @@ pasada.
 2. Capturas por pantalla en `replica/clone-screens/` para `/replica-diff`.
 3. `/replica-backend`: sustituir el almacén falso por Supabase. Las firmas ya son las
    definitivas, así que no debería tocarse ninguna pantalla.
+
+## 2026-10-26 — Semilla de alimentos, rehecha
+
+De 18 alimentos verificados a mano a **49 emparejados por identificador exacto**.
+
+### Lo que cambió en el método
+
+La API pública de USDA se quedó sin cupo (`OVER_RATE_LIMIT`), así que bajamos el
+volcado completo de SR Legacy (13,4 MB comprimidos, **7.793 alimentos**) y el
+emparejamiento pasó a ser local, exacto y reproducible.
+
+Cada alimento tiene que pasar **cuatro filtros** o no entra:
+
+1. palabras obligatorias
+2. palabras prohibidas — `breaded`, `imitation`, `candies`, `roasted`, `skin`…
+3. **rango de cordura en kcal** — el filtro que faltaba, el que caza el error de
+   categoría aunque las palabras encajen
+4. desempate por el `fdcId` más bajo, y se anota cuántos candidatos había
+
+Cada fila guarda su `fdcId` y las reglas con las que se eligió: se puede auditar y
+se puede repetir con el mismo resultado.
+
+### Dos pasadas, porque la primera no bastó
+
+La primera tirada dio 46/49 y **cinco colados**: «Avena» era un cereal de desayuno de
+marca, «Queso curado» era queso de **imitación**, «Espinacas» era **mostaza china**,
+«Almendras crudas» eran tostadas con sal, y la carne picada salió la más grasa de 25
+candidatos. Miré las descripciones reales del volcado, ajusté las reglas y la segunda
+tirada dio **49/49** correctos.
+
+También: SR Legacy **no tiene pasta común cocida**, solo fortificada con proteína o
+de espinacas. En vez de etiquetar fideos de huevo como «pasta», entró con su nombre
+real: **Fideos de huevo cocidos**.
+
+### Una verificación que no depende de las reglas
+
+`tools/verify_seed.py` no mira cómo se eligió nada: mira los números.
+
+- **Atwater**: 4 kcal/g de proteína y carbohidrato digerible, 9 de grasa, 2 de fibra.
+  Si la suma no se parece a las kcal declaradas, falla.
+- Rangos imposibles, `fdcId` duplicados o ausentes, licencia inesperada.
+
+Sale con código 1 si algo falla, así que sirve de barrera. **Las 49 pasan.**
+
+### Un fallo encontrado al recargar la app
+
+Al cambiar la semilla, los `fdcId` cambiaron, y el registro de lentejas del día
+anterior apuntaba a uno que ya no existe. La app lo **descartaba en silencio**: la
+entrada desaparecía de la pantalla y el total bajaba sin explicación. Eso es
+exactamente la pérdida de datos invisible de la que se quejan los usuarios de la
+original («se me borraron dos días»).
+
+Corregido: una entrada huérfana se muestra como «Alimento que ya no está en la base»,
+se puede borrar, y el pie del día dice cuántas hay y que no suman.
+
+### Comprobado en la app
+
+- «pollo» → Pechuga de pollo cocida, **165 kcal/100 g**
+- «platano» sin tilde → **Plátano**, 89 kcal/100 g
+- Los 49 cargan en el buscador
+- Huérfana visible y explicada
+
+Pendiente: los 49 son alimento **genérico**. El producto envasado con código de barras
+sigue sin cubrir, y ahí es donde Open Food Facts tiene los huecos de España y
+Latinoamérica que medimos en la arquitectura.
