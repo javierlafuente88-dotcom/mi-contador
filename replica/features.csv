@@ -1,0 +1,66 @@
+feature,area,priority,original,clone,notes
+Cuestionario de alta y perfil,onboarding,must,yes,yes,S01. Sexo edad altura peso actividad objetivo
+Calculo de calorias y macros objetivo,onboarding,must,yes,yes,"S02. Formula abierta Mifflin-St Jeor o Harris-Benedict | Mifflin-St Jeor, formula publica"
+Objetivos editables por el usuario,objetivos,must,yes,no,Premium en la original. Gratis en la nuestra
+Objetivos distintos por dia,objetivos,could,yes,no,La original lo anadio en v23.2.3 jul 2026
+Objetivo de recomposicion corporal,objetivos,should,no,no,3 resenas lo piden. La original solo ofrece bajar mantener o ganar
+Limite de seguridad en el deficit,seguridad,must,no,yes,"La original acepta deficits peligrosos. 2 resenas independientes | Suelo de 1200 kcal aplicado en buildGoal, no es un aviso ignorable"
+Verificacion de edad real,seguridad,must,no,no,Resena de usuario de 12 anos que declaro 15. Riesgo serio
+Modo sin cifras para riesgo de TCA,seguridad,should,no,no,11 resenas sobre ansiedad y obsesion
+Diario del dia con anillo de calorias,nucleo,must,yes,partial,"S04 | Hecho como cuenta que suma, NO como anillo. Decision de diseno deliberada"
+Desglose de macros,nucleo,must,yes,partial,Proteina carbos grasa fibra agua | Visible en el detalle del alimento; falta en el diario
+Micronutrientes y vitaminas,nutricion,could,yes,no,Premium en la original
+Nutrientes a limitar sodio azucar grasa saturada,nutricion,could,yes,no,El coach regana por el sodio con un objetivo irrealizable
+Registro por texto y busqueda,registro,must,yes,yes,S06. Gratis en la original | Busqueda sin acentos: platano encuentra plátano
+Registro por codigo de barras,registro,must,yes,no,S10. Gratis en la original. Se congela segun resenas
+Registro por foto con IA,registro,should,yes,no,Premium. Falla al distinguir alimentos y porciones
+Registro por voz,registro,could,yes,no,Premium en la original
+Correccion que el sistema recuerda,registro,should,no,no,Peticion explicita. Corriges y no aprende
+Modo manual sin IA,registro,should,no,no,Varias resenas piden poder apagar la IA
+Copiar comida de un dia anterior,registro,should,yes,no,Premium en la original. Queja frecuente
+Alimentos favoritos,registro,should,yes,no,Se perdieron en una actualizacion segun resenas
+Crear alimento manualmente,datos,must,yes,no,S11
+Crear alimento con IA,datos,could,yes,no,Consume credito en la original
+Crear recetas propias,datos,must,yes,no,S12
+Borrar recetas propias,datos,must,no,no,Defecto reportado. La original no deja borrarlas
+Editar macros de un alimento sin romper el resto,datos,should,no,no,Resena explicita. No se puede cambiar un macro aislado
+Operaciones aritmeticas en el gramaje,datos,could,no,yes,Peticion concreta. 1200g/3.5 sin salir a la calculadora | 150+100 y 1200/3.5 funcionan
+Comparar dos alimentos,nutricion,could,yes,no,Icono VS. Premium en la original
+Reportar alimento con datos erroneos,datos,should,yes,no,S25. Existe pero no responden
+Base de alimentos por pais,datos,must,yes,no,La original la particiona por pais. Es arquitectura no un extra
+Base de alimentos abierta Open Food Facts,datos,must,no,no,Nuestra via. Peor cobertura inicial. Riesgo numero 1
+Base de alimentos USDA FoodData Central,datos,must,no,partial,Dominio publico. Cubre alimento generico | 18 alimentos verificados a mano. 23 pendientes en replica/seed
+Numero de comidas al dia configurable,plan,must,yes,partial,Hasta 5 en la original. 4 en el plan gratis | 4 comidas por defecto sin tope en el modelo; falta la pantalla para editarlas
+Merienda y comidas culturales propias,plan,should,no,no,10 resenas. Un usuario pide hasta 10 comidas
+Porcentaje de calorias por comida,plan,should,yes,no,S14
+Plan de comidas automatico,plan,should,yes,no,Premium. El corazon del conflicto actual
+Catalogo de recetas navegable y filtrable,plan,must,no,no,LO QUE QUITARON. 131 resenas sobre recetas. Nuestro diferenciador
+Elegir el plato de una lista sin coste,plan,must,no,no,EL FLUJO CLAVE F06. Objetivo 2 toques y gratis
+Generacion de plan sin moneda virtual,plan,must,no,no,67 resenas nota media 1.46 sobre las monedas
+Intercambiar un plato sin rehacer el plan,plan,must,no,no,Rehacer borra los dias futuros en la original
+Respetar alergias e intolerancias declaradas,plan,must,yes,no,Declarada la alergia al pescado y le propusieron merluza
+Preferencias de alimentos y exclusiones,plan,should,yes,no,S14
+Variedad del plan alta equilibrada minima,plan,could,yes,no,S14
+Tipos de dieta keto vegana baja en carbos,plan,should,yes,no,La IA genero recetas con papa en modo keto
+Lista de la compra desde el plan,plan,should,yes,no,S16. Premium. Exporta PDF
+Seguimiento de peso,progreso,must,yes,no,S17. Gratis en la original
+Grafica de tendencia de peso,progreso,must,yes,no,Premium parcial en la original
+Grasa corporal y medidas,progreso,should,yes,no,Premium. Faltan cuadriceps segun una resena
+Fotos de progreso,progreso,could,yes,no,Premium
+Rachas diarias,motivacion,could,yes,no,Defecto reportado en el contador de dias perfectos
+Ayuno intermitente,ayuno,could,yes,no,Fuera del alcance inicial propuesto
+Sincronizacion con Apple Health y Health Connect,integraciones,should,yes,no,Premium en la original
+Exportar datos a CSV,integraciones,should,yes,no,Disponible en iOS gratis pero no en Android segun una resena
+API o exportacion para nutricionista,integraciones,could,no,no,Peticion explicita de un usuario
+Widgets de pantalla de inicio,plataforma,could,yes,no,Genericos en Android segun resena
+Funcionamiento sin conexion,plataforma,should,no,no,Peticion de 2020 aun sin resolver
+Version para iPad y tablet,plataforma,could,no,no,Peticion explicita
+Version web,plataforma,could,yes,no,La original tiene app.fitia.app
+Coach de nutricion conversacional,coach,could,yes,no,Premium. Tono de regano segun resenas
+Red social y retos de equipo,social,could,yes,skip,Fuera del alcance. Una red vacia no vale nada
+Menus de restaurantes,datos,could,yes,skip,Datos y acuerdos propios de la original
+Medicamentos y suplementos,salud,could,yes,skip,Novedad de sep-oct 2026. Fuera del alcance inicial
+Cancelacion de la suscripcion en dos toques,negocio,must,no,no,106 resenas nota 1.4. Aqui pierden la confianza
+Precio visible antes del cuestionario,negocio,must,no,no,Queja repetida. Rellenan todo y descubren el precio al final
+Nivel gratuito que sirve de verdad,negocio,must,no,yes,668 resenas 27 por ciento sobre el muro de pago | No hay muro de pago en ninguna parte
+Sin microtransacciones de ningun tipo,negocio,must,no,yes,Compromiso de producto. Es nuestra posicion entera | No existe tabla ni codigo de monedas

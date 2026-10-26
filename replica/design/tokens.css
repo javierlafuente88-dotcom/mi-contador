@@ -1,0 +1,91 @@
+/* Tokens — generado desde tokens.json. No escribir hex en los componentes. */
+
+:root {
+  --color-bg: #ffffff;
+  --color-surface: #f1f3ef;
+  --color-border: #d9ded6;
+  --color-border-input: #6b7468;
+  --color-text: #0f2440;
+  --color-text-muted: #4d5a66;
+  --color-accent: #24557f;
+  --color-on-accent: #ffffff;
+  --color-danger: #a8321e;
+  --color-success: #2f6b4f;
+  --color-warning: #7a5b12;
+
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Source Serif 4", Georgia, serif;
+
+  --text-xs: 12px;    --line-xs: 16px;
+  --text-sm: 14px;    --line-sm: 20px;
+  --text-base: 16px;  --line-base: 24px;
+  --text-lg: 20px;    --line-lg: 28px;
+  --text-dish: 18px;  --line-dish: 26px;
+  --text-total: 34px; --line-total: 38px;
+  --text-display: 44px; --line-display: 48px;
+
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+
+  --radius-input: 4px;
+  --radius-card: 8px;
+  --radius-sheet: 20px;
+  --radius-chip: 999px;
+
+  --shadow-sheet: 0 -8px 32px rgba(15, 36, 64, .14);
+  --shadow-pop: 0 8px 24px rgba(15, 36, 64, .16);
+
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --motion-ease: cubic-bezier(.2, .8, .2, 1);
+
+  --screen-padding: 16px;
+  --max-content-width: 560px;
+  --tap-target-min: 44px;
+}
+
+/* Modo oscuro: los roles no cambian, los valores sí.
+   Pendiente de pasar por contrast.py cuando se rellene. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* TODO replica-brand: definir y volver a comprobar el contraste */
+  }
+}
+
+/* Cifras tabulares en todo lo que sea un número.
+   Sin esto, una columna de kcal baila al cambiar de dígito. */
+.num {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* El renglón de carta: plato .......... kcal
+   Es el componente con carácter de la app. Codifica "elige de una lista",
+   que es justo lo que la original quitó. */
+.menu-line {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-height: var(--tap-target-min);
+}
+.menu-line__name {
+  font-family: var(--font-serif);
+  font-size: var(--text-dish);
+  line-height: var(--line-dish);
+  color: var(--color-text);
+}
+.menu-line__leader {
+  flex: 1 1 auto;
+  align-self: end;
+  margin-bottom: 5px;
+  border-bottom: 1px dotted var(--color-border-input);
+}
+.menu-line__value {
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 1ms !important; transition-duration: 1ms !important; }
+}

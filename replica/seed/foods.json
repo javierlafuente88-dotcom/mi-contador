@@ -1,0 +1,320 @@
+{
+  "_about": "Alimentos genericos del hito 1. Valores de USDA FoodData Central (SR Legacy), dominio publico, revisados UNO A UNO contra su descripcion. usda_fdc_id permite comprobar cada valor. Lo que no pudo verificarse no esta aqui: esta en _pendientes.",
+  "_attribution": "U.S. Department of Agriculture, FoodData Central. fdc.nal.usda.gov",
+  "_generated": "2026-10-26",
+  "foods": [
+    {
+      "name_es": "Atún claro en aceite, escurrido",
+      "usda_fdc_id": 173708,
+      "usda_description": "Fish, tuna, light, canned in oil, drained solids",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "kcal": 198.0,
+        "fat_g": 8.21,
+        "carbs_g": 0.0,
+        "protein_g": 29.1,
+        "fiber_g": 0.0
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Azúcar blanca",
+      "usda_fdc_id": 169655,
+      "usda_description": "Sugars, granulated",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "protein_g": 0.0,
+        "fat_g": 0.0,
+        "kcal": 387.0,
+        "carbs_g": 100.0,
+        "fiber_g": 0.0
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Bacalao cocido",
+      "usda_fdc_id": 175178,
+      "usda_description": "Fish, cod, Pacific, cooked",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "protein_g": 20.4,
+        "fat_g": 0.25,
+        "carbs_g": 0.0,
+        "kcal": 84.0
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Batata cocida",
+      "usda_fdc_id": 168484,
+      "usda_description": "Sweet potato, cooked, boiled, without skin",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "carbs_g": 17.7,
+        "kcal": 76.0,
+        "protein_g": 1.37,
+        "fiber_g": 2.5,
+        "fat_g": 0.14
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Brócoli crudo",
+      "usda_fdc_id": 170379,
+      "usda_description": "Broccoli, raw",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "carbs_g": 6.64,
+        "kcal": 34.0,
+        "fat_g": 0.37,
+        "protein_g": 2.82,
+        "fiber_g": 2.6
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Calabacín baby crudo",
+      "usda_fdc_id": 168565,
+      "usda_description": "Squash, zucchini, baby, raw",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "fiber_g": 1.1,
+        "carbs_g": 3.11,
+        "kcal": 21.0,
+        "protein_g": 2.71,
+        "fat_g": 0.4
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Carne de res picada cocida",
+      "usda_fdc_id": 172161,
+      "usda_description": "Beef, ground, unspecified fat content, cooked",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "fat_g": 14.5,
+        "carbs_g": 0.62,
+        "fiber_g": 0.0,
+        "protein_g": 25.1,
+        "kcal": 240.0
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Cebolla cruda",
+      "usda_fdc_id": 170000,
+      "usda_description": "Onions, raw",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "fat_g": 0.1,
+        "carbs_g": 9.34,
+        "kcal": 40.0,
+        "protein_g": 1.1,
+        "fiber_g": 1.7
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Espinacas crudas",
+      "usda_fdc_id": 168462,
+      "usda_description": "Spinach, raw",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "protein_g": 2.86,
+        "fiber_g": 2.2,
+        "fat_g": 0.39,
+        "carbs_g": 3.63,
+        "kcal": 23.0
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Frijoles negros cocidos",
+      "usda_fdc_id": 175237,
+      "usda_description": "Beans, black, mature seeds, cooked, boiled, with salt",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "fiber_g": 8.7,
+        "protein_g": 8.86,
+        "fat_g": 0.54,
+        "carbs_g": 23.7,
+        "kcal": 132.0
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Garbanzos cocidos",
+      "usda_fdc_id": 173799,
+      "usda_description": "Chickpeas (garbanzo beans, bengal gram), mature seeds, cooked, boiled, with salt",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "fiber_g": 7.6,
+        "carbs_g": 27.4,
+        "kcal": 164.0,
+        "fat_g": 2.59,
+        "protein_g": 8.86
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Lechuga roja",
+      "usda_fdc_id": 168431,
+      "usda_description": "Lettuce, red leaf, raw",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "kcal": 13.0,
+        "carbs_g": 2.26,
+        "fat_g": 0.22,
+        "protein_g": 1.33,
+        "fiber_g": 0.9
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Lentejas cocidas",
+      "usda_fdc_id": 175254,
+      "usda_description": "Lentils, mature seeds, cooked, boiled, with salt",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "fiber_g": 7.9,
+        "carbs_g": 19.5,
+        "kcal": 114.0,
+        "fat_g": 0.38,
+        "protein_g": 9.02
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Pan blanco de trigo",
+      "usda_fdc_id": 167532,
+      "usda_description": "Bread, white wheat",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "fat_g": 2.15,
+        "carbs_g": 43.9,
+        "kcal": 238.0,
+        "protein_g": 10.7,
+        "fiber_g": 9.2
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Tortillas de maíz, sin freír",
+      "usda_fdc_id": 175036,
+      "usda_description": "Tortillas, ready-to-bake or -fry, corn",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "protein_g": 5.7,
+        "fiber_g": 6.3,
+        "fat_g": 2.85,
+        "carbs_g": 44.6,
+        "kcal": 218.0
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Yogur natural desnatado",
+      "usda_fdc_id": 170887,
+      "usda_description": "Yogurt, plain, skim milk",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "kcal": 56.0,
+        "protein_g": 5.73,
+        "fiber_g": 0.0,
+        "fat_g": 0.18,
+        "carbs_g": 7.68
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Yuca cruda",
+      "usda_fdc_id": 169985,
+      "usda_description": "Cassava, raw",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "carbs_g": 38.1,
+        "kcal": 160.0,
+        "protein_g": 1.36,
+        "fiber_g": 1.8,
+        "fat_g": 0.28
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    },
+    {
+      "name_es": "Zanahoria cruda",
+      "usda_fdc_id": 170393,
+      "usda_description": "Carrots, raw",
+      "license": "public-domain",
+      "source": "usda",
+      "per_100g": {
+        "protein_g": 0.93,
+        "fat_g": 0.24,
+        "carbs_g": 9.58,
+        "kcal": 41.0,
+        "fiber_g": 2.8
+      },
+      "verified": "revisado a mano contra la descripcion de USDA"
+    }
+  ],
+  "_pendientes": {
+    "_nota": "NO estan en la app. Faltan o el emparejamiento automatico fue incorrecto.",
+    "alimentos": [
+      "Aceite de oliva",
+      "Aguacate",
+      "Almendras",
+      "Arroz blanco cocido",
+      "Avena en copos",
+      "Fresas",
+      "Harina de trigo",
+      "Huevo cocido",
+      "Leche entera",
+      "Lomo de cerdo cocido",
+      "Maiz dulce",
+      "Mantequilla",
+      "Manzana",
+      "Merluza cocida",
+      "Naranja",
+      "Pasta cocida",
+      "Patata cocida",
+      "Pavo cocido",
+      "Pechuga de pollo cocida",
+      "Pimiento crudo",
+      "Platano",
+      "Queso fresco",
+      "Tomate crudo"
+    ],
+    "motivos": {
+      "Aceite de oliva": "USDA devolvio una mezcla de maiz, cacahuete y oliva",
+      "Almendras": "USDA devolvio almendras garrapinadas",
+      "Arroz blanco cocido": "USDA devolvio arroz glutinoso, no el comun",
+      "Mantequilla": "USDA devolvio manteca de cacao",
+      "Leche entera": "USDA devolvio yogur, no leche",
+      "Maiz dulce": "USDA devolvio papilla infantil",
+      "Pavo cocido": "USDA devolvio salami de pavo",
+      "Pechuga de pollo cocida": "USDA devolvio tiras de pollo empanadas",
+      "Harina de trigo": "USDA devolvio harina de reposteria, no la comun",
+      "Lomo de cerdo cocido": "USDA devolvio costillar con hueso",
+      "Tomate crudo": "USDA devolvio tomate verde",
+      "Pimiento crudo": "USDA devolvio chile serrano",
+      "Queso fresco": "USDA devolvio ricotta",
+      "Patata cocida": "USDA devolvio la PIEL de la patata"
+    }
+  }
+}
