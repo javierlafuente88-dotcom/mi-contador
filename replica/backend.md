@@ -1,6 +1,18 @@
 # Backend
 
-Estado: **escrito, no ejecutado.** 2026-10-27
+Estado: **ejecutado y verificado contra el Postgres real.** 2026-10-27
+
+> **2026-10-27, 12:26.** El esquema corrió por primera vez contra un Postgres de
+> verdad, desde el editor SQL del panel (no con el CLI: ver más abajo). Sin errores.
+> `supabase/verify.sql` devuelve **las once comprobaciones en OK**: 20 tablas, 20 con
+> RLS, **0 tablas con RLS y sin política**, 22 políticas, 49 alimentos, las 5
+> funciones, el disparador de alta, el suelo de 1.200 kcal, el índice único contra el
+> registro doble, la búsqueda sin acentos funcionando y la pechuga de pollo a 165
+> kcal/100 g.
+>
+> Antes de ejecutarlo se corrigieron dos errores que lo habrían roto: el `on conflict`
+> no repetía el predicado del índice **parcial**, y `search_foods` no tenía
+> `extensions` en su `search_path`, así que `unaccent` no se habría resuelto.
 
 ---
 
@@ -113,8 +125,9 @@ usuario. Si RLS estuviera mal, ahí salta.
 - [x] Borrado de cuenta que borra de verdad, en cascada
 - [x] Mensajes de error de login que no revelan si el correo existe
 - [x] Restricciones de cordura en la base: gramos, peso, suelo de calorías
-- [ ] **Probado con un segundo usuario** — pendiente: necesita el proyecto creado
-- [ ] **Migraciones ejecutadas** — pendiente: ídem
+- [x] **Migraciones ejecutadas** — 2026-10-27, sin errores, verificadas con `verify.sql`
+- [x] Ninguna tabla con RLS y sin política — comprobado contra el catálogo real de Postgres
+- [ ] **Probado con un segundo usuario** — sigue pendiente, y es la casilla que importa
 - [ ] Límite de intentos en el login — pendiente, Supabase trae uno por defecto que hay que revisar
 - [ ] Copias de seguridad — el plan gratuito las hace a diario; hay que confirmarlo en el panel
 - [ ] `npm audit` limpio — **no lo está**: ver abajo
