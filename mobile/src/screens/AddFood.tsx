@@ -44,6 +44,10 @@ export function AddFood({
     };
   }, [query]);
 
+  // El mismo techo que la restriccion "grams <= 10000" de la base de datos.
+  // Sin esto, el registro funciona en local y revienta al sincronizar.
+  const MAX_GRAMOS = 10000;
+
   const gramsNum = useMemo(() => {
     const raw = grams.trim();
     // Acepta aritmetica: "1200/3.5" se resuelve. Peticion literal de un
@@ -62,7 +66,8 @@ export function AddFood({
   }, [grams]);
 
   if (picked) {
-    const ok = !Number.isNaN(gramsNum);
+    const demasiado = !Number.isNaN(gramsNum) && gramsNum > MAX_GRAMOS;
+    const ok = !Number.isNaN(gramsNum) && !demasiado;
     return (
       <Screen>
         <Title>{picked.name}</Title>
@@ -80,7 +85,13 @@ export function AddFood({
           onChangeText={setGrams}
           keyboardType="decimal-pad"
           autoFocus
-          error={ok ? undefined : "Escribe un número mayor que cero"}
+          error={
+            ok
+              ? undefined
+              : demasiado
+                ? `Como máximo ${MAX_GRAMOS.toLocaleString("es-ES")} g de una vez`
+                : "Escribe un número mayor que cero"
+          }
         />
         <Body muted style={type.sm}>
           Puedes escribir una operación: 1200/3.5 también vale.

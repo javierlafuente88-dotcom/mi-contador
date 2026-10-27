@@ -29,7 +29,19 @@ export default function App() {
   const [goal, setGoal] = useState<Goal | null>(null);
   const [slots, setSlots] = useState<MealSlot[]>([]);
   const [entries, setEntries] = useState<LogEntry[]>([]);
-  const today = todayLocal();
+
+  // El dia es estado, no un calculo suelto. Si fuera un calculo, solo se
+  // actualizaria cuando algo provocase un redibujado: con la app abierta a
+  // medianoche el diario se quedaba en el dia anterior.
+  const [today, setToday] = useState(todayLocal);
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      const ahora = todayLocal();
+      setToday((anterior) => (anterior === ahora ? anterior : ahora));
+    }, 30_000);
+    return () => clearInterval(t);
+  }, []);
 
   const refresh = useCallback(async () => {
     setEntries(await store.listEntries(today));
@@ -83,7 +95,10 @@ export default function App() {
     await refresh();
   }
 
-  const dateLabel = new Date().toLocaleDateString("es-ES", {
+  // Se deriva de `today`, no de un Date nuevo, para que etiqueta y datos
+  // no puedan discrepar nunca.
+  const [y, m, d] = today.split("-").map(Number);
+  const dateLabel = new Date(y, m - 1, d).toLocaleDateString("es-ES", {
     weekday: "long",
     day: "numeric",
     month: "long",
