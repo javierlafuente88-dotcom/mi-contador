@@ -137,3 +137,56 @@ se puede borrar, y el pie del día dice cuántas hay y que no suman.
 Pendiente: los 49 son alimento **genérico**. El producto envasado con código de barras
 sigue sin cubrir, y ahí es donde Open Food Facts tiene los huecos de España y
 Latinoamérica que medimos en la arquitectura.
+
+## 2026-10-27, 17:00 — La carta (S13), el diferenciador
+
+| pantalla | estado | qué falta |
+| --- | --- | --- |
+| S13 catálogo de recetas | **hecho** | Crear recetas propias (hito 2) |
+| S13 detalle de receta | **hecho** | — |
+
+**18 recetas, escritas aquí.** No se ha copiado ninguna receta de ninguna app: son
+combinaciones de cocina casera hechas con nuestros 49 ingredientes. Los valores
+nutricionales **no están escritos a mano**: `tools/build_recipes.py` los calcula
+sumando los ingredientes, cuyos datos vienen de USDA.
+
+**Tres toques y gratis:** abrir la carta, abrir la receta, añadirla. Sin monedas, sin
+créditos, sin generar nada y sin límite de cambios. Una prueba comprueba
+explícitamente que **en ninguna pantalla aparecen las palabras moneda, crédito, token
+ni coins**.
+
+La receta enseña **de qué está hecha**: sus ingredientes con sus gramos, y los macros
+por ración. Nada de un número opaco salido de una IA.
+
+### Un defecto de diseño que encontró la prueba
+
+Los filtros eran de selección única: elegir «Vegetariana» borraba «Desayuno». Un
+usuario espera combinarlos. Ahora son **dos grupos**: el momento del día es
+excluyente (un plato es desayuno o es cena) y los atributos se acumulan. No lo vi al
+escribirlo; lo vi cuando la prueba de filtros no cuadró.
+
+### Comprobado en la base real
+
+Las 18 recetas y sus 64 ingredientes están también en Supabase. La consulta de
+comprobación da **0 nombres con acentos rotos** y, lo que más me gusta:
+
+> **210 kcal por ración de «Lentejas con verduras»**, calculadas por Postgres sumando
+> los ingredientes — exactamente lo mismo que calculó el generador en local, por su
+> cuenta.
+
+Dos caminos independientes, el mismo número. Eso es lo que hace creíble un dato.
+
+### Pruebas
+
+**9 casos nuevos** para F06, y la batería entera en verde: **37 pruebas**.
+
+### Lo que esto NO mueve, y por qué
+
+La paridad sube de 20,9 a **22,8**, y casi todo ese punto y medio viene de otra fila.
+El catálogo **no puntúa**, porque `parity.py` solo cuenta funciones que la original
+tiene, y la original **quitó** su catálogo en julio de 2026.
+
+Es decir: **nuestro mayor diferenciador es invisible para el marcador de paridad.**
+No es un fallo de la herramienta: la paridad mide «hace lo mismo que la original», y
+aquí hacemos a propósito lo que ella dejó de hacer. Conviene no confundir ese número
+con el valor del producto.

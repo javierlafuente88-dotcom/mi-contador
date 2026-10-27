@@ -21,7 +21,7 @@ Copiar comida de un dia anterior,registro,should,yes,no,Premium en la original. 
 Alimentos favoritos,registro,should,yes,no,Se perdieron en una actualizacion segun resenas
 Crear alimento manualmente,datos,must,yes,no,S11
 Crear alimento con IA,datos,could,yes,no,Consume credito en la original
-Crear recetas propias,datos,must,yes,no,S12
+Crear recetas propias,datos,must,yes,partial,S12 | El catalogo existe y se lee; falta la pantalla para crear las tuyas
 Borrar recetas propias,datos,must,no,no,Defecto reportado. La original no deja borrarlas
 Editar macros de un alimento sin romper el resto,datos,should,no,no,Resena explicita. No se puede cambiar un macro aislado
 Operaciones aritmeticas en el gramaje,datos,could,no,yes,Peticion concreta. 1200g/3.5 sin salir a la calculadora | 150+100 y 1200/3.5 funcionan
@@ -34,9 +34,9 @@ Numero de comidas al dia configurable,plan,must,yes,partial,Hasta 5 en la origin
 Merienda y comidas culturales propias,plan,should,no,no,10 resenas. Un usuario pide hasta 10 comidas
 Porcentaje de calorias por comida,plan,should,yes,no,S14
 Plan de comidas automatico,plan,should,yes,no,Premium. El corazon del conflicto actual
-Catalogo de recetas navegable y filtrable,plan,must,no,no,LO QUE QUITARON. 131 resenas sobre recetas. Nuestro diferenciador
-Elegir el plato de una lista sin coste,plan,must,no,no,EL FLUJO CLAVE F06. Objetivo 2 toques y gratis
-Generacion de plan sin moneda virtual,plan,must,no,no,67 resenas nota media 1.46 sobre las monedas
+Catalogo de recetas navegable y filtrable,plan,must,no,yes,"LO QUE QUITARON. 131 resenas sobre recetas. Nuestro diferenciador | 18 recetas propias. Filtros por momento del dia y por atributos, combinables"
+Elegir el plato de una lista sin coste,plan,must,no,yes,"EL FLUJO CLAVE F06. Objetivo 2 toques y gratis | Tres toques: abrir la carta, abrir la receta, anadir. Sin limite de cambios"
+Generacion de plan sin moneda virtual,plan,must,no,yes,"67 resenas nota media 1.46 sobre las monedas | No existe ninguna moneda, credito ni token en el codigo ni en la base"
 Intercambiar un plato sin rehacer el plan,plan,must,no,no,Rehacer borra los dias futuros en la original
 Respetar alergias e intolerancias declaradas,plan,must,yes,no,Declarada la alergia al pescado y le propusieron merluza
 Preferencias de alimentos y exclusiones,plan,should,yes,no,S14

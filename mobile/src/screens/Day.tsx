@@ -9,8 +9,8 @@ import {
   SlotLabel,
 } from "../design/primitives";
 import { color, layout, space, tabular, type } from "../design/tokens";
-import { kcalOf, remainingRange } from "../data";
-import type { Food, Goal, LogEntry, MealSlot } from "../data/types";
+import { kcalOf, kcalOfRecipe, remainingRange } from "../data";
+import type { Food, Goal, LogEntry, MealSlot, Recipe } from "../data/types";
 
 /** S04 — el diario del dia.
  *  La cuenta, no el marcador: una lista de platos que suma, con el total
@@ -22,7 +22,9 @@ export function Day({
   slots,
   entries,
   foodById,
+  recipeById,
   onAdd,
+  onCarta,
   onRemove,
 }: {
   dateLabel: string;
@@ -30,17 +32,35 @@ export function Day({
   slots: MealSlot[];
   entries: LogEntry[];
   foodById: (id: string) => Food | undefined;
+  recipeById: (id: string) => Recipe | undefined;
   onAdd: (slotId: string) => void;
+  onCarta: (slotId: string) => void;
   onRemove: (entryId: string) => void;
 }) {
-  const eaten = entries.reduce((sum, e) => {
-    const f = foodById(e.foodId);
-    return sum + (f ? kcalOf(f, e.grams) : 0);
-  }, 0);
+  /** Una entrada puede ser un alimento suelto o una receta de la carta. */
+  function kcalDe(e: LogEntry): number | null {
+    if (e.recipeId) {
+      const r = recipeById(e.recipeId);
+      return r ? kcalOfRecipe(r, e.grams) : null;
+    }
+    if (e.foodId) {
+      const f = foodById(e.foodId);
+      return f ? kcalOf(f, e.grams) : null;
+    }
+    return null;
+  }
+
+  function nombreDe(e: LogEntry): string | null {
+    if (e.recipeId) return recipeById(e.recipeId)?.name ?? null;
+    if (e.foodId) return foodById(e.foodId)?.name ?? null;
+    return null;
+  }
+
+  const eaten = entries.reduce((sum, e) => sum + (kcalDe(e) ?? 0), 0);
 
   // Entradas que apuntan a un alimento que ya no esta en la base: pasa si la
   // base cambia bajo los pies del usuario. NUNCA se descartan en silencio.
-  const huerfanas = entries.filter((e) => !foodById(e.foodId)).length;
+  const huerfanas = entries.filter((e) => kcalDe(e) === null).length;
 
   const { low, high, left, exact } = remainingRange(goal.kcalTarget, eaten);
   const over = high < 0;
@@ -66,33 +86,38 @@ export function Day({
               <Empty
                 text="Aún no has anotado nada aquí."
                 action={
-                  <Button
-                    label="Añadir"
-                    variant="secondary"
-                    onPress={() => onAdd(slot.id)}
-                  />
+                  <View style={{ flexDirection: "row", gap: space[2], flexWrap: "wrap" }}>
+                    <Button
+                      label="Elegir de la carta"
+                      variant="secondary"
+                      onPress={() => onCarta(slot.id)}
+                    />
+                    <Button label="Añadir" variant="ghost" onPress={() => onAdd(slot.id)} />
+                  </View>
                 }
               />
             ) : (
               <>
                 {mine.map((e) => {
-                  const f = foodById(e.foodId);
+                  const nombre = nombreDe(e);
+                  const kcal = kcalDe(e);
                   return (
                     <MenuLine
                       key={e.id}
-                      name={f ? f.name : "Alimento que ya no está en la base"}
-                      value={f ? `${kcalOf(f, e.grams)} kcal` : "sin datos"}
+                      name={nombre ?? "Ya no está en la base"}
+                      value={kcal === null ? "sin datos" : `${kcal} kcal`}
                       accessibilityHint="Mantén pulsado para quitarlo"
                       onLongPress={() => onRemove(e.id)}
                     />
                   );
                 })}
-                <View style={{ marginTop: space[2], alignItems: "flex-start" }}>
+                <View style={{ marginTop: space[2], flexDirection: "row", gap: space[2], flexWrap: "wrap" }}>
                   <Button
-                    label="Añadir"
+                    label="Elegir de la carta"
                     variant="ghost"
-                    onPress={() => onAdd(slot.id)}
+                    onPress={() => onCarta(slot.id)}
                   />
+                  <Button label="Añadir" variant="ghost" onPress={() => onAdd(slot.id)} />
                 </View>
               </>
             )}

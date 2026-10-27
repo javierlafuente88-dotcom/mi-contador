@@ -12,4 +12,14 @@ export const usingSupabase: boolean =
 
 export const store: Store = usingSupabase ? supabaseStore : fakeStore;
 
-export { todayLocal, buildGoal, basalKcal, remainingRange, kcalOf, KCAL_FLOOR, allFoods } from "./store";
+export {
+  todayLocal,
+  buildGoal,
+  basalKcal,
+  remainingRange,
+  kcalOf,
+  kcalOfRecipe,
+  KCAL_FLOOR,
+  allFoods,
+  allRecipes,
+} from "./store";

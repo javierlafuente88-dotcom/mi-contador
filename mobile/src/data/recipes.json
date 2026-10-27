@@ -1,0 +1,688 @@
+{
+  "_about": "Recetas propias: combinaciones de cocina casera escritas para este proyecto. No se ha copiado ninguna receta de ninguna aplicacion. Los valores nutricionales se CALCULAN sumando los ingredientes, cuyos datos vienen de USDA (dominio publico).",
+  "recetas": [
+    {
+      "nombre": "Avena con plátano",
+      "etiquetas": [
+        "desayuno",
+        "vegetariana",
+        "rapida"
+      ],
+      "minutos": 5,
+      "raciones": 1,
+      "gramos_totales": 350,
+      "ingredientes": [
+        {
+          "alimento": "Avena en copos",
+          "usda_fdc_id": 169705,
+          "gramos": 50
+        },
+        {
+          "alimento": "Leche desnatada",
+          "usda_fdc_id": 171269,
+          "gramos": 200
+        },
+        {
+          "alimento": "Plátano",
+          "usda_fdc_id": 173944,
+          "gramos": 100
+        }
+      ],
+      "por_racion": {
+        "kcal": 351.5,
+        "protein_g": 16.3,
+        "carbs_g": 65.9,
+        "fat_g": 3.9,
+        "fiber_g": 7.9
+      },
+      "gramos_por_racion": 350.0
+    },
+    {
+      "nombre": "Batata con queso fresco",
+      "etiquetas": [
+        "merienda",
+        "vegetariana"
+      ],
+      "minutos": 25,
+      "raciones": 1,
+      "gramos_totales": 265,
+      "ingredientes": [
+        {
+          "alimento": "Batata cocida",
+          "usda_fdc_id": 168484,
+          "gramos": 200
+        },
+        {
+          "alimento": "Queso fresco",
+          "usda_fdc_id": 172223,
+          "gramos": 60
+        },
+        {
+          "alimento": "Aceite de oliva",
+          "usda_fdc_id": 171413,
+          "gramos": 5
+        }
+      ],
+      "por_racion": {
+        "kcal": 375.6,
+        "protein_g": 13.6,
+        "carbs_g": 37.2,
+        "fat_g": 19.6,
+        "fiber_g": 5.0
+      },
+      "gramos_por_racion": 265.0
+    },
+    {
+      "nombre": "Bocadillo de atún",
+      "etiquetas": [
+        "comida",
+        "rapida"
+      ],
+      "minutos": 5,
+      "raciones": 1,
+      "gramos_totales": 205,
+      "ingredientes": [
+        {
+          "alimento": "Pan blanco de trigo",
+          "usda_fdc_id": 174924,
+          "gramos": 80
+        },
+        {
+          "alimento": "Atún en conserva al natural",
+          "usda_fdc_id": 171986,
+          "gramos": 80
+        },
+        {
+          "alimento": "Tomate crudo",
+          "usda_fdc_id": 170457,
+          "gramos": 40
+        },
+        {
+          "alimento": "Aceite de oliva",
+          "usda_fdc_id": 171413,
+          "gramos": 5
+        }
+      ],
+      "por_racion": {
+        "kcal": 357.0,
+        "protein_g": 27.8,
+        "carbs_g": 41.1,
+        "fat_g": 8.4,
+        "fiber_g": 2.6
+      },
+      "gramos_por_racion": 205.0
+    },
+    {
+      "nombre": "Cerdo con alubias",
+      "etiquetas": [
+        "comida"
+      ],
+      "minutos": 30,
+      "raciones": 2,
+      "gramos_totales": 430,
+      "ingredientes": [
+        {
+          "alimento": "Lomo de cerdo cocido",
+          "usda_fdc_id": 167894,
+          "gramos": 160
+        },
+        {
+          "alimento": "Alubias blancas cocidas",
+          "usda_fdc_id": 173750,
+          "gramos": 200
+        },
+        {
+          "alimento": "Zanahoria cruda",
+          "usda_fdc_id": 170393,
+          "gramos": 60
+        },
+        {
+          "alimento": "Aceite de oliva",
+          "usda_fdc_id": 171413,
+          "gramos": 10
+        }
+      ],
+      "por_racion": {
+        "kcal": 369.7,
+        "protein_g": 32.3,
+        "carbs_g": 28.7,
+        "fat_g": 13.8,
+        "fiber_g": 11.2
+      },
+      "gramos_por_racion": 215.0
+    },
+    {
+      "nombre": "Ensalada de garbanzos",
+      "etiquetas": [
+        "comida",
+        "vegetariana",
+        "rapida"
+      ],
+      "minutos": 10,
+      "raciones": 1,
+      "gramos_totales": 340,
+      "ingredientes": [
+        {
+          "alimento": "Garbanzos cocidos",
+          "usda_fdc_id": 173757,
+          "gramos": 180
+        },
+        {
+          "alimento": "Tomate crudo",
+          "usda_fdc_id": 170457,
+          "gramos": 80
+        },
+        {
+          "alimento": "Cebolla cruda",
+          "usda_fdc_id": 170000,
+          "gramos": 30
+        },
+        {
+          "alimento": "Lechuga romana",
+          "usda_fdc_id": 169247,
+          "gramos": 40
+        },
+        {
+          "alimento": "Aceite de oliva",
+          "usda_fdc_id": 171413,
+          "gramos": 10
+        }
+      ],
+      "por_racion": {
+        "kcal": 416.8,
+        "protein_g": 17.5,
+        "carbs_g": 56.6,
+        "fat_g": 15.0,
+        "fiber_g": 16.0
+      },
+      "gramos_por_racion": 340.0
+    },
+    {
+      "nombre": "Ensalada de maíz y aguacate",
+      "etiquetas": [
+        "comida",
+        "vegetariana",
+        "rapida"
+      ],
+      "minutos": 10,
+      "raciones": 1,
+      "gramos_totales": 305,
+      "ingredientes": [
+        {
+          "alimento": "Maíz dulce cocido",
+          "usda_fdc_id": 169999,
+          "gramos": 100
+        },
+        {
+          "alimento": "Aguacate",
+          "usda_fdc_id": 171705,
+          "gramos": 80
+        },
+        {
+          "alimento": "Tomate crudo",
+          "usda_fdc_id": 170457,
+          "gramos": 80
+        },
+        {
+          "alimento": "Lechuga romana",
+          "usda_fdc_id": 169247,
+          "gramos": 40
+        },
+        {
+          "alimento": "Aceite de oliva",
+          "usda_fdc_id": 171413,
+          "gramos": 5
+        }
+      ],
+      "por_racion": {
+        "kcal": 289.4,
+        "protein_g": 6.2,
+        "carbs_g": 32.3,
+        "fat_g": 18.5,
+        "fiber_g": 9.6
+      },
+      "gramos_por_racion": 305.0
+    },
+    {
+      "nombre": "Frijoles con arroz",
+      "etiquetas": [
+        "comida",
+        "vegetariana"
+      ],
+      "minutos": 25,
+      "raciones": 2,
+      "gramos_totales": 368,
+      "ingredientes": [
+        {
+          "alimento": "Frijoles negros cocidos",
+          "usda_fdc_id": 173735,
+          "gramos": 180
+        },
+        {
+          "alimento": "Arroz integral cocido",
+          "usda_fdc_id": 168875,
+          "gramos": 150
+        },
+        {
+          "alimento": "Cebolla cruda",
+          "usda_fdc_id": 170000,
+          "gramos": 30
+        },
+        {
+          "alimento": "Aceite de oliva",
+          "usda_fdc_id": 171413,
+          "gramos": 8
+        }
+      ],
+      "por_racion": {
+        "kcal": 244.2,
+        "protein_g": 9.9,
+        "carbs_g": 40.4,
+        "fat_g": 5.1,
+        "fiber_g": 9.4
+      },
+      "gramos_por_racion": 184.0
+    },
+    {
+      "nombre": "Judías verdes con huevo",
+      "etiquetas": [
+        "cena",
+        "vegetariana",
+        "rapida"
+      ],
+      "minutos": 15,
+      "raciones": 1,
+      "gramos_totales": 328,
+      "ingredientes": [
+        {
+          "alimento": "Judías verdes cocidas",
+          "usda_fdc_id": 169141,
+          "gramos": 200
+        },
+        {
+          "alimento": "Huevo cocido",
+          "usda_fdc_id": 173424,
+          "gramos": 120
+        },
+        {
+          "alimento": "Aceite de oliva",
+          "usda_fdc_id": 171413,
+          "gramos": 8
+        }
+      ],
+      "por_racion": {
+        "kcal": 326.7,
+        "protein_g": 18.9,
+        "carbs_g": 17.1,
+        "fat_g": 21.3,
+        "fiber_g": 6.4
+      },
+      "gramos_por_racion": 328.0
+    },
+    {
+      "nombre": "Lentejas con verduras",
+      "etiquetas": [
+        "comida",
+        "vegetariana"
+      ],
+      "minutos": 35,
+      "raciones": 2,
+      "gramos_totales": 360,
+      "ingredientes": [
+        {
+          "alimento": "Lentejas cocidas",
+          "usda_fdc_id": 172421,
+          "gramos": 250
+        },
+        {
+          "alimento": "Cebolla cruda",
+          "usda_fdc_id": 170000,
+          "gramos": 40
+        },
+        {
+          "alimento": "Zanahoria cruda",
+          "usda_fdc_id": 170393,
+          "gramos": 60
+        },
+        {
+          "alimento": "Aceite de oliva",
+          "usda_fdc_id": 171413,
+          "gramos": 10
+        }
+      ],
+      "por_racion": {
+        "kcal": 209.5,
+        "protein_g": 11.8,
+        "carbs_g": 29.9,
+        "fat_g": 5.6,
+        "fiber_g": 11.1
+      },
+      "gramos_por_racion": 180.0
+    },
+    {
+      "nombre": "Manzana con almendras",
+      "etiquetas": [
+        "merienda",
+        "vegetariana",
+        "rapida"
+      ],
+      "minutos": 1,
+      "raciones": 1,
+      "gramos_totales": 170,
+      "ingredientes": [
+        {
+          "alimento": "Manzana con piel",
+          "usda_fdc_id": 171688,
+          "gramos": 150
+        },
+        {
+          "alimento": "Almendras crudas",
+          "usda_fdc_id": 170567,
+          "gramos": 20
+        }
+      ],
+      "por_racion": {
+        "kcal": 193.8,
+        "protein_g": 4.6,
+        "carbs_g": 25.0,
+        "fat_g": 10.2,
+        "fiber_g": 6.1
+      },
+      "gramos_por_racion": 170.0
+    },
+    {
+      "nombre": "Merluza al horno con patata",
+      "etiquetas": [
+        "cena"
+      ],
+      "minutos": 30,
+      "raciones": 1,
+      "gramos_totales": 390,
+      "ingredientes": [
+        {
+          "alimento": "Merluza cocida",
+          "usda_fdc_id": 175161,
+          "gramos": 150
+        },
+        {
+          "alimento": "Patata cocida",
+          "usda_fdc_id": 170440,
+          "gramos": 180
+        },
+        {
+          "alimento": "Pimiento rojo crudo",
+          "usda_fdc_id": 170108,
+          "gramos": 50
+        },
+        {
+          "alimento": "Aceite de oliva",
+          "usda_fdc_id": 171413,
+          "gramos": 10
+        }
+      ],
+      "por_racion": {
+        "kcal": 430.2,
+        "protein_g": 38.8,
+        "carbs_g": 39.0,
+        "fat_g": 12.9,
+        "fiber_g": 4.3
+      },
+      "gramos_por_racion": 390.0
+    },
+    {
+      "nombre": "Pavo con calabacín",
+      "etiquetas": [
+        "cena"
+      ],
+      "minutos": 20,
+      "raciones": 1,
+      "gramos_totales": 358,
+      "ingredientes": [
+        {
+          "alimento": "Pechuga de pavo cocida",
+          "usda_fdc_id": 171496,
+          "gramos": 150
+        },
+        {
+          "alimento": "Calabacín crudo",
+          "usda_fdc_id": 169291,
+          "gramos": 200
+        },
+        {
+          "alimento": "Aceite de oliva",
+          "usda_fdc_id": 171413,
+          "gramos": 8
+        }
+      ],
+      "por_racion": {
+        "kcal": 325.2,
+        "protein_g": 47.6,
+        "carbs_g": 6.2,
+        "fat_g": 11.8,
+        "fiber_g": 2.0
+      },
+      "gramos_por_racion": 358.0
+    },
+    {
+      "nombre": "Pollo con arroz y brócoli",
+      "etiquetas": [
+        "comida"
+      ],
+      "minutos": 30,
+      "raciones": 1,
+      "gramos_totales": 438,
+      "ingredientes": [
+        {
+          "alimento": "Pechuga de pollo cocida",
+          "usda_fdc_id": 171477,
+          "gramos": 150
+        },
+        {
+          "alimento": "Arroz blanco cocido",
+          "usda_fdc_id": 168878,
+          "gramos": 180
+        },
+        {
+          "alimento": "Brócoli crudo",
+          "usda_fdc_id": 170379,
+          "gramos": 100
+        },
+        {
+          "alimento": "Aceite de oliva",
+          "usda_fdc_id": 171413,
+          "gramos": 8
+        }
+      ],
+      "por_racion": {
+        "kcal": 586.2,
+        "protein_g": 54.2,
+        "carbs_g": 57.4,
+        "fat_g": 14.2,
+        "fiber_g": 3.3
+      },
+      "gramos_por_racion": 438.0
+    },
+    {
+      "nombre": "Revuelto de champiñones",
+      "etiquetas": [
+        "cena",
+        "vegetariana",
+        "rapida"
+      ],
+      "minutos": 10,
+      "raciones": 1,
+      "gramos_totales": 248,
+      "ingredientes": [
+        {
+          "alimento": "Huevo cocido",
+          "usda_fdc_id": 173424,
+          "gramos": 120
+        },
+        {
+          "alimento": "Champiñones crudos",
+          "usda_fdc_id": 169251,
+          "gramos": 120
+        },
+        {
+          "alimento": "Aceite de oliva",
+          "usda_fdc_id": 171413,
+          "gramos": 8
+        }
+      ],
+      "por_racion": {
+        "kcal": 283.1,
+        "protein_g": 18.8,
+        "carbs_g": 5.3,
+        "fat_g": 21.1,
+        "fiber_g": 1.2
+      },
+      "gramos_por_racion": 248.0
+    },
+    {
+      "nombre": "Salmón con espinacas",
+      "etiquetas": [
+        "cena"
+      ],
+      "minutos": 20,
+      "raciones": 1,
+      "gramos_totales": 268,
+      "ingredientes": [
+        {
+          "alimento": "Salmón cocido",
+          "usda_fdc_id": 171998,
+          "gramos": 140
+        },
+        {
+          "alimento": "Espinacas crudas",
+          "usda_fdc_id": 168462,
+          "gramos": 120
+        },
+        {
+          "alimento": "Aceite de oliva",
+          "usda_fdc_id": 171413,
+          "gramos": 8
+        }
+      ],
+      "por_racion": {
+        "kcal": 353.1,
+        "protein_g": 39.0,
+        "carbs_g": 4.4,
+        "fat_g": 19.9,
+        "fiber_g": 2.6
+      },
+      "gramos_por_racion": 268.0
+    },
+    {
+      "nombre": "Tortilla de patata al horno",
+      "etiquetas": [
+        "cena",
+        "vegetariana"
+      ],
+      "minutos": 40,
+      "raciones": 2,
+      "gramos_totales": 370,
+      "ingredientes": [
+        {
+          "alimento": "Patata cocida",
+          "usda_fdc_id": 170440,
+          "gramos": 200
+        },
+        {
+          "alimento": "Huevo cocido",
+          "usda_fdc_id": 173424,
+          "gramos": 120
+        },
+        {
+          "alimento": "Cebolla cruda",
+          "usda_fdc_id": 170000,
+          "gramos": 40
+        },
+        {
+          "alimento": "Aceite de oliva",
+          "usda_fdc_id": 171413,
+          "gramos": 10
+        }
+      ],
+      "por_racion": {
+        "kcal": 231.2,
+        "protein_g": 9.5,
+        "carbs_g": 22.5,
+        "fat_g": 11.5,
+        "fiber_g": 2.1
+      },
+      "gramos_por_racion": 185.0
+    },
+    {
+      "nombre": "Tostada con tomate y aceite",
+      "etiquetas": [
+        "desayuno",
+        "vegetariana",
+        "rapida"
+      ],
+      "minutos": 5,
+      "raciones": 1,
+      "gramos_totales": 128,
+      "ingredientes": [
+        {
+          "alimento": "Pan blanco de trigo",
+          "usda_fdc_id": 174924,
+          "gramos": 60
+        },
+        {
+          "alimento": "Tomate crudo",
+          "usda_fdc_id": 170457,
+          "gramos": 60
+        },
+        {
+          "alimento": "Aceite de oliva",
+          "usda_fdc_id": 171413,
+          "gramos": 8
+        }
+      ],
+      "por_racion": {
+        "kcal": 241.1,
+        "protein_g": 5.8,
+        "carbs_g": 32.0,
+        "fat_g": 10.1,
+        "fiber_g": 2.3
+      },
+      "gramos_por_racion": 128.0
+    },
+    {
+      "nombre": "Yogur con fresas y almendras",
+      "etiquetas": [
+        "desayuno",
+        "vegetariana",
+        "rapida"
+      ],
+      "minutos": 3,
+      "raciones": 1,
+      "gramos_totales": 265,
+      "ingredientes": [
+        {
+          "alimento": "Yogur natural entero",
+          "usda_fdc_id": 171284,
+          "gramos": 150
+        },
+        {
+          "alimento": "Fresas",
+          "usda_fdc_id": 167762,
+          "gramos": 100
+        },
+        {
+          "alimento": "Almendras crudas",
+          "usda_fdc_id": 170567,
+          "gramos": 15
+        }
+      ],
+      "por_racion": {
+        "kcal": 210.3,
+        "protein_g": 9.1,
+        "carbs_g": 17.9,
+        "fat_g": 12.7,
+        "fiber_g": 3.9
+      },
+      "gramos_por_racion": 265.0
+    }
+  ]
+}

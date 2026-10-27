@@ -35,11 +35,32 @@ export type Food = {
 
 export type MealSlot = { id: string; name: string; position: number };
 
+/** Una receta del catalogo. Nuestra, no de nadie: los valores salen de
+ *  sumar sus ingredientes, que vienen de USDA. */
+export type Recipe = {
+  id: string;
+  name: string;
+  tags: string[];
+  prepMinutes: number;
+  servings: number;
+  gramsPerServing: number;
+  perServing: {
+    kcal: number;
+    protein_g?: number;
+    carbs_g?: number;
+    fat_g?: number;
+    fiber_g?: number;
+  };
+  ingredients: { name: string; grams: number }[];
+};
+
 export type LogEntry = {
   id: string;
   localDate: string; // AAAA-MM-DD en la zona del usuario, nunca UTC
   mealSlotId: string;
-  foodId: string;
+  /** Uno de los dos, nunca los dos: lo mismo que exige la base de datos. */
+  foodId?: string;
+  recipeId?: string;
   grams: number;
   method: "text" | "barcode" | "photo" | "voice" | "plan" | "copy";
   clientToken: string; // idempotencia: mata el registro doble
@@ -55,6 +76,10 @@ export interface Store {
   listMealSlots(): Promise<MealSlot[]>;
   searchFoods(query: string): Promise<Food[]>;
   getFood(id: string): Promise<Food | null>;
+  /** El catalogo. Sin monedas, sin limites, sin generar nada:
+   *  una lista que se lee y de la que se elige. */
+  listRecipes(filtros?: { etiqueta?: string; maxKcal?: number; maxMinutos?: number }): Promise<Recipe[]>;
+  getRecipe(id: string): Promise<Recipe | null>;
   listEntries(localDate: string): Promise<LogEntry[]>;
   addEntry(e: Omit<LogEntry, "id">): Promise<LogEntry>;
   removeEntry(id: string): Promise<void>;

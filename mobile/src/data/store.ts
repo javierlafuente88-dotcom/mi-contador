@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import raw from "./foods.json";
-import type { Food, Goal, LogEntry, MealSlot, Profile, Store } from "./types";
+import rawRecipes from "./recipes.json";
+import type { Food, Goal, LogEntry, MealSlot, Profile, Recipe, Store } from "./types";
 
 /** Almacen falso del hito 1. Mismas firmas que tendra el de Supabase,
  *  asi que /replica-backend lo sustituye sin tocar ninguna pantalla. */
@@ -27,6 +28,27 @@ const FOODS: Food[] = (raw as { foods: SeedFood[] }).foods.map((f) => ({
   usdaDescription: f.usda_description,
   license: f.license,
   per100g: f.per_100g,
+}));
+
+type SeedRecipe = {
+  nombre: string;
+  etiquetas: string[];
+  minutos: number;
+  raciones: number;
+  gramos_por_racion: number;
+  por_racion: Recipe["perServing"];
+  ingredientes: { alimento: string; gramos: number }[];
+};
+
+const RECIPES: Recipe[] = (rawRecipes as { recetas: SeedRecipe[] }).recetas.map((r) => ({
+  id: `rec:${r.nombre}`,
+  name: r.nombre,
+  tags: r.etiquetas,
+  prepMinutes: r.minutos,
+  servings: r.raciones,
+  gramsPerServing: r.gramos_por_racion,
+  perServing: r.por_racion,
+  ingredients: r.ingredientes.map((i) => ({ name: i.alimento, grams: i.gramos })),
 }));
 
 const DEFAULT_SLOTS: MealSlot[] = [
@@ -81,6 +103,16 @@ export const store: Store = {
   async getFood(id) {
     return FOODS.find((f) => f.id === id) ?? null;
   },
+  async listRecipes(filtros) {
+    let r = RECIPES;
+    if (filtros?.etiqueta) r = r.filter((x) => x.tags.includes(filtros.etiqueta!));
+    if (filtros?.maxKcal) r = r.filter((x) => x.perServing.kcal <= filtros.maxKcal!);
+    if (filtros?.maxMinutos) r = r.filter((x) => x.prepMinutes <= filtros.maxMinutos!);
+    return r;
+  },
+  async getRecipe(id) {
+    return RECIPES.find((r) => r.id === id) ?? null;
+  },
   async listEntries(localDate) {
     const all = await read<LogEntry[]>(K.entries, []);
     return all.filter((e) => e.localDate === localDate);
@@ -105,6 +137,7 @@ export const store: Store = {
 };
 
 export const allFoods = FOODS;
+export const allRecipes = RECIPES;
 
 /** Fecha de hoy EN LA ZONA DEL USUARIO. Nunca toISOString(), que da UTC
  *  y parte el diario por la medianoche de Londres. */
@@ -171,4 +204,10 @@ export function remainingRange(target: number, eaten: number) {
 
 export function kcalOf(food: Food, grams: number): number {
   return Math.round((food.per100g.kcal * grams) / 100);
+}
+
+/** Las kcal de una racion de receta, escaladas a los gramos registrados. */
+export function kcalOfRecipe(recipe: Recipe, grams: number): number {
+  const porGramo = recipe.perServing.kcal / Math.max(1, recipe.gramsPerServing);
+  return Math.round(porGramo * grams);
 }

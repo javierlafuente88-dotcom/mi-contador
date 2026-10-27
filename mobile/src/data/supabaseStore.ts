@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getSupabase } from "./supabaseClient";
-import type { Food, Goal, LogEntry, MealSlot, Profile, Store } from "./types";
+import type { Food, Goal, LogEntry, MealSlot, Profile, Recipe, Store } from "./types";
 
 /** El mismo contrato que el almacen falso del hito 1.
  *  Ninguna pantalla sabe cual de los dos esta usando. */
@@ -43,6 +43,76 @@ function toFood(r: FoodRow): Food {
       fat_g: r.fat_100g ?? undefined,
       fiber_g: r.fiber_100g ?? undefined,
     },
+  };
+}
+
+type FoodOfRecipe = {
+  name: string;
+  kcal_100g: number;
+  protein_100g: number | null;
+  carbs_100g: number | null;
+  fat_100g: number | null;
+  fiber_100g: number | null;
+};
+
+/** PostgREST devuelve la relación anidada como objeto o como lista según
+ *  cómo infiera la cardinalidad. Se acepta cualquiera de las dos. */
+type RecipeRow = {
+  id: string;
+  name: string;
+  servings: number;
+  tags: string[] | null;
+  prep_minutes: number | null;
+  recipe_ingredients: {
+    grams: number;
+    foods: FoodOfRecipe | FoodOfRecipe[] | null;
+  }[];
+};
+
+function unoSolo(f: FoodOfRecipe | FoodOfRecipe[] | null): FoodOfRecipe | null {
+  if (!f) return null;
+  return Array.isArray(f) ? (f[0] ?? null) : f;
+}
+
+/** Los totales se CALCULAN sumando los ingredientes, igual que en el
+ *  generador. Nunca se guardan en la fila de la receta: un total guardado
+ *  se queda viejo en cuanto se corrige un ingrediente. */
+function toRecipe(r: RecipeRow): Recipe {
+  const total = { kcal: 0, protein_g: 0, carbs_g: 0, fat_g: 0, fiber_g: 0 };
+  let gramos = 0;
+  const ingredientes: Recipe["ingredients"] = [];
+
+  for (const ing of r.recipe_ingredients ?? []) {
+    const f = unoSolo(ing.foods);
+    if (!f) continue;
+    const k = Number(ing.grams) / 100;
+    total.kcal += Number(f.kcal_100g) * k;
+    total.protein_g += Number(f.protein_100g ?? 0) * k;
+    total.carbs_g += Number(f.carbs_100g ?? 0) * k;
+    total.fat_g += Number(f.fat_100g ?? 0) * k;
+    total.fiber_g += Number(f.fiber_100g ?? 0) * k;
+    gramos += Number(ing.grams);
+    ingredientes.push({ name: f.name, grams: Number(ing.grams) });
+  }
+
+  const raciones = Math.max(1, Number(r.servings) || 1);
+  const redondear = (v: number) => Math.round((v / raciones) * 10) / 10;
+
+  return {
+    id: r.id,
+    name: r.name,
+    tags: r.tags ?? [],
+    prepMinutes: Number(r.prep_minutes ?? 0),
+    servings: raciones,
+    gramsPerServing: Math.round(gramos / raciones),
+    perServing: {
+      kcal: redondear(total.kcal),
+      protein_g: redondear(total.protein_g),
+      carbs_g: redondear(total.carbs_g),
+      fat_g: redondear(total.fat_g),
+      fiber_g: redondear(total.fiber_g),
+    },
+    ingredients: ingredientes,
   };
 }
 
@@ -164,6 +234,38 @@ export const supabaseStore: Store = {
       .maybeSingle();
     if (error) throw error;
     return data ? toFood(data as FoodRow) : null;
+  },
+
+  async listRecipes(filtros) {
+    // owner_id null = receta del catalogo. RLS ya deja ver esas y las propias.
+    let q = db()
+      .from("recipes")
+      .select(
+        "id, name, servings, tags, prep_minutes, recipe_ingredients(grams, foods(name, kcal_100g, protein_100g, carbs_100g, fat_100g, fiber_100g))"
+      )
+      .is("deleted_at", null)
+      .order("name");
+    if (filtros?.maxMinutos) q = q.lte("prep_minutes", filtros.maxMinutos);
+    if (filtros?.etiqueta) q = q.contains("tags", [filtros.etiqueta]);
+
+    const { data, error } = await q;
+    if (error) throw error;
+    const recetas = (data ?? []).map(toRecipe);
+    return filtros?.maxKcal
+      ? recetas.filter((r) => r.perServing.kcal <= filtros.maxKcal!)
+      : recetas;
+  },
+
+  async getRecipe(id) {
+    const { data, error } = await db()
+      .from("recipes")
+      .select(
+        "id, name, servings, tags, prep_minutes, recipe_ingredients(grams, foods(name, kcal_100g, protein_100g, carbs_100g, fat_100g, fiber_100g))"
+      )
+      .eq("id", id)
+      .maybeSingle();
+    if (error) throw error;
+    return data ? toRecipe(data as RecipeRow) : null;
   },
 
   async listEntries(localDate) {

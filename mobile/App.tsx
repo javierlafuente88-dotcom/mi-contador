@@ -3,10 +3,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import { Body, Screen } from "./src/design/primitives";
 import { color } from "./src/design/tokens";
-import { allFoods, buildGoal, store, todayLocal, usingSupabase } from "./src/data";
+import { allFoods, allRecipes, buildGoal, kcalOf, kcalOfRecipe, remainingRange, store, todayLocal, usingSupabase } from "./src/data";
 import { getSupabase } from "./src/data/supabaseClient";
-import type { Food, Goal, GoalType, LogEntry, MealSlot, Profile } from "./src/data/types";
+import type { Food, Goal, GoalType, LogEntry, MealSlot, Profile, Recipe } from "./src/data/types";
 import { AddFood } from "./src/screens/AddFood";
+import { Catalogo } from "./src/screens/Catalogo";
 import { Auth } from "./src/screens/Auth";
 import { Day } from "./src/screens/Day";
 import { Onboarding } from "./src/screens/Onboarding";
@@ -20,9 +21,11 @@ type Route =
   | { name: "auth" }
   | { name: "onboarding" }
   | { name: "day" }
-  | { name: "add"; slotId: string };
+  | { name: "add"; slotId: string }
+  | { name: "carta"; slotId: string };
 
 const foodById = (id: string): Food | undefined => allFoods.find((f) => f.id === id);
+const recipeById = (id: string): Recipe | undefined => allRecipes.find((r: Recipe) => r.id === id);
 
 export default function App() {
   const [route, setRoute] = useState<Route>({ name: "loading" });
@@ -73,6 +76,19 @@ export default function App() {
     await store.saveProfile(p);
     await store.saveGoal(g);
     setGoal(g);
+    setRoute({ name: "day" });
+  }
+
+  async function confirmAddRecipe(slotId: string, receta: Recipe, grams: number) {
+    await store.addEntry({
+      localDate: today,
+      mealSlotId: slotId,
+      recipeId: receta.id,
+      grams,
+      method: "plan",
+      clientToken: `${today}:${slotId}:${receta.id}:${grams}:${Date.now()}`,
+    });
+    await refresh();
     setRoute({ name: "day" });
   }
 
@@ -127,8 +143,29 @@ export default function App() {
             slots={slots}
             entries={entries}
             foodById={foodById}
+            recipeById={recipeById}
             onAdd={(slotId) => setRoute({ name: "add", slotId })}
+            onCarta={(slotId) => setRoute({ name: "carta", slotId })}
             onRemove={remove}
+          />
+        )}
+
+        {route.name === "carta" && goal && (
+          <Catalogo
+            slotName={slots.find((x) => x.id === route.slotId)?.name ?? "la comida"}
+            restanKcal={(() => {
+              const comidas = entries.reduce((sum, e) => {
+                if (e.recipeId) {
+                  const r = recipeById(e.recipeId);
+                  return sum + (r ? kcalOfRecipe(r, e.grams) : 0);
+                }
+                const f = e.foodId ? foodById(e.foodId) : undefined;
+                return sum + (f ? kcalOf(f, e.grams) : 0);
+              }, 0);
+              return Math.max(0, remainingRange(goal.kcalTarget, comidas).left);
+            })()}
+            onCancel={() => setRoute({ name: "day" })}
+            onElegir={(receta, grams) => confirmAddRecipe(route.slotId, receta, grams)}
           />
         )}
 
