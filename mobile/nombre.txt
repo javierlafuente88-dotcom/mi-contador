@@ -1,0 +1,4 @@
+nombre
+compañía
+tipo de seguro
+fecha de vencimiento

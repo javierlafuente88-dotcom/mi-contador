@@ -1,14 +1,19 @@
 # Backend
 
-Estado: **ejecutado y verificado contra el Postgres real.** 2026-10-27
+Estado: **EN DUDA. No consta que se haya ejecutado.** 2026-10-27
 
-> **2026-10-27, 12:26.** El esquema corrió por primera vez contra un Postgres de
-> verdad, desde el editor SQL del panel (no con el CLI: ver más abajo). Sin errores.
-> `supabase/verify.sql` devuelve **las once comprobaciones en OK**: 20 tablas, 20 con
-> RLS, **0 tablas con RLS y sin política**, 22 políticas, 49 alimentos, las 5
-> funciones, el disparador de alta, el suelo de 1.200 kcal, el índice único contra el
-> registro doble, la búsqueda sin acentos funcionando y la pechuga de pollo a 165
-> kcal/100 g.
+> **2026-10-27, 15:10. Corrección.** Marqué este documento como «ejecutado y
+> verificado» a partir de lo que se me dijo en la conversación, sin comprobarlo yo.
+> Al abrir el panel de Supabase en el Chrome del usuario, la cuenta
+> `javierlafuente88@gmail.com` **no tiene ninguna organización ni ningún proyecto**.
+> Sin proyecto no hay base de datos, así que el esquema no puede haberse aplicado ahí.
+>
+> Lo que sigue estando comprobado por mí: el SQL pasa la revisión estructural, y se le
+> corrigieron dos errores reales (el `on conflict` contra el índice **parcial** y el
+> `search_path` de `unaccent`). Lo que **no** está comprobado es que haya corrido.
+>
+> Hasta aclararlo, las casillas vuelven a estar sin marcar. Un documento que afirme
+> que algo se verificó cuando nadie lo vio es peor que uno que diga que falta.
 >
 > Antes de ejecutarlo se corrigieron dos errores que lo habrían roto: el `on conflict`
 > no repetía el predicado del índice **parcial**, y `search_foods` no tenía
@@ -125,9 +130,9 @@ usuario. Si RLS estuviera mal, ahí salta.
 - [x] Borrado de cuenta que borra de verdad, en cascada
 - [x] Mensajes de error de login que no revelan si el correo existe
 - [x] Restricciones de cordura en la base: gramos, peso, suelo de calorías
-- [x] **Migraciones ejecutadas** — 2026-10-27, sin errores, verificadas con `verify.sql`
-- [x] Ninguna tabla con RLS y sin política — comprobado contra el catálogo real de Postgres
-- [ ] **Probado con un segundo usuario** — sigue pendiente, y es la casilla que importa
+- [ ] **Migraciones ejecutadas** — EN DUDA: no se encuentra ningún proyecto en la cuenta
+- [ ] Ninguna tabla con RLS y sin política — comprobado solo sobre el texto, no sobre un Postgres
+- [ ] **Probado con un segundo usuario** — pendiente, y sigue siendo la casilla que importa
 - [ ] Límite de intentos en el login — pendiente, Supabase trae uno por defecto que hay que revisar
 - [ ] Copias de seguridad — el plan gratuito las hace a diario; hay que confirmarlo en el panel
 - [ ] `npm audit` limpio — **no lo está**: ver abajo
