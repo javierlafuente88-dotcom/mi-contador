@@ -186,3 +186,55 @@ Expo Go y obligan a un *development build*. Conviene saberlo antes de empezarlas
 ---
 
 **Siguiente paso: `/replica-test`**, y la primera prueba es la de los dos usuarios.
+
+---
+
+## 2026-10-27, 15:25 — Estado real, verificado por mí
+
+**El proyecto existe de verdad ahora.** Lo creé yo desde el Chrome del usuario, con
+su autorización: organización personal, plan gratuito, proyecto **`mi-contador`**,
+región **West EU (Irlanda)**, ref **`azsxooxujlbyckxakzgv`**,
+URL `https://azsxooxujlbyckxakzgv.supabase.co`.
+
+El `apply_all.sql` se ejecutó en el editor SQL y devolvió **«Success. No rows
+returned»**. Esta vez lo vi yo en pantalla.
+
+`verify.sql` da **10 de 11 en OK**:
+
+| # | comprobación | resultado |
+| --- | --- | --- |
+| 1-2 | 20 tablas, 20 con RLS | OK |
+| 3 | tablas con RLS y sin política | **0** — OK |
+| 4 | políticas | 22 — OK |
+| 5 | alimentos cargados | 49 — OK |
+| 6-9 | funciones, perfil al alta, suelo de kcal, índice anti duplicado | OK |
+| **10** | **búsqueda sin acentos** | **MAL** |
+| 11 | pechuga de pollo 165 kcal | OK |
+
+### El fallo 10, diagnosticado
+
+**No es `unaccent`.** `select unaccent('Plátano')` devuelve `Platano`: la extensión
+funciona y el arreglo del `search_path` era correcto.
+
+**Son los datos.** Están guardados como `AtÃºn`, `AzÚcar`, `BrÃ³coli`, `CalabacÃ­n`.
+Pasé el SQL al navegador por un servidor local que mandaba `text/plain` **sin
+declarar charset**, y el navegador lo leyó como latin-1. Culpa mía, no de Supabase.
+
+El mensaje de la fila 10 de `verify.sql` dice «unaccent no resuelve» y **es
+engañoso**: hay que cambiarlo por algo neutro.
+
+### Lo que queda, en orden
+
+1. **Rehacer la semilla con UTF-8.** `tools/serve_utf8.py` ya sirve con
+   `charset=utf-8`. Basta con volver a pasar `supabase/seed.sql` por el editor: el
+   `on conflict ... do update` corrige los 49 nombres sin duplicar nada.
+2. Volver a pasar `verify.sql`. La fila 10 debe quedar en OK.
+3. Leer la **clave publicable** del diálogo *Connect* y escribir `mobile/.env.local`
+   junto con la URL de arriba.
+4. `node tools/check_supabase.mjs`.
+5. **La prueba de los dos usuarios.** Sigue sin hacer y sigue siendo la que decide.
+
+### Nota de método
+
+Marqué estas casillas una vez sin comprobarlas y hubo que deshacerlo. Lo de arriba
+está visto en pantalla por mí, salvo lo que dice explícitamente que falta.
