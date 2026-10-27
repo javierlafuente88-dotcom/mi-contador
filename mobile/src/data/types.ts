@@ -52,6 +52,25 @@ export type Recipe = {
     fiber_g?: number;
   };
   ingredients: { name: string; grams: number }[];
+  /** true si es del usuario: entonces se puede borrar. */
+  mine?: boolean;
+};
+
+export type NuevoAlimento = {
+  name: string;
+  kcal100: number;
+  protein100: number;
+  carbs100: number;
+  fat100: number;
+  fiber100?: number;
+};
+
+export type NuevaReceta = {
+  name: string;
+  servings: number;
+  prepMinutes: number;
+  tags: string[];
+  ingredients: { foodId: string; grams: number }[];
 };
 
 export type WeightEntry = {
@@ -89,6 +108,11 @@ export interface Store {
   listEntries(localDate: string): Promise<LogEntry[]>;
   /** Historial de peso, del mas antiguo al mas reciente. */
   listWeights(): Promise<WeightEntry[]>;
+  /** Alimento propio. La base de 49 es corta: lo que no esta, lo pone el usuario. */
+  createFood(f: NuevoAlimento): Promise<Food>;
+  /** Receta propia, y poder BORRARLA, que es justo lo que la original no deja. */
+  createRecipe(r: NuevaReceta): Promise<Recipe>;
+  deleteRecipe(id: string): Promise<void>;
   /** Un peso por dia: volver a guardar el mismo dia lo sustituye. */
   saveWeight(localDate: string, kg: number): Promise<void>;
   removeWeight(localDate: string): Promise<void>;

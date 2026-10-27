@@ -234,3 +234,51 @@ Tres fallaron al principio y **ninguno era de la app**: mis selectores eran ambi
 porque «82,4 kg» aparece dos veces en la pantalla, en la cifra grande y en el
 historial. Lo que falló fue mi forma de buscarlo, y así queda anotado en vez de
 inflar la lista de fallos.
+
+## 2026-10-27, 17:40 — Crear alimentos y recetas propias (S11, S12)
+
+**Paridad: 30,4 → 36,1. 8 de 14 must-have.** Tres funciones nuevas, una de ellas
+algo que la original **no deja hacer**.
+
+### Crear un alimento (S11)
+
+Los valores van por 100 g, como en la etiqueta. Lo creado se guarda y aparece en las
+búsquedas a partir de entonces.
+
+Lleva **la comprobación de Atwater**: si los macros no cuadran con las calorías,
+avisa — «los macros dan unas 460 kcal y has puesto 10». **Avisa, no bloquea**: las
+etiquetas redondean y a veces no cuadran de verdad. Lo que sí bloquea es lo
+imposible: más de 900 kcal/100 g, o macros que suman más de 100 g por cada 100 g.
+
+Es la misma comprobación que usamos para validar la semilla de USDA, puesta ahora al
+servicio del usuario.
+
+### Crear una receta (S12)
+
+Los macros **se calculan en vivo** mientras añades ingredientes, igual que en el
+catálogo. No se escriben a mano en ningún sitio del proyecto.
+
+### Y borrarla
+
+Reseña literal de la original: *«al crear tú una receta ya no sale la opción de
+borrar y si tienes un error se van acumulando recetas que no sirven»*.
+
+Aquí **las tuyas se borran**; las del catálogo no, y no aparece el botón. Hay una
+prueba para cada caso.
+
+### El fallo que apareció, y por qué se vio
+
+Crear el alimento funcionaba. **Usarlo, no**: al registrarlo, el diario lo mostraba
+como «ya no está en la base». `foodById` solo miraba la semilla estática.
+
+Lo detectó la prueba, pero lo hizo *visible* el manejo de huérfanos que añadimos al
+arreglar BUG-001. Sin él la entrada habría desaparecido sin ruido y el total habría
+salido mal sin explicación. **Arreglar bien un fallo hizo visible el siguiente.**
+
+### Pruebas
+
+8 casos nuevos. **Batería entera: 52 en verde.**
+
+Dos fallaron primero y ninguno era de la app: buscar «huevo» encuentra antes «Fideos
+de huevo cocidos», así que mi aritmética esperada estaba mal. La app calculaba bien;
+yo había supuesto mal. Corregido en la prueba, con nombres exactos.

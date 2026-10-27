@@ -318,6 +318,66 @@ export const supabaseStore: Store = {
     } as LogEntry;
   },
 
+  async createFood(n) {
+    const { data, error } = await db()
+      .from("foods")
+      .insert({
+        name: n.name.trim(),
+        source: "user",
+        license: "own",
+        owner_id: await uid(),
+        kcal_100g: n.kcal100,
+        protein_100g: n.protein100,
+        carbs_100g: n.carbs100,
+        fat_100g: n.fat100,
+        fiber_100g: n.fiber100 ?? null,
+      })
+      .select("id, name, source, source_ref, license, kcal_100g, protein_100g, carbs_100g, fat_100g, fiber_100g")
+      .single();
+    if (error) throw error;
+    return toFood(data as FoodRow);
+  },
+
+  async createRecipe(n) {
+    const owner = await uid();
+    const { data, error } = await db()
+      .from("recipes")
+      .insert({
+        owner_id: owner,
+        name: n.name.trim(),
+        servings: n.servings,
+        tags: n.tags,
+        prep_minutes: n.prepMinutes,
+      })
+      .select("id")
+      .single();
+    if (error) throw error;
+
+    const filas = n.ingredients.map((i, pos) => ({
+      recipe_id: data.id,
+      food_id: i.foodId,
+      grams: i.grams,
+      position: pos,
+    }));
+    const { error: e2 } = await db().from("recipe_ingredients").insert(filas);
+    if (e2) throw e2;
+
+    const creada = await supabaseStore.getRecipe(data.id);
+    if (!creada) throw new Error("no se pudo leer la receta recién creada");
+    return { ...creada, mine: true };
+  },
+
+  async deleteRecipe(id) {
+    // Borrado suave: la receta desaparece, pero los registros que la usaron
+    // siguen cuadrando. RLS impide borrar las que no son tuyas.
+    const { error } = await db()
+      .from("recipes")
+      .update({ deleted_at: new Date().toISOString() })
+      .eq("id", id)
+      .eq("owner_id", await uid());
+    if (error) throw error;
+  },
+
   async listWeights() {
     const { data, error } = await db()
       .from("weight_entries")

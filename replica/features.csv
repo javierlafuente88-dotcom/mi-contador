@@ -19,10 +19,10 @@ Correccion que el sistema recuerda,registro,should,no,no,Peticion explicita. Cor
 Modo manual sin IA,registro,should,no,no,Varias resenas piden poder apagar la IA
 Copiar comida de un dia anterior,registro,should,yes,no,Premium en la original. Queja frecuente
 Alimentos favoritos,registro,should,yes,no,Se perdieron en una actualizacion segun resenas
-Crear alimento manualmente,datos,must,yes,no,S11
+Crear alimento manualmente,datos,must,yes,yes,S11 | Con comprobacion de Atwater que avisa si los macros no cuadran
 Crear alimento con IA,datos,could,yes,no,Consume credito en la original
-Crear recetas propias,datos,must,yes,partial,S12 | El catalogo existe y se lee; falta la pantalla para crear las tuyas
-Borrar recetas propias,datos,must,no,no,Defecto reportado. La original no deja borrarlas
+Crear recetas propias,datos,must,yes,yes,S12 | El catalogo existe y se lee; falta la pantalla para crear las tuyas | Macros calculados en vivo al anadir ingredientes
+Borrar recetas propias,datos,must,no,yes,Defecto reportado. La original no deja borrarlas | Lo que la original no deja. Solo las tuyas: las del catalogo no
 Editar macros de un alimento sin romper el resto,datos,should,no,no,Resena explicita. No se puede cambiar un macro aislado
 Operaciones aritmeticas en el gramaje,datos,could,no,yes,Peticion concreta. 1200g/3.5 sin salir a la calculadora | 150+100 y 1200/3.5 funcionan
 Comparar dos alimentos,nutricion,could,yes,no,Icono VS. Premium en la original

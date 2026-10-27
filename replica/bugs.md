@@ -113,3 +113,34 @@ Necesita el servidor en modo local, que no depende de cuentas ni de red:
 ```bash
 cd mobile && EXPO_PUBLIC_DATA_SOURCE=fake npx expo start --web --port 8082
 ```
+
+---
+
+### BUG-003: un alimento creado por el usuario aparecía como «ya no está en la base»
+
+- Severidad: **S2** — la función quedaba inservible, sin apaño
+- Flujo / caso: S11-H1
+- Pantallas: S11 → S04
+- Build: `0f8014c`
+
+Pasos
+1. Buscar un alimento que no existe.
+2. Crearlo con sus valores.
+3. Registrarlo en una comida.
+4. Volver al diario.
+
+Esperado: la entrada muestra el alimento y suma sus calorías.
+Actual: muestra **«Ya no está en la base»**, no suma, y el pie avisa de un registro
+huérfano.
+
+Causa: `foodById` en `App.tsx` buscaba solo en la semilla estática (`allFoods`). Lo
+que crea el usuario vive en otra lista, así que el id no se resolvía nunca. Crear el
+alimento funcionaba; **usarlo, no**.
+
+Estado: **arreglado en `c5f40f2`**. Se añaden `buscarAlimento` y `buscarReceta`, que
+miran primero lo del usuario y luego la semilla, y las pantallas usan esas en vez de
+la lista estática.
+
+**Lo que hizo que se viera:** el manejo de huérfanos de BUG-001. Sin él, la entrada
+habría desaparecido en silencio y el total habría salido mal sin decir nada. Arreglar
+bien un fallo hizo visible el siguiente.

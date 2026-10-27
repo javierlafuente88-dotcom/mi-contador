@@ -45,11 +45,13 @@ export function Catalogo({
   restanKcal,
   onCancel,
   onElegir,
+  onCrearReceta,
 }: {
   slotName: string;
   restanKcal: number | null;
   onCancel: () => void;
   onElegir: (receta: Recipe, grams: number) => void;
+  onCrearReceta: () => void;
 }) {
   const [recetas, setRecetas] = useState<Recipe[] | null>(null);
   const [momento, setMomento] = useState<string | null>(null);
@@ -121,6 +123,20 @@ export function Catalogo({
         />
         <View style={{ height: space[3] }} />
         <Button label="Volver a la carta" variant="ghost" onPress={() => setAbierta(null)} />
+        {abierta.mine && (
+          <>
+            <View style={{ height: space[3] }} />
+            <Button
+              label="Borrar esta receta"
+              variant="danger"
+              onPress={async () => {
+                await store.deleteRecipe(abierta.id);
+                setAbierta(null);
+                setRecetas(await store.listRecipes());
+              }}
+            />
+          </>
+        )}
         <View style={{ height: space[6] }} />
       </Screen>
     );
@@ -193,7 +209,7 @@ export function Catalogo({
             <MenuLine
               key={r.id}
               name={r.name}
-              value={`${Math.round(r.perServing.kcal)} kcal · ${r.prepMinutes} min`}
+              value={`${Math.round(r.perServing.kcal)} kcal · ${r.prepMinutes} min${r.mine ? " · tuya" : ""}`}
               accessibilityHint="Abre la receta"
               onPress={() => setAbierta(r)}
             />
@@ -201,7 +217,9 @@ export function Catalogo({
         </>
       )}
 
-      <View style={{ height: space[6] }} />
+      <View style={{ height: space[5] }} />
+      <Button label="Crear una receta" variant="secondary" onPress={onCrearReceta} />
+      <View style={{ height: space[3] }} />
       <Button label="Cancelar" variant="ghost" onPress={onCancel} />
       <View style={{ height: space[6] }} />
     </Screen>

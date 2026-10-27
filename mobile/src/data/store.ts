@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import raw from "./foods.json";
 import rawRecipes from "./recipes.json";
-import type { Food, Goal, LogEntry, MealSlot, Profile, Recipe, Store, WeightEntry } from "./types";
+import type { Food, Goal, LogEntry, MealSlot, NuevaReceta, NuevoAlimento, Profile, Recipe, Store, WeightEntry } from "./types";
 
 /** Almacen falso del hito 1. Mismas firmas que tendra el de Supabase,
  *  asi que /replica-backend lo sustituye sin tocar ninguna pantalla. */
@@ -11,6 +11,8 @@ const K = {
   goal: "v1.goal",
   entries: "v1.entries",
   weights: "v1.weights",
+  misAlimentos: "v1.misAlimentos",
+  misRecetas: "v1.misRecetas",
   slots: "v1.slots",
 };
 
@@ -97,22 +99,86 @@ export const store: Store = {
     return read<MealSlot[]>(K.slots, DEFAULT_SLOTS);
   },
   async searchFoods(query) {
+    const todos = [...MIOS_FOODS, ...FOODS];
     const q = fold(query.trim());
-    if (!q) return FOODS.slice(0, 50);
-    return FOODS.filter((f) => fold(f.name).includes(q)).slice(0, 50);
+    if (!q) return todos.slice(0, 50);
+    return todos.filter((f) => fold(f.name).includes(q)).slice(0, 50);
   },
   async getFood(id) {
-    return FOODS.find((f) => f.id === id) ?? null;
+    return [...MIOS_FOODS, ...FOODS].find((f) => f.id === id) ?? null;
+  },
+
+  async createFood(n) {
+    const f: Food = {
+      id: `user:${Date.now()}:${n.name}`,
+      name: n.name.trim(),
+      license: "own",
+      per100g: {
+        kcal: n.kcal100,
+        protein_g: n.protein100,
+        carbs_g: n.carbs100,
+        fat_g: n.fat100,
+        fiber_g: n.fiber100,
+      },
+    };
+    MIOS_FOODS = [f, ...MIOS_FOODS];
+    await write(K.misAlimentos, MIOS_FOODS);
+    return f;
+  },
+
+  async createRecipe(n) {
+    const todos = [...MIOS_FOODS, ...FOODS];
+    const total = { kcal: 0, protein_g: 0, carbs_g: 0, fat_g: 0, fiber_g: 0 };
+    let gramos = 0;
+    const ing: Recipe["ingredients"] = [];
+    for (const i of n.ingredients) {
+      const f = todos.find((x) => x.id === i.foodId);
+      if (!f) continue;
+      const k = i.grams / 100;
+      total.kcal += f.per100g.kcal * k;
+      total.protein_g += (f.per100g.protein_g ?? 0) * k;
+      total.carbs_g += (f.per100g.carbs_g ?? 0) * k;
+      total.fat_g += (f.per100g.fat_g ?? 0) * k;
+      total.fiber_g += (f.per100g.fiber_g ?? 0) * k;
+      gramos += i.grams;
+      ing.push({ name: f.name, grams: i.grams });
+    }
+    const raciones = Math.max(1, n.servings);
+    const r: Recipe = {
+      id: `myrec:${Date.now()}`,
+      name: n.name.trim(),
+      tags: n.tags,
+      prepMinutes: n.prepMinutes,
+      servings: raciones,
+      gramsPerServing: Math.round(gramos / raciones),
+      perServing: {
+        kcal: Math.round((total.kcal / raciones) * 10) / 10,
+        protein_g: Math.round((total.protein_g / raciones) * 10) / 10,
+        carbs_g: Math.round((total.carbs_g / raciones) * 10) / 10,
+        fat_g: Math.round((total.fat_g / raciones) * 10) / 10,
+        fiber_g: Math.round((total.fiber_g / raciones) * 10) / 10,
+      },
+      ingredients: ing,
+      mine: true,
+    };
+    MIAS_RECETAS = [r, ...MIAS_RECETAS];
+    await write(K.misRecetas, MIAS_RECETAS);
+    return r;
+  },
+
+  async deleteRecipe(id) {
+    MIAS_RECETAS = MIAS_RECETAS.filter((r) => r.id !== id);
+    await write(K.misRecetas, MIAS_RECETAS);
   },
   async listRecipes(filtros) {
-    let r = RECIPES;
+    let r = [...MIAS_RECETAS, ...RECIPES];
     if (filtros?.etiqueta) r = r.filter((x) => x.tags.includes(filtros.etiqueta!));
     if (filtros?.maxKcal) r = r.filter((x) => x.perServing.kcal <= filtros.maxKcal!);
     if (filtros?.maxMinutos) r = r.filter((x) => x.prepMinutes <= filtros.maxMinutos!);
     return r;
   },
   async getRecipe(id) {
-    return RECIPES.find((r) => r.id === id) ?? null;
+    return [...MIAS_RECETAS, ...RECIPES].find((r) => r.id === id) ?? null;
   },
   async listEntries(localDate) {
     const all = await read<LogEntry[]>(K.entries, []);
@@ -153,6 +219,27 @@ export const store: Store = {
     );
   },
 };
+
+/** Alimentos y recetas del usuario, cargados al arrancar para que las
+ *  pantallas puedan resolver un id sin pedir nada. */
+let MIOS_FOODS: Food[] = [];
+let MIAS_RECETAS: Recipe[] = [];
+
+export async function cargarLoMio() {
+  MIOS_FOODS = await read<Food[]>(K.misAlimentos, []);
+  MIAS_RECETAS = await read<Recipe[]>(K.misRecetas, []);
+}
+
+/** Resuelve un id mirando TAMBIEN lo que ha creado el usuario.
+ *  Las pantallas deben usar esto y nunca allFoods directamente: si no, un
+ *  alimento propio registrado aparece como "ya no esta en la base". */
+export function buscarAlimento(id: string): Food | undefined {
+  return MIOS_FOODS.find((f) => f.id === id) ?? FOODS.find((f) => f.id === id);
+}
+
+export function buscarReceta(id: string): Recipe | undefined {
+  return MIAS_RECETAS.find((r) => r.id === id) ?? RECIPES.find((r) => r.id === id);
+}
 
 export const allFoods = FOODS;
 export const allRecipes = RECIPES;

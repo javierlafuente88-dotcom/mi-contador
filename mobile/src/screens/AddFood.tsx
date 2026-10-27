@@ -24,10 +24,12 @@ export function AddFood({
   slotName,
   onCancel,
   onConfirm,
+  onCrearAlimento,
 }: {
   slotName: string;
   onCancel: () => void;
   onConfirm: (food: Food, grams: number) => void;
+  onCrearAlimento: (nombreSugerido: string) => void;
 }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Food[] | null>(null);
@@ -148,11 +150,14 @@ export function AddFood({
           />
           <Empty
             text="Puedes crearlo tú y quedará guardado para la próxima."
-            action={<Button label="Crear este alimento" variant="secondary" onPress={() => {}} />}
+            action={
+              <Button
+                label="Crear este alimento"
+                variant="secondary"
+                onPress={() => onCrearAlimento(query)}
+              />
+            }
           />
-          <Body muted style={type.sm}>
-            Crear alimentos llega en el hito 2. Hoy el botón todavía no hace nada.
-          </Body>
         </>
       ) : (
         results.map((f) => (

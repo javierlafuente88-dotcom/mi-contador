@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import { Body, Screen } from "./src/design/primitives";
 import { color } from "./src/design/tokens";
-import { allFoods, allRecipes, buildGoal, kcalOf, kcalOfRecipe, remainingRange, store, todayLocal, usingSupabase } from "./src/data";
+import { allFoods, allRecipes, buscarAlimento, buscarReceta, buildGoal, cargarLoMio, kcalOf, kcalOfRecipe, remainingRange, store, todayLocal, usingSupabase } from "./src/data";
 import { getSupabase } from "./src/data/supabaseClient";
 import type { Food, Goal, GoalType, LogEntry, MealSlot, Profile, Recipe } from "./src/data/types";
 import { AddFood } from "./src/screens/AddFood";
@@ -11,6 +11,8 @@ import { Catalogo } from "./src/screens/Catalogo";
 import { Auth } from "./src/screens/Auth";
 import { Day } from "./src/screens/Day";
 import { Onboarding } from "./src/screens/Onboarding";
+import { CrearAlimento } from "./src/screens/CrearAlimento";
+import { CrearReceta } from "./src/screens/CrearReceta";
 import { Progreso } from "./src/screens/Progreso";
 
 /** Hito 1: la rebanada vertical.
@@ -24,10 +26,13 @@ type Route =
   | { name: "day" }
   | { name: "add"; slotId: string }
   | { name: "carta"; slotId: string }
-  | { name: "progreso" };
+  | { name: "progreso" }
+  | { name: "crearAlimento"; slotId: string; nombre: string }
+  | { name: "crearReceta"; slotId: string };
 
-const foodById = (id: string): Food | undefined => allFoods.find((f) => f.id === id);
-const recipeById = (id: string): Recipe | undefined => allRecipes.find((r: Recipe) => r.id === id);
+// Resuelven tambien lo que haya creado el usuario, no solo la semilla.
+const foodById = (id: string): Food | undefined => buscarAlimento(id);
+const recipeById = (id: string): Recipe | undefined => buscarReceta(id);
 
 export default function App() {
   const [route, setRoute] = useState<Route>({ name: "loading" });
@@ -62,6 +67,8 @@ export default function App() {
         return;
       }
     }
+    // Lo que el usuario haya creado, antes de pintar nada.
+    if (!usingSupabase) await cargarLoMio();
     const [g, sl] = await Promise.all([store.getGoal(), store.listMealSlots()]);
     setSlots(sl);
     await refresh();
@@ -153,6 +160,21 @@ export default function App() {
           />
         )}
 
+        {route.name === "crearAlimento" && (
+          <CrearAlimento
+            nombreSugerido={route.nombre}
+            onCancel={() => setRoute({ name: "add", slotId: route.slotId })}
+            onCreado={() => setRoute({ name: "add", slotId: route.slotId })}
+          />
+        )}
+
+        {route.name === "crearReceta" && (
+          <CrearReceta
+            onCancel={() => setRoute({ name: "carta", slotId: route.slotId })}
+            onCreada={() => setRoute({ name: "carta", slotId: route.slotId })}
+          />
+        )}
+
         {route.name === "progreso" && (
           <Progreso goal={goal} onVolver={() => setRoute({ name: "day" })} />
         )}
@@ -173,6 +195,7 @@ export default function App() {
             })()}
             onCancel={() => setRoute({ name: "day" })}
             onElegir={(receta, grams) => confirmAddRecipe(route.slotId, receta, grams)}
+            onCrearReceta={() => setRoute({ name: "crearReceta", slotId: route.slotId })}
           />
         )}
 
@@ -181,6 +204,9 @@ export default function App() {
             slotName={slots.find((x) => x.id === route.slotId)?.name ?? "la comida"}
             onCancel={() => setRoute({ name: "day" })}
             onConfirm={(food, grams) => confirmAdd(route.slotId, food, grams)}
+            onCrearAlimento={(nombre) =>
+              setRoute({ name: "crearAlimento", slotId: route.slotId, nombre })
+            }
           />
         )}
       </View>

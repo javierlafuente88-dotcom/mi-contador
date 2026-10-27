@@ -22,4 +22,7 @@ export {
   KCAL_FLOOR,
   allFoods,
   allRecipes,
+  cargarLoMio,
+  buscarAlimento,
+  buscarReceta,
 } from "./store";
