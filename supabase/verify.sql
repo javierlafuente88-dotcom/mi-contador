@@ -48,6 +48,13 @@ busqueda as (
 ),
 kcal_pollo as (
   select coalesce(max(kcal_100g), 0)::numeric v from foods where name ilike '%pollo%'
+),
+-- Separa "unaccent no funciona" de "los datos entraron mal codificados".
+unaccent_vivo as (
+  select case when unaccent('Plátano') = 'Platano' then 1 else 0 end::int n
+),
+acentos_datos as (
+  select count(*)::int n from foods where name ~ '[ÃÂ]'
 )
 select * from (
   select 1 ord, 'Tablas en public'                 comprobacion, tablas.n::text resultado,       case when tablas.n >= 20 then 'OK' else 'MAL' end estado from tablas
@@ -68,8 +75,15 @@ select * from (
   union all
   select 9, 'Indice unico anti registro doble',    idempotencia.n::text,                         case when idempotencia.n >= 1 then 'OK' else 'MAL' end from idempotencia
   union all
-  select 10, 'Busqueda sin acentos (platano)',     busqueda.n::text,                             case when busqueda.n >= 1 then 'OK' else 'MAL: unaccent no resuelve' end from busqueda
+  -- Si falla, hay DOS causas posibles y conviene no confundirlas:
+  -- (a) unaccent no se resuelve, o (b) los nombres entraron mal codificados.
+  -- La fila 12 distingue una de otra.
+  select 10, 'Busqueda sin acentos (platano)',     busqueda.n::text,                             case when busqueda.n >= 1 then 'OK' else 'MAL: ver fila 12' end from busqueda
   union all
   select 11, 'Pechuga de pollo, kcal/100g',        kcal_pollo.v::text,                           case when kcal_pollo.v = 165 then 'OK' else 'MAL' end from kcal_pollo
+  union all
+  select 12, 'unaccent funciona',                  unaccent_vivo.n::text,                        case when unaccent_vivo.n = 1 then 'OK' else 'MAL: la extension no resuelve' end from unaccent_vivo
+  union all
+  select 13, 'Nombres con acentos rotos',          acentos_datos.n::text,                        case when acentos_datos.n = 0 then 'OK' else 'MAL: los datos entraron en latin-1' end from acentos_datos
 ) t
 order by ord;

@@ -238,3 +238,64 @@ engañoso**: hay que cambiarlo por algo neutro.
 
 Marqué estas casillas una vez sin comprobarlas y hubo que deshacerlo. Lo de arriba
 está visto en pantalla por mí, salvo lo que dice explícitamente que falta.
+
+---
+
+## 2026-10-27, 15:55 — Semilla corregida y aislamiento probado
+
+**Semilla.** Repasada con `tools/serve_utf8.py`, que declara `charset=utf-8`. El
+`on conflict ... do update` corrigió los 49 nombres sin duplicar nada.
+
+**`verify.sql`: 13 de 13 en OK.** Añadí dos filas para no volver a confundir las
+causas de un fallo de búsqueda:
+
+| # | comprobación | resultado |
+| --- | --- | --- |
+| 10 | búsqueda sin acentos («platano») | 1 — OK |
+| 12 | `unaccent` funciona | 1 — OK |
+| 13 | nombres con acentos rotos | **0** — OK |
+
+La 12 y la 13 separan «la extensión no va» de «los datos entraron mal», que es
+exactamente el error de diagnóstico que cometí antes.
+
+### La prueba que importa: dos usuarios
+
+`supabase/rls_test.sql`. Crea dos usuarios en `auth.users`, les da objetivos, pesos
+y registros, se hace pasar por el primero con `set local role authenticated` más
+`request.jwt.claims`, y mira qué alcanza. **Todo dentro de una transacción que
+termina en `rollback`: no queda ni un dato de prueba.**
+
+| # | comprobación | resultado | estado |
+| --- | --- | --- | --- |
+| 1 | perfiles visibles | 1 | aislado |
+| 2 | objetivos visibles | 1 | aislado |
+| 3 | pesos visibles | 1 | aislado |
+| 4 | registros de comida visibles | 1 | aislado |
+| 5 | comidas del día visibles | 4 | aislado (y el disparador de alta funciona) |
+| 6 | el objetivo visible es el propio | **2000**, no 1800 | correcto |
+| 7 | catálogo de alimentos | 49 | visible, público a propósito |
+| 8 | leer al otro usuario por su id | **0** | aislado |
+
+La fila 8 es la que cuenta: pedir explícitamente las filas del otro usuario devuelve
+cero. **RLS no solo está escrito: funciona.**
+
+Esta prueba es más estricta que hacerlo por la API, porque habla directamente con
+Postgres: no hay capa intermedia que pueda estar tapando una fuga.
+
+### Lista de seguridad, al día
+
+- [x] Migraciones ejecutadas y verificadas (13/13)
+- [x] Ninguna tabla con RLS y sin política — 0, comprobado en el catálogo de Postgres
+- [x] **Probado con un segundo usuario** — 8/8 aislado, con rollback
+- [x] Disparador de alta: perfil, comidas y preferencias se crean solos
+- [x] Suelo de 1.200 kcal activo como restricción de base
+- [x] Índice único contra el registro doble
+- [ ] Clave publicable en `.env.local` — **falta**: la extensión del navegador me
+      bloquea la lectura de claves, y no pienso rodear esa protección
+- [ ] `npm audit` — 4 altas en `@expo/cli`, herramienta de compilación
+- [ ] Copias de seguridad — confirmar en el panel
+
+### Proyecto
+
+`mi-contador` · ref `azsxooxujlbyckxakzgv` · West EU (Irlanda) · plan gratuito
+URL: `https://azsxooxujlbyckxakzgv.supabase.co` (ya puesta en `mobile/.env.local`)
