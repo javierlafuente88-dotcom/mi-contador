@@ -59,29 +59,47 @@ cuenta ni red, y eso se queda como está: es la forma de trastear sin depender d
 a donde vayan a estar los usuarios; con España y Latinoamérica, `eu-west` o
 `us-east` son razonables.
 
-**2. Copiar las dos claves** de *Project Settings → API* a `mobile/.env.local`:
+**2. Copiar la URL y la clave pública** a `mobile/.env.local`:
 
 ```bash
 cp mobile/.env.example mobile/.env.local
 ```
 
-Rellena `EXPO_PUBLIC_SUPABASE_URL` y `EXPO_PUBLIC_SUPABASE_ANON_KEY`, y cambia
-`EXPO_PUBLIC_DATA_SOURCE` a `supabase`.
+Están en *Settings → API Keys*, o en el botón **Connect** del proyecto, que muestra
+las dos juntas. Rellena `EXPO_PUBLIC_SUPABASE_URL` y
+`EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, y pon `EXPO_PUBLIC_DATA_SOURCE=supabase`.
 
-La clave `anon` es **pública por diseño**: va dentro de la app y quien la tenga solo
-puede hacer lo que RLS le permita. La `service_role` **no entra aquí jamás**, ni en el
-móvil: salta todas las políticas.
+> **Sobre las claves.** Supabase cambió el sistema: ahora son **publishable**
+> (`sb_publishable_…`) y **secret** (`sb_secret_…`). Las antiguas `anon` y
+> `service_role` siguen funcionando pero **se retiran a finales de 2026**, o sea ya.
+> Usa la publicable. Es pública por diseño: va dentro de la app y lo único que la
+> protege es RLS, que es como debe ser.
+> La **secreta no entra aquí jamás**, ni en el móvil: se salta todas las políticas.
 
-**3. Aplicar las migraciones:**
+**3. Entrar con el CLI y aplicar migraciones y semilla:**
 
 ```bash
-npx supabase link --project-ref TU_REF && npx supabase db push
+npx supabase login
+npx supabase link
+npx supabase db push --include-seed
 ```
 
-**4. Cargar los alimentos**, pegando `supabase/seed.sql` en el editor SQL del panel.
+`login` abre el navegador para generar un token. `link` te deja elegir el proyecto de
+una lista. `--include-seed` carga también los 49 alimentos, así que no hace falta
+pegar nada a mano en el editor SQL.
 
-**5. Activar la confirmación por correo** en *Authentication → Providers → Email*, y
-revisar que *Enable email confirmations* esté puesto.
+**4. Comprobar que quedó bien:**
+
+```bash
+node tools/check_supabase.mjs
+```
+
+Verifica que la API responde, que están las tablas, que los alimentos se cargaron y
+—lo que de verdad importa— que **sin sesión no se ve ni una fila** de los datos de
+usuario. Si RLS estuviera mal, ahí salta.
+
+**5. Confirmación por correo** en *Authentication → Providers → Email*: revisa que
+*Enable email confirmations* esté activo.
 
 ---
 

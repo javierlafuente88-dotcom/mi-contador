@@ -6,14 +6,19 @@ import "react-native-url-polyfill/auto";
  *  siga arrancando con el almacen local en vez de morirse. */
 
 const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
-const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+// Supabase retira anon y service_role a finales de 2026. Se prefiere la clave
+// publicable nueva, y se acepta la antigua mientras exista.
+const publicKey =
+  process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
 let client: SupabaseClient | null = null;
 
 export function getSupabase(): SupabaseClient | null {
   if (client) return client;
-  if (!url || !anonKey) return null;
-  client = createClient(url, anonKey, {
+  if (!url || !publicKey) return null;
+  client = createClient(url, publicKey, {
     auth: {
       storage: AsyncStorage,
       autoRefreshToken: true,
@@ -26,5 +31,5 @@ export function getSupabase(): SupabaseClient | null {
 }
 
 export function isConfigured(): boolean {
-  return !!(url && anonKey);
+  return !!(url && publicKey);
 }
