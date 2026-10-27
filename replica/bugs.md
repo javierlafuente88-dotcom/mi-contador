@@ -33,7 +33,7 @@ di el caso por bueno. Solo al quitar la interacción apareció el fallo.
 Peor aún: un registro añadido en ese estado iba al día **nuevo** (porque el clic sí
 recalculaba) pero no aparecía en la lista, que seguía siendo la del día viejo.
 
-Estado: **arreglado en `e52f5a1`**. `today` pasa a ser estado, con un intervalo de
+Estado: **arreglado en `760f416`**. `today` pasa a ser estado, con un intervalo de
 30 s que lo actualiza, y la etiqueta de la fecha se deriva de él en vez de de un
 `Date` nuevo, para que etiqueta y datos no puedan discrepar.
 
@@ -61,7 +61,7 @@ restricción que el usuario no entendería.
 Es el tipo de incoherencia que solo aparece cuando cliente y servidor se escriben por
 separado y nadie los compara.
 
-Estado: **arreglado en `e52f5a1`**. Tope de 10.000 g en el cliente, con el mismo
+Estado: **arreglado en `760f416`**. Tope de 10.000 g en el cliente, con el mismo
 número que la restricción de la base y un mensaje en claro.
 
 ---
