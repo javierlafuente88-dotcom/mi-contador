@@ -7,11 +7,11 @@ Objetivo de recomposicion corporal,objetivos,should,no,no,3 resenas lo piden. La
 Limite de seguridad en el deficit,seguridad,must,no,yes,"La original acepta deficits peligrosos. 2 resenas independientes | Suelo de 1200 kcal aplicado en buildGoal, no es un aviso ignorable"
 Verificacion de edad real,seguridad,must,no,no,Resena de usuario de 12 anos que declaro 15. Riesgo serio
 Modo sin cifras para riesgo de TCA,seguridad,should,no,no,11 resenas sobre ansiedad y obsesion
-Diario del dia con anillo de calorias,nucleo,must,yes,partial,"S04 | Hecho como cuenta que suma, NO como anillo. Decision de diseno deliberada"
+Diario del dia con anillo de calorias,nucleo,must,yes,yes,"S04 | Hecho como cuenta que suma, NO como anillo. Decision de diseno deliberada | Hecho como cuenta que suma, NO anillo. Probado con 46 pruebas end-to-end"
 Desglose de macros,nucleo,must,yes,partial,Proteina carbos grasa fibra agua | Visible en el detalle del alimento; falta en el diario
 Micronutrientes y vitaminas,nutricion,could,yes,no,Premium en la original
 Nutrientes a limitar sodio azucar grasa saturada,nutricion,could,yes,no,El coach regana por el sodio con un objetivo irrealizable
-Registro por texto y busqueda,registro,must,yes,yes,S06. Gratis en la original | Busqueda sin acentos: platano encuentra plátano
+Registro por texto y busqueda,registro,must,yes,yes,"S06. Gratis en la original | Busqueda sin acentos: platano encuentra plátano | Probado: busqueda sin acentos, sin resultados, aritmetica, doble clic"
 Registro por codigo de barras,registro,must,yes,no,S10. Gratis en la original. Se congela segun resenas
 Registro por foto con IA,registro,should,yes,no,Premium. Falla al distinguir alimentos y porciones
 Registro por voz,registro,could,yes,no,Premium en la original
