@@ -121,5 +121,6 @@ if (problemas.length) {
   process.exit(1);
 }
 console.log(
-  "\nTodo correcto.\nFalta la prueba de los dos usuarios, que necesita dos cuentas reales: /replica-test."
+  "\nTodo correcto.\nEsto comprueba que un desconocido no ve nada. Que un usuario no vea los datos\n" +
+    "de OTRO se comprueba con supabase/rls_test.sql, en el editor SQL del panel."
 );

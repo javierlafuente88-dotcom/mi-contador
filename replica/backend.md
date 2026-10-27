@@ -290,8 +290,8 @@ Postgres: no hay capa intermedia que pueda estar tapando una fuga.
 - [x] Disparador de alta: perfil, comidas y preferencias se crean solos
 - [x] Suelo de 1.200 kcal activo como restricción de base
 - [x] Índice único contra el registro doble
-- [ ] Clave publicable en `.env.local` — **falta**: la extensión del navegador me
-      bloquea la lectura de claves, y no pienso rodear esa protección
+- [x] Clave publicable en `.env.local` — puesta por el usuario; yo no la leí: la
+      extensión del navegador bloquea las claves y no se rodeó esa protección
 - [ ] `npm audit` — 4 altas en `@expo/cli`, herramienta de compilación
 - [ ] Copias de seguridad — confirmar en el panel
 
@@ -299,3 +299,23 @@ Postgres: no hay capa intermedia que pueda estar tapando una fuga.
 
 `mi-contador` · ref `azsxooxujlbyckxakzgv` · West EU (Irlanda) · plan gratuito
 URL: `https://azsxooxujlbyckxakzgv.supabase.co` (ya puesta en `mobile/.env.local`)
+
+### 16:02 — La app conectada
+
+`node tools/check_supabase.mjs` contra el proyecto real:
+
+```
+✓ La API responde y acepta la clave
+✓ Tablas foods, profiles, log_entries, meal_slots, goals
+✓ foods tiene al menos 49 filas
+✓ RLS tapa profiles, log_entries, weight_entries y goals sin sesión
+```
+
+Metro reiniciado con `--clear` para que recoja `.env.local`. La app arranca y
+**pide cuenta**, que es lo correcto: sin sesión no hay nada que mostrar. Cero
+errores de consola.
+
+**No he creado ninguna cuenta en la app.** El aislamiento ya está probado a nivel de
+base de datos, que es más estricto, y registrarse es cosa tuya.
+
+**El backend está terminado.** Siguiente paso: `/replica-test`.
