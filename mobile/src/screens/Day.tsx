@@ -9,7 +9,7 @@ import {
   SlotLabel,
 } from "../design/primitives";
 import { color, layout, space, tabular, type } from "../design/tokens";
-import { kcalOf, remainingRange } from "../data/store";
+import { kcalOf, remainingRange } from "../data";
 import type { Food, Goal, LogEntry, MealSlot } from "../data/types";
 
 /** S04 — el diario del dia.

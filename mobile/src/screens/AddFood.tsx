@@ -12,7 +12,7 @@ import {
   Title,
 } from "../design/primitives";
 import { color, space, tabular, type } from "../design/tokens";
-import { kcalOf, store } from "../data/store";
+import { kcalOf, store } from "../data";
 import type { Food } from "../data/types";
 
 /** S06 buscar + S07 detalle, en una hoja.

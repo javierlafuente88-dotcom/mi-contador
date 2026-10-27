@@ -60,7 +60,7 @@ Coach de nutricion conversacional,coach,could,yes,no,Premium. Tono de regano seg
 Red social y retos de equipo,social,could,yes,skip,Fuera del alcance. Una red vacia no vale nada
 Menus de restaurantes,datos,could,yes,skip,Datos y acuerdos propios de la original
 Medicamentos y suplementos,salud,could,yes,skip,Novedad de sep-oct 2026. Fuera del alcance inicial
-Cancelacion de la suscripcion en dos toques,negocio,must,no,no,106 resenas nota 1.4. Aqui pierden la confianza
+Cancelacion de la suscripcion en dos toques,negocio,must,no,yes,106 resenas nota 1.4. Aqui pierden la confianza | No hay suscripcion que cancelar. Borrar la cuenta si es una llamada
 Precio visible antes del cuestionario,negocio,must,no,no,Queja repetida. Rellenan todo y descubren el precio al final
 Nivel gratuito que sirve de verdad,negocio,must,no,yes,668 resenas 27 por ciento sobre el muro de pago | No hay muro de pago en ninguna parte
 Sin microtransacciones de ningun tipo,negocio,must,no,yes,Compromiso de producto. Es nuestra posicion entera | No existe tabla ni codigo de monedas

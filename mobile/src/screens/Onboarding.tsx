@@ -10,7 +10,7 @@ import {
   Title,
 } from "../design/primitives";
 import { space } from "../design/tokens";
-import { buildGoal, KCAL_FLOOR } from "../data/store";
+import { buildGoal, KCAL_FLOOR } from "../data";
 import type { Activity, GoalType, Profile, Sex } from "../data/types";
 
 /** S01 cuestionario + S02 objetivos.

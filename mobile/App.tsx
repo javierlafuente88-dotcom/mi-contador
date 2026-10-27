@@ -3,9 +3,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import { Body, Screen } from "./src/design/primitives";
 import { color } from "./src/design/tokens";
-import { allFoods, buildGoal, store, todayLocal } from "./src/data/store";
+import { allFoods, buildGoal, store, todayLocal, usingSupabase } from "./src/data";
+import { getSupabase } from "./src/data/supabaseClient";
 import type { Food, Goal, GoalType, LogEntry, MealSlot, Profile } from "./src/data/types";
 import { AddFood } from "./src/screens/AddFood";
+import { Auth } from "./src/screens/Auth";
 import { Day } from "./src/screens/Day";
 import { Onboarding } from "./src/screens/Onboarding";
 
@@ -13,7 +15,12 @@ import { Onboarding } from "./src/screens/Onboarding";
  *  Navegacion por estado, a proposito: el objetivo de este hito es demostrar
  *  que el bucle central funciona, no montar un enrutador. */
 
-type Route = { name: "loading" } | { name: "onboarding" } | { name: "day" } | { name: "add"; slotId: string };
+type Route =
+  | { name: "loading" }
+  | { name: "auth" }
+  | { name: "onboarding" }
+  | { name: "day" }
+  | { name: "add"; slotId: string };
 
 const foodById = (id: string): Food | undefined => allFoods.find((f) => f.id === id);
 
@@ -28,15 +35,26 @@ export default function App() {
     setEntries(await store.listEntries(today));
   }, [today]);
 
-  useEffect(() => {
-    (async () => {
-      const [g, sl] = await Promise.all([store.getGoal(), store.listMealSlots()]);
-      setSlots(sl);
-      await refresh();
-      setGoal(g);
-      setRoute(g ? { name: "day" } : { name: "onboarding" });
-    })();
+  const bootstrap = useCallback(async () => {
+    // Con Supabase hace falta sesion antes de poder leer nada: RLS lo exige.
+    if (usingSupabase) {
+      const sb = getSupabase();
+      const { data } = (await sb?.auth.getSession()) ?? { data: { session: null } };
+      if (!data.session) {
+        setRoute({ name: "auth" });
+        return;
+      }
+    }
+    const [g, sl] = await Promise.all([store.getGoal(), store.listMealSlots()]);
+    setSlots(sl);
+    await refresh();
+    setGoal(g);
+    setRoute(g ? { name: "day" } : { name: "onboarding" });
   }, [refresh]);
+
+  useEffect(() => {
+    bootstrap().catch(() => setRoute({ name: "auth" }));
+  }, [bootstrap]);
 
   async function finishOnboarding(p: Profile, type: GoalType) {
     const { goal: g } = buildGoal(p, type);
@@ -79,6 +97,10 @@ export default function App() {
           <Screen>
             <Body muted>Cargando…</Body>
           </Screen>
+        )}
+
+        {route.name === "auth" && (
+          <Auth onSignedIn={() => { setRoute({ name: "loading" }); bootstrap(); }} />
         )}
 
         {route.name === "onboarding" && <Onboarding onDone={finishOnboarding} />}
