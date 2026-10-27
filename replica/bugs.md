@@ -87,10 +87,18 @@ o si el escáner de accesibilidad encuentra algo grave. Ninguna lo hizo.
 ## Nota de método
 
 **Dos veces he escrito en este fichero un identificador de commit inventado**, antes
-de que el commit existiera ( y ). Las dos veces lo detecté y lo
-corregí, pero el patrón es claro: **el estado de un fallo no se escribe hasta que el
-commit existe**. Lo correcto es cerrar el arreglo, leer el identificador real y
-entonces anotarlo.
+de que el commit existiera: primero `e52f5a1`, luego `c5f40f2`. Ninguno de los dos
+existe. Las dos veces lo detecté y lo corregí, pero el patrón es claro: **el estado
+de un fallo no se escribe hasta que el commit existe**. Lo correcto es cerrar el
+arreglo, leer el identificador real y entonces anotarlo.
+
+Para comprobarlo de un vistazo, los identificadores citados aquí deben existir:
+
+```bash
+grep -oE '[0-9a-f]{7}' replica/bugs.md | sort -u | while read s; do git cat-file -e "$s^{commit}" 2>/dev/null && echo "ok $s" || echo "FALSO $s"; done
+```
+
+Los dos de arriba saldrán como falsos a propósito: son el ejemplo.
 
 ---
 
