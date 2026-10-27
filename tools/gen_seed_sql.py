@@ -39,7 +39,10 @@ def main():
             f"{num(n.get('kcal'))}, {num(n.get('protein_g', 0))}, "
             f"{num(n.get('carbs_g', 0))}, {num(n.get('fat_g', 0))}, "
             f"{num(n.get('fiber_g'))}, now())"
-            "\n  on conflict (source, source_ref) do update set"
+            # El indice unico es PARCIAL (where source_ref is not null), asi que
+            # hay que repetir el predicado aqui o Postgres no lo encuentra.
+            "\n  on conflict (source, source_ref) where source_ref is not null"
+            "\n  do update set"
             "\n    name = excluded.name,"
             "\n    kcal_100g = excluded.kcal_100g,"
             "\n    protein_100g = excluded.protein_100g,"

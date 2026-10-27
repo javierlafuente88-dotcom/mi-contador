@@ -98,9 +98,11 @@ grant execute on function export_my_data() to authenticated;
 -- activado por defecto en Supabase, asi que se pide aqui.
 create extension if not exists unaccent;
 
+-- search_path incluye "extensions" porque Supabase instala ahi algunas
+-- extensiones; sin eso, unaccent() no se resuelve y la busqueda revienta.
 create or replace function search_foods(q text, pais text default null, lim int default 50)
 returns setof foods
-language sql stable security invoker set search_path = public as $$
+language sql stable security invoker set search_path = public, extensions as $$
   select f.*
   from foods f
   where f.deleted_at is null
