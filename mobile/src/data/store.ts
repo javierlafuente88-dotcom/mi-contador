@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import raw from "./foods.json";
 import rawRecipes from "./recipes.json";
-import type { Food, Goal, LogEntry, MealSlot, Profile, Recipe, Store } from "./types";
+import type { Food, Goal, LogEntry, MealSlot, Profile, Recipe, Store, WeightEntry } from "./types";
 
 /** Almacen falso del hito 1. Mismas firmas que tendra el de Supabase,
  *  asi que /replica-backend lo sustituye sin tocar ninguna pantalla. */
@@ -10,6 +10,7 @@ const K = {
   profile: "v1.profile",
   goal: "v1.goal",
   entries: "v1.entries",
+  weights: "v1.weights",
   slots: "v1.slots",
 };
 
@@ -127,6 +128,23 @@ export const store: Store = {
     await write(K.entries, [...all, entry]);
     return entry;
   },
+  async listWeights() {
+    const all = await read<WeightEntry[]>(K.weights, []);
+    return [...all].sort((a, b) => a.localDate.localeCompare(b.localDate));
+  },
+
+  async saveWeight(localDate, kg) {
+    const all = await read<WeightEntry[]>(K.weights, []);
+    // Un peso por dia: el nuevo sustituye al anterior, no se acumulan.
+    const resto = all.filter((w) => w.localDate !== localDate);
+    await write(K.weights, [...resto, { id: localDate, localDate, kg }]);
+  },
+
+  async removeWeight(localDate) {
+    const all = await read<WeightEntry[]>(K.weights, []);
+    await write(K.weights, all.filter((w) => w.localDate !== localDate));
+  },
+
   async removeEntry(id) {
     const all = await read<LogEntry[]>(K.entries, []);
     await write(

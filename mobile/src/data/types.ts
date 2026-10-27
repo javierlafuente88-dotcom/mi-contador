@@ -54,6 +54,12 @@ export type Recipe = {
   ingredients: { name: string; grams: number }[];
 };
 
+export type WeightEntry = {
+  id: string;
+  localDate: string; // AAAA-MM-DD en la zona del usuario
+  kg: number;
+};
+
 export type LogEntry = {
   id: string;
   localDate: string; // AAAA-MM-DD en la zona del usuario, nunca UTC
@@ -81,6 +87,11 @@ export interface Store {
   listRecipes(filtros?: { etiqueta?: string; maxKcal?: number; maxMinutos?: number }): Promise<Recipe[]>;
   getRecipe(id: string): Promise<Recipe | null>;
   listEntries(localDate: string): Promise<LogEntry[]>;
+  /** Historial de peso, del mas antiguo al mas reciente. */
+  listWeights(): Promise<WeightEntry[]>;
+  /** Un peso por dia: volver a guardar el mismo dia lo sustituye. */
+  saveWeight(localDate: string, kg: number): Promise<void>;
+  removeWeight(localDate: string): Promise<void>;
   addEntry(e: Omit<LogEntry, "id">): Promise<LogEntry>;
   removeEntry(id: string): Promise<void>;
 }

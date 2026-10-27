@@ -190,3 +190,47 @@ Es decir: **nuestro mayor diferenciador es invisible para el marcador de paridad
 No es un fallo de la herramienta: la paridad mide «hace lo mismo que la original», y
 aquí hacemos a propósito lo que ella dejó de hacer. Conviene no confundir ese número
 con el valor del producto.
+
+## 2026-10-27, 17:15 — Peso y gráfica (S17)
+
+Dos must-have de un golpe. **Paridad: 22,8 → 30,4. 6 de 14 must-have.**
+
+**Un peso por día.** Volver a anotar el mismo día **corrige**, no acumula: el campo
+cambia de «Peso de hoy» a «Corregir el peso de hoy» y el botón, de «Anotar» a
+«Corregir». En la base lo garantiza el índice único `(user_id, local_date)`.
+
+### La gráfica, y por qué es como es
+
+Antes de escribirla cargué la guía de visualización. Las decisiones:
+
+- **Una sola serie, sin leyenda.** El título ya la nombra. Una caja de leyenda para
+  una línea es ruido.
+- **Un solo eje.** Nunca dos escalas.
+- **Etiquetas selectivas:** solo el primer y el último punto llevan cifra. Un número
+  sobre cada punto no se lee.
+- **El texto no va del color de la serie.** Va en tinta, como el resto de la app.
+  La línea es lo único con color saturado.
+- **Banda mínima de 2 kg.** Con poca variación, el eje no se estira: así una
+  diferencia de 300 g no parece un desplome. Esto importa aquí más que en otros
+  sitios.
+- **Descrita para lector de pantalla:** «Gráfica de peso. N registros, de X a Y kg».
+  Una gráfica que solo son píxeles deja fuera a quien no la ve.
+
+### El tono
+
+La cifra grande es el peso, no «lo que te falta». El cambio se dice en seco:
+«−1,4 kg desde el 3 de octubre». **Sin flechas verdes ni rojas, sin felicitaciones y
+sin reproches.** Hay una prueba que falla si aparecen las palabras «enhorabuena»,
+«bien hecho», «deberías» o «fracas-».
+
+Y un recordatorio honesto bajo la gráfica: *«El peso sube y baja por agua, sal y hora
+del día. Lo que cuenta es la línea, no el punto.»*
+
+### Pruebas
+
+7 casos nuevos. **Batería entera: 44 en verde.**
+
+Tres fallaron al principio y **ninguno era de la app**: mis selectores eran ambiguos
+porque «82,4 kg» aparece dos veces en la pantalla, en la cifra grande y en el
+historial. Lo que falló fue mi forma de buscarlo, y así queda anotado en vez de
+inflar la lista de fallos.

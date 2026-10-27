@@ -11,6 +11,7 @@ import { Catalogo } from "./src/screens/Catalogo";
 import { Auth } from "./src/screens/Auth";
 import { Day } from "./src/screens/Day";
 import { Onboarding } from "./src/screens/Onboarding";
+import { Progreso } from "./src/screens/Progreso";
 
 /** Hito 1: la rebanada vertical.
  *  Navegacion por estado, a proposito: el objetivo de este hito es demostrar
@@ -22,7 +23,8 @@ type Route =
   | { name: "onboarding" }
   | { name: "day" }
   | { name: "add"; slotId: string }
-  | { name: "carta"; slotId: string };
+  | { name: "carta"; slotId: string }
+  | { name: "progreso" };
 
 const foodById = (id: string): Food | undefined => allFoods.find((f) => f.id === id);
 const recipeById = (id: string): Recipe | undefined => allRecipes.find((r: Recipe) => r.id === id);
@@ -146,8 +148,13 @@ export default function App() {
             recipeById={recipeById}
             onAdd={(slotId) => setRoute({ name: "add", slotId })}
             onCarta={(slotId) => setRoute({ name: "carta", slotId })}
+            onProgreso={() => setRoute({ name: "progreso" })}
             onRemove={remove}
           />
+        )}
+
+        {route.name === "progreso" && (
+          <Progreso goal={goal} onVolver={() => setRoute({ name: "day" })} />
         )}
 
         {route.name === "carta" && goal && (

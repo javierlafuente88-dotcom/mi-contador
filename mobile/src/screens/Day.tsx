@@ -25,6 +25,7 @@ export function Day({
   recipeById,
   onAdd,
   onCarta,
+  onProgreso,
   onRemove,
 }: {
   dateLabel: string;
@@ -35,6 +36,7 @@ export function Day({
   recipeById: (id: string) => Recipe | undefined;
   onAdd: (slotId: string) => void;
   onCarta: (slotId: string) => void;
+  onProgreso: () => void;
   onRemove: (entryId: string) => void;
 }) {
   /** Una entrada puede ser un alimento suelto o una receta de la carta. */
@@ -75,7 +77,10 @@ export function Day({
 
   return (
     <Screen>
-      <Text style={s.date}>{dateLabel}</Text>
+      <View style={s.cabecera}>
+        <Text style={s.date}>{dateLabel}</Text>
+        <Button label="Progreso" variant="ghost" onPress={onProgreso} />
+      </View>
 
       {slots.map((slot) => {
         const mine = entries.filter((e) => e.mealSlotId === slot.id);
@@ -155,6 +160,7 @@ export function Day({
 }
 
 const s = StyleSheet.create({
+  cabecera: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   date: { ...type.sm, color: color.muted, marginBottom: space[2] },
   rule: {
     borderTopWidth: 1,

@@ -43,8 +43,8 @@ Preferencias de alimentos y exclusiones,plan,should,yes,no,S14
 Variedad del plan alta equilibrada minima,plan,could,yes,no,S14
 Tipos de dieta keto vegana baja en carbos,plan,should,yes,no,La IA genero recetas con papa en modo keto
 Lista de la compra desde el plan,plan,should,yes,no,S16. Premium. Exporta PDF
-Seguimiento de peso,progreso,must,yes,no,S17. Gratis en la original
-Grafica de tendencia de peso,progreso,must,yes,no,Premium parcial en la original
+Seguimiento de peso,progreso,must,yes,yes,S17. Gratis en la original | Un peso por dia; volver a anotar corrige en vez de acumular
+Grafica de tendencia de peso,progreso,must,yes,yes,"Premium parcial en la original | Una serie, sin leyenda, etiquetas solo en los extremos, descrita para lector de pantalla"
 Grasa corporal y medidas,progreso,should,yes,no,Premium. Faltan cuadriceps segun una resena
 Fotos de progreso,progreso,could,yes,no,Premium
 Rachas diarias,motivacion,could,yes,no,Defecto reportado en el contador de dias perfectos

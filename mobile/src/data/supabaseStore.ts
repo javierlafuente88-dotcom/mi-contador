@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getSupabase } from "./supabaseClient";
-import type { Food, Goal, LogEntry, MealSlot, Profile, Recipe, Store } from "./types";
+import type { Food, Goal, LogEntry, MealSlot, Profile, Recipe, Store, WeightEntry } from "./types";
 
 /** El mismo contrato que el almacen falso del hito 1.
  *  Ninguna pantalla sabe cual de los dos esta usando. */
@@ -316,6 +316,40 @@ export const supabaseStore: Store = {
       method: data.method,
       clientToken: data.client_token,
     } as LogEntry;
+  },
+
+  async listWeights() {
+    const { data, error } = await db()
+      .from("weight_entries")
+      .select("id, local_date, kg")
+      .eq("user_id", await uid())
+      .order("local_date");
+    if (error) throw error;
+    return (data ?? []).map((w) => ({
+      id: w.id,
+      localDate: w.local_date,
+      kg: Number(w.kg),
+    })) as WeightEntry[];
+  },
+
+  async saveWeight(localDate, kg) {
+    // Un peso por dia lo garantiza el indice unico (user_id, local_date).
+    const { error } = await db()
+      .from("weight_entries")
+      .upsert(
+        { user_id: await uid(), local_date: localDate, kg },
+        { onConflict: "user_id,local_date" }
+      );
+    if (error) throw error;
+  },
+
+  async removeWeight(localDate) {
+    const { error } = await db()
+      .from("weight_entries")
+      .delete()
+      .eq("user_id", await uid())
+      .eq("local_date", localDate);
+    if (error) throw error;
   },
 
   async removeEntry(id) {
