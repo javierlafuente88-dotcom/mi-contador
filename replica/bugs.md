@@ -84,6 +84,16 @@ o si el escáner de accesibilidad encuentra algo grave. Ninguna lo hizo.
 
 ---
 
+## Nota de método
+
+**Dos veces he escrito en este fichero un identificador de commit inventado**, antes
+de que el commit existiera ( y ). Las dos veces lo detecté y lo
+corregí, pero el patrón es claro: **el estado de un fallo no se escribe hasta que el
+commit existe**. Lo correcto es cerrar el arreglo, leer el identificador real y
+entonces anotarlo.
+
+---
+
 ## Por comprobar
 
 No son fallos: son cosas que no he podido reproducir pero que no descarto.
@@ -137,7 +147,7 @@ Causa: `foodById` en `App.tsx` buscaba solo en la semilla estática (`allFoods`)
 que crea el usuario vive en otra lista, así que el id no se resolvía nunca. Crear el
 alimento funcionaba; **usarlo, no**.
 
-Estado: **arreglado en `c5f40f2`**. Se añaden `buscarAlimento` y `buscarReceta`, que
+Estado: **arreglado en `b218873`**. Se añaden `buscarAlimento` y `buscarReceta`, que
 miran primero lo del usuario y luego la semilla, y las pantallas usan esas en vez de
 la lista estática.
 
