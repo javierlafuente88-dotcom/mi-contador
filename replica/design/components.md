@@ -78,6 +78,26 @@ a11y       aria-live="polite" en el total, para que el cambio se anuncie una vez
 pantallas  S04
 ```
 
+### MacroRow — el desglose del día
+```
+donde      bajo DayBill, en S04. Los macros del DIA, no los de un alimento:
+           en el detalle del alimento ya estaban y ahi no sirven
+filas      proteina, carbohidratos, grasa, fibra. El agua NO: no se registra,
+           y una fila a cero seria inventarse el dato
+valor      "23 de 131 g" — con palabras, no "23 / 131 g": la barra el lector de
+           pantalla la lee "barra". Una sola frase para todos; nunca un texto
+           visible y otro escondido en aria-label, que se separan con el tiempo
+fibra      sin meta: el objetivo del alta no calcula una, y ponerle los 25 g de
+           la EFSA seria una meta que el usuario nunca acepto
+estados    sabido: "23 de 131 g" · falta en algunos: el total MAS un aviso de
+           que se queda corto · no consta en ninguno: "sin datos", NUNCA "0 g"
+tokens     etiqueta: sm/text-muted · valor: base/text/tabular ·
+           separador: borde inferior 1px border. Sin color de veredicto:
+           los macros no se riñen, se cuentan
+a11y       texto plano en orden etiqueta-valor; sin aria-label duplicado
+pantallas  S04
+```
+
 ### MealGroup — bloque de comida
 ```
 variantes  cualquier nombre que el usuario cree (Desayuno, Merienda, Pre-entreno...)

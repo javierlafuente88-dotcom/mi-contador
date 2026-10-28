@@ -466,3 +466,102 @@ choca, el que no, la confirmación que no se arrastra de un alimento a otro, y q
 declaración hecha en la carta se respeta en la búsqueda. Al crear: el alimento propio
 con alérgeno que avisa igual, el «no declarado» dicho en pantalla, y la receta que
 hereda el alérgeno de un alimento tuyo.
+
+---
+
+## Los macros, en el diario
+
+Los teníamos desde el principio, pero en el sitio equivocado: en el detalle del
+alimento. Ahí te dicen cuánta proteína lleva **una lata**, que no es lo que nadie
+se pregunta. Lo que se pregunta es cómo va **el día**.
+
+Ahora van bajo el total de calorías: proteína, carbohidratos, grasa y fibra.
+
+### Ausente no es cero
+
+Esta es la decisión entera, y es la misma que la de los alérgenos con otra ropa.
+
+Un alimento puede traer calorías y no traer fibra. Pasa con lo que llega por
+código de barras, porque Open Food Facts rellena lo que el fabricante declaró y
+nada más, y pasa con los alimentos que creas tú, donde la fibra es un campo
+opcional. Sumar esos como cero daría un total perfectamente creíble y
+perfectamente falso, y por lo bajo, que es la dirección en la que duele.
+
+Así que `macrosOf` devuelve `null`, no `0`, cuando el dato no está, y
+`sumarMacros` lleva dos cuentas: lo que suma y **cuántos registros no supieron
+decirlo**. Con eso el diario distingue tres situaciones que antes habrían sido
+una:
+
+- lo sabemos todo → `23 de 131 g`
+- falta en alguno → se da el total, y debajo: «Falta el dato de fibra en un registro, así que ese total se queda corto»
+- no consta en ninguno → **`sin datos`**, nunca `0 g`
+
+La tercera es la que importa. «0 g de fibra» es una afirmación sobre lo que has
+comido. No la vamos a hacer sin saberla.
+
+### La fibra va sin meta
+
+Las otras tres se muestran contra el objetivo que calculó el alta. La fibra no,
+porque ese objetivo no la incluye: va sola, `20 g`.
+
+Pensé en ponerle los 25 g que recomienda la EFSA y no lo hice. Sería una meta que
+el usuario nunca aceptó, apareciendo con el mismo aspecto que las tres que sí, y
+quedándose a un paso de reñirle por no llegar a una cifra que no eligió. Si algún
+día hay meta de fibra, saldrá del alta como las demás. Queda anotado como hueco.
+
+### Una sola frase, no dos
+
+La primera versión ponía `23 / 131 g` y, escondido debajo para el lector de
+pantalla, un `accessibilityLabel` que decía «Proteína: 23 de 131 gramos».
+
+Lo miré en el DOM: React Native Web lo renderizaba como `aria-label` sobre un
+`div` sin rol, donde un lector de pantalla lo ignora. O sea que la frase
+escondida no llegaba a nadie — pero lo de fondo era peor que el fallo. Eran dos
+textos diciendo lo mismo, y uno de los dos se iba a quedar viejo. Ya pasó en la
+pantalla de alergias.
+
+Así que se quedó uno solo: **`23 de 131 g`**, que se lee bien con los ojos y bien
+en voz alta. La barra sonaba a «barra» y no aportaba nada.
+
+### Lo que sigue sin estar
+
+El agua. Sale en la lista de la original y no la registramos en ninguna parte, así
+que no hay fila: una fila a cero sería inventarse el dato otra vez.
+
+### La contradicción que no vieron las pruebas
+
+Las ocho pasaban en verde cuando miré la pantalla y me encontré esto:
+
+```
+Fibra                                sin datos
+Falta el dato de fibra en un registro, así que ese total se queda corto.
+```
+
+Las dos frases juntas no se sostienen. Si no consta en ninguno no hay total, y
+mal puede quedarse corto. Pasaba porque el aviso se disparaba con que faltara en
+**algún** registro, sin mirar si faltaba en todos.
+
+Ahora el aviso solo sale cuando falta en algunos **y no en todos**; cuando no
+consta en ninguno, la fila ya lo dice sola. Y F13-E3 comprueba que ese aviso
+**no** esté, no solo que la fila diga «sin datos».
+
+Es la segunda vez en dos funciones que lo que encuentra el fallo es mirar la
+pantalla, no la suite. Las pruebas comprueban que un texto esté. No leen los dos
+que quedaron uno debajo del otro.
+
+### Las capturas de referencia estaban pisándose
+
+Al ir a mirar si los macros salían en la captura del diario, dos cosas:
+
+**La captura se quedaba en el pliegue.** `fullPage: true` no sirve aquí porque la
+pantalla scrollea por dentro, así que el total del día nunca había salido, y los
+macros tampoco. Hay una nueva, `S04-diario-macros.png`, que baja hasta el final.
+
+**Y las dos variantes escribían en las mismas rutas.** La suite corre `movil` y
+`escritorio`, en ese orden, así que lo que quedaba en `clone-screens/` era siempre
+la de escritorio — aunque la cabecera del propio fichero dice que se ejecutan en
+móvil. Una referencia que cambia según quién acabó último no detecta regresiones:
+detecta en qué orden corriste las pruebas.
+
+Ahora las capturas se saltan en escritorio. Por eso **todas** han cambiado en este
+commit: han pasado de ser de escritorio a ser de móvil, que es lo que decían ser.

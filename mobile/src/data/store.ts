@@ -347,3 +347,51 @@ export function kcalOfRecipe(recipe: Recipe, grams: number): number {
   const porGramo = recipe.perServing.kcal / Math.max(1, recipe.gramsPerServing);
   return Math.round(porGramo * grams);
 }
+
+/** Los cuatro macros del diario. El agua no esta: no la registramos, y
+ *  poner una fila a cero seria inventarse un dato. */
+export const MACROS = ["protein", "carbs", "fat", "fiber"] as const;
+export type MacroId = (typeof MACROS)[number];
+
+/** null NO es cero: es "no lo sabemos". Un alimento de codigo de barras
+ *  puede traer kcal y no traer fibra, y sumar 0 mentiria por lo bajo. */
+export type Macros = Record<MacroId, number | null>;
+
+function escalar(v: number | undefined, factor: number): number | null {
+  return v === undefined ? null : Math.round(v * factor);
+}
+
+export function macrosOf(food: Food, grams: number): Macros {
+  const f = grams / 100;
+  return {
+    protein: escalar(food.per100g.protein_g, f),
+    carbs: escalar(food.per100g.carbs_g, f),
+    fat: escalar(food.per100g.fat_g, f),
+    fiber: escalar(food.per100g.fiber_g, f),
+  };
+}
+
+export function macrosOfRecipe(recipe: Recipe, grams: number): Macros {
+  const f = grams / Math.max(1, recipe.gramsPerServing);
+  return {
+    protein: escalar(recipe.perServing.protein_g, f),
+    carbs: escalar(recipe.perServing.carbs_g, f),
+    fat: escalar(recipe.perServing.fat_g, f),
+    fiber: escalar(recipe.perServing.fiber_g, f),
+  };
+}
+
+/** Suma lo que se sabe y CUENTA lo que no, por macro. El diario necesita las
+ *  dos cosas: el total y si ese total se queda corto. */
+export function sumarMacros(lista: Macros[]) {
+  const total: Record<MacroId, number> = { protein: 0, carbs: 0, fat: 0, fiber: 0 };
+  const sinDato: Record<MacroId, number> = { protein: 0, carbs: 0, fat: 0, fiber: 0 };
+  for (const m of lista) {
+    for (const k of MACROS) {
+      const v = m[k];
+      if (v === null) sinDato[k] += 1;
+      else total[k] += v;
+    }
+  }
+  return { total, sinDato, cuantos: lista.length };
+}

@@ -4,16 +4,17 @@
 
 ## El número
 
-# 41,8 / 100
+# 43,7 / 100
 
-**9 de 14 must-have.** Ha subido de 20,9 a 41,8 en dos días de hito 2: la carta, el
-peso, crear alimentos y recetas, el código de barras y el respeto a las alergias.
-Sigue sin ser publicable: faltan cinco must-have y el marcador lo dice sin maquillaje.
+**10 de 14 must-have.** Ha subido de 20,9 a 43,7 en dos días de hito 2: la carta, el
+peso, crear alimentos y recetas, el código de barras, el respeto a las alergias y el
+desglose de macros en el diario. Sigue sin ser publicable: faltan cuatro must-have y
+el marcador lo dice sin maquillaje.
 
 | área | puntuación | funciones |
 | --- | --- | --- |
 | onboarding | **100,0** | 2 |
-| núcleo | **75,0** | 2 |
+| núcleo | **100,0** | 2 |
 | progreso | **66,7** | 4 |
 | datos | 62,5 | 5 |
 | registro | 34,6 | 6 |
@@ -78,10 +79,10 @@ su ficha de tienda y las 2.451 reseñas de `replica/reviews.csv`.
 
 ## Veredicto
 
-### No publicable
+### Todavía no publicable
 
-Por la regla de la skill: **10 must-have sin hacer**. No por fallos — no hay ningún
-S1 ni S2 abierto y las 46 pruebas pasan — sino porque la app todavía no hace lo
+Por la regla de la skill: **4 must-have sin hacer**. No por fallos — no hay ningún
+S1 ni S2 abierto y las 170 pruebas pasan — sino porque la app todavía no hace lo
 suficiente.
 
 Lo que sí se puede decir: **lo que existe funciona y está probado**, y en siete de
@@ -89,22 +90,21 @@ nueve flujos comparables ya nos comportamos mejor que la original.
 
 ---
 
-## Las cinco cosas a construir, por orden
+## Lo que queda, por orden
 
-1. **Catálogo de recetas navegable y elegible** (F06). No es una función más: es
-   **todo el producto**. 131 reseñas hablan de recetas y 67 de las monedas que ahora
-   hacen falta para generarlas. Sin esto, somos un contador de calorías flojo.
-2. **Seguimiento de peso y su gráfica** (S17). Dos must-have de un golpe, y la tabla
-   ya está en la base.
-3. **Crear alimento y crear receta** (S11, S12). Desatasca nuestro punto débil: con
-   49 alimentos, lo que no está lo pone el usuario. Incluido **poder borrarlas**, que
-   la original no deja.
-4. **Código de barras** (S10). En la original es gratis y funciona. Aquí chocará con
-   los huecos de Open Food Facts que medimos: 18.075 productos en México, 6.870 en
-   Chile, 2.861 en Perú.
-5. **Respetar alergias** en el plan. Hoy la tabla existe y nada la usa. En la
-   original, alguien declaró alergia al pescado y le propusieron merluza.
+Las cinco de la primera versión de este documento están hechas: la carta, el peso,
+crear alimentos y recetas, el código de barras y el respeto a las alergias. Quedan
+estas cuatro.
 
-Las cinco son `must`. Hacerlas sube la paridad por encima del 50 %.
+1. **Número de comidas al día configurable**. El modelo ya aguanta cualquier
+   número; faltan las cuatro fijas y la pantalla para cambiarlas. Diez reseñas
+   piden merienda y comidas propias, y una pide hasta diez.
+2. **Objetivos editables por el usuario**. En la original es premium. El alta
+   calcula bien, pero si no te convence su cuenta no tienes dónde tocarla.
+3. **Base de alimentos por país**. La columna `country_code` está en el esquema
+   desde el principio y no hay pantalla que la use. Es arquitectura, no un extra:
+   la original particiona por país porque un «pan» mexicano no es uno español.
+4. **Leer el código de barras con la cámara**. La búsqueda por código ya funciona
+   contra Open Food Facts; falta la cámara, y eso pide compilación nativa.
 
-**Siguiente paso: `/replica-build`** para el hito 2.
+Las cuatro son `must`. Hacerlas pone la paridad por encima del 55 %.

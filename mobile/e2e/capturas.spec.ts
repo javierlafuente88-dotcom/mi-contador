@@ -13,6 +13,13 @@ import { altaCompleta, empezarLimpio } from "./helpers";
 const DESTINO = "../replica/clone-screens";
 
 test.describe("capturas de referencia", () => {
+  // Las dos variantes escriben en las MISMAS rutas, así que correr la suite
+  // entera dejaba la de escritorio encima de la de móvil. Una referencia que
+  // cambia según quién acabó último no sirve para detectar regresiones.
+  test.beforeEach(({}, info) => {
+    info.skip(info.project.name !== "movil", "las capturas de referencia son de móvil");
+  });
+
   test("S01 cuestionario de alta", async ({ page }) => {
     await empezarLimpio(page);
     await page.screenshot({ path: `${DESTINO}/S01-alta.png`, fullPage: true });
@@ -41,6 +48,11 @@ test.describe("capturas de referencia", () => {
       await page.getByRole("button", { name: /Registrar en/ }).click();
     }
     await page.screenshot({ path: `${DESTINO}/S04-diario-con-comida.png`, fullPage: true });
+
+    // La pantalla scrollea por dentro, así que `fullPage` se queda en el pliegue
+    // y el total y los macros nunca salían. Esta baja hasta el final.
+    await page.getByText("Fibra").scrollIntoViewIfNeeded();
+    await page.screenshot({ path: `${DESTINO}/S04-diario-macros.png` });
   });
 
   test("S06 buscar alimento, con y sin resultados", async ({ page }) => {

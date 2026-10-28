@@ -95,3 +95,23 @@ falla, hace daño en vez de molestar.
 | F12-E8 | no marcar ningun alergeno al crearlo queda como «no declarado», y la pantalla lo dice |
 | F12-E9 | una receta hereda el alergeno de un alimento que creaste tu |
 | F12-A1 | la pantalla de alergias pasa axe (wcag2a + wcag2aa, sin graves) |
+
+## F13 — El desglose de macros del día (`e2e/f13-macros.spec.ts`)
+
+Los macros estaban en el detalle del alimento, que es donde no sirven: lo que
+quieres saber es cómo va **el día**, no cuánta proteína llevaba aquella lata.
+
+Lo que de verdad prueban estos casos no es la suma. Es el hueco: un alimento
+puede traer calorías y no traer fibra, y sumar cero sería decir «cero gramos de
+fibra» cuando lo cierto es «no lo sé».
+
+| id | qué comprueba |
+| --- | --- |
+| F13-H1 | lo registrado se desglosa en proteína, carbohidratos, grasa y fibra |
+| F13-H2 | dos registros suman |
+| F13-E1 | el día vacío muestra cero contra la meta, no «sin datos» |
+| F13-E2 | si a **algún** registro le falta la fibra, el total se da y se avisa de que va corto |
+| F13-E3 | si a **ninguno** le consta, dice «sin datos»: nunca «0 g», y sin el aviso de «se queda corto», que lo contradiría |
+| F13-E4 | los totales sobreviven a recargar |
+| F13-E5 | un plato de la carta también desglosa, no solo los alimentos sueltos |
+| F13-A1 | el diario con macros pasa axe (wcag2a + wcag2aa, sin graves) |
