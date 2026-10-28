@@ -21,6 +21,7 @@ export type Goal = {
 export type Food = {
   id: string;
   name: string;
+  barcode?: string;
   usdaFdcId?: number;
   usdaDescription?: string;
   license: "public-domain" | "odbl" | "own";
@@ -110,6 +111,10 @@ export interface Store {
   listWeights(): Promise<WeightEntry[]>;
   /** Alimento propio. La base de 49 es corta: lo que no esta, lo pone el usuario. */
   createFood(f: NuevoAlimento): Promise<Food>;
+  /** Busca un codigo de barras en lo que ya tenemos. null si no esta. */
+  findByBarcode(code: string): Promise<Food | null>;
+  /** Guarda un alimento traido de fuera para no volver a pedirlo. */
+  rememberFood(f: Food, barcode: string): Promise<void>;
   /** Receta propia, y poder BORRARLA, que es justo lo que la original no deja. */
   createRecipe(r: NuevaReceta): Promise<Recipe>;
   deleteRecipe(id: string): Promise<void>;

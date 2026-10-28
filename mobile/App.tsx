@@ -11,6 +11,7 @@ import { Catalogo } from "./src/screens/Catalogo";
 import { Auth } from "./src/screens/Auth";
 import { Day } from "./src/screens/Day";
 import { Onboarding } from "./src/screens/Onboarding";
+import { Codigo } from "./src/screens/Codigo";
 import { CrearAlimento } from "./src/screens/CrearAlimento";
 import { CrearReceta } from "./src/screens/CrearReceta";
 import { Progreso } from "./src/screens/Progreso";
@@ -28,7 +29,8 @@ type Route =
   | { name: "carta"; slotId: string }
   | { name: "progreso" }
   | { name: "crearAlimento"; slotId: string; nombre: string }
-  | { name: "crearReceta"; slotId: string };
+  | { name: "crearReceta"; slotId: string }
+  | { name: "codigo"; slotId: string };
 
 // Resuelven tambien lo que haya creado el usuario, no solo la semilla.
 const foodById = (id: string): Food | undefined => buscarAlimento(id);
@@ -160,6 +162,17 @@ export default function App() {
           />
         )}
 
+        {route.name === "codigo" && (
+          <Codigo
+            slotName={slots.find((x) => x.id === route.slotId)?.name ?? "la comida"}
+            onCancel={() => setRoute({ name: "add", slotId: route.slotId })}
+            onEncontrado={(food) => confirmAdd(route.slotId, food, 100)}
+            onCrear={() =>
+              setRoute({ name: "crearAlimento", slotId: route.slotId, nombre: "" })
+            }
+          />
+        )}
+
         {route.name === "crearAlimento" && (
           <CrearAlimento
             nombreSugerido={route.nombre}
@@ -207,6 +220,7 @@ export default function App() {
             onCrearAlimento={(nombre) =>
               setRoute({ name: "crearAlimento", slotId: route.slotId, nombre })
             }
+            onCodigo={() => setRoute({ name: "codigo", slotId: route.slotId })}
           />
         )}
       </View>

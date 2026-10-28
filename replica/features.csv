@@ -12,7 +12,7 @@ Desglose de macros,nucleo,must,yes,partial,Proteina carbos grasa fibra agua | Vi
 Micronutrientes y vitaminas,nutricion,could,yes,no,Premium en la original
 Nutrientes a limitar sodio azucar grasa saturada,nutricion,could,yes,no,El coach regana por el sodio con un objetivo irrealizable
 Registro por texto y busqueda,registro,must,yes,yes,"S06. Gratis en la original | Busqueda sin acentos: platano encuentra plátano | Probado: busqueda sin acentos, sin resultados, aritmetica, doble clic"
-Registro por codigo de barras,registro,must,yes,no,S10. Gratis en la original. Se congela segun resenas
+Registro por codigo de barras,registro,must,yes,partial,"S10. Gratis en la original. Se congela segun resenas | Busqueda por codigo contra Open Food Facts, con atribucion ODbL y cache. Falta leerlo con la camara: necesita compilacion nativa"
 Registro por foto con IA,registro,should,yes,no,Premium. Falla al distinguir alimentos y porciones
 Registro por voz,registro,could,yes,no,Premium en la original
 Correccion que el sistema recuerda,registro,should,no,no,Peticion explicita. Corriges y no aprende

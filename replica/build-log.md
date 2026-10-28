@@ -282,3 +282,55 @@ salido mal sin explicación. **Arreglar bien un fallo hizo visible el siguiente.
 Dos fallaron primero y ninguno era de la app: buscar «huevo» encuentra antes «Fideos
 de huevo cocidos», así que mi aritmética esperada estaba mal. La app calculaba bien;
 yo había supuesto mal. Corregido en la prueba, con nombres exactos.
+
+## 2026-10-28 — Código de barras (S10), a medias y dicho
+
+**Paridad: 36,1 → 38,0.** La fila queda en `partial`, no en `yes`, y el motivo
+importa.
+
+### Lo que hay
+
+Buscar un producto **tecleando el código** del envase, contra la API pública de
+Open Food Facts. Lo encontrado se guarda, así que el mismo código no se vuelve a
+pedir: una API abierta y gratuita no se castiga sin motivo.
+
+### Lo que no hay
+
+**Leer el código con la cámara.** Necesita compilación nativa y no funciona desde
+el navegador ni en Expo Go web. La pantalla lo dice en claro en vez de dejar un
+botón que no hace nada, y hay una prueba que comprueba que lo dice.
+
+Por eso la fila es `partial`. Marcarla `yes` sería inflar el marcador: la mitad que
+da el valor —apuntar con la cámara— no está.
+
+### Honestidad sobre la cobertura
+
+Cuando un código no aparece, la pantalla **no se queda en blanco**: explica que Open
+Food Facts es una base abierta con huecos grandes fuera de Europa, con las cifras que
+medimos en la arquitectura —18.000 productos en México, menos de 3.000 en Perú— y
+ofrece crear el alimento a mano.
+
+Y si el producto está pero **sin calorías por 100 g**, se rechaza: un dato a medias
+es peor que ninguno, porque parece que hay información cuando no la hay.
+
+### La licencia, que no es decorativa
+
+Los datos de Open Food Facts son **ODbL**, y mostrarlos exige atribución. Cada
+alimento traído de ahí la lleva en pantalla: «Datos de Open Food Facts, bajo licencia
+ODbL». Hay una prueba que falla si desaparece.
+
+Lo que sigue pendiente de abogado es el *share-alike*: volcar esos datos a una base
+propia y distribuirla es otra cosa distinta de mostrarlos. Está anotado desde
+`/replica-architect`.
+
+### Pruebas
+
+7 casos nuevos, **con las respuestas de Open Food Facts interceptadas**: una prueba no
+debe depender de una API de terceros ni cargarla. Se prueba nuestro comportamiento
+ante cada respuesta posible: encontrado, no está, sin calorías, servicio caído,
+código inválido y código repetido.
+
+Aparte de las pruebas, **una consulta real** a la API para comprobar que los nombres
+de campo son los correctos: `energy-kcal_100g`, `proteins_100g`,
+`carbohydrates_100g`, `fat_100g`, `fiber_100g`. Los cinco, confirmados. Simular
+respuestas sin haber visto una de verdad es simular tus propias suposiciones.

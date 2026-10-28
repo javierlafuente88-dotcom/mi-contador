@@ -25,11 +25,13 @@ export function AddFood({
   onCancel,
   onConfirm,
   onCrearAlimento,
+  onCodigo,
 }: {
   slotName: string;
   onCancel: () => void;
   onConfirm: (food: Food, grams: number) => void;
   onCrearAlimento: (nombreSugerido: string) => void;
+  onCodigo: () => void;
 }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Food[] | null>(null);
@@ -138,6 +140,10 @@ export function AddFood({
         placeholder="lentejas, pan, yogur…"
         autoFocus
       />
+
+      <View style={{ alignItems: "flex-start", marginBottom: space[2] }}>
+        <Button label="Buscar por código de barras" variant="secondary" onPress={onCodigo} />
+      </View>
 
       <Divider />
 

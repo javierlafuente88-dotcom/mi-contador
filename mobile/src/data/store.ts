@@ -126,6 +126,20 @@ export const store: Store = {
     return f;
   },
 
+  async findByBarcode(code) {
+    const limpio = code.replace(/[\s-]/g, "");
+    return (
+      [...MIOS_FOODS, ...FOODS].find((f) => f.barcode === limpio) ?? null
+    );
+  },
+
+  async rememberFood(f, barcode) {
+    const limpio = barcode.replace(/[\s-]/g, "");
+    const conCodigo: Food = { ...f, barcode: limpio };
+    MIOS_FOODS = [conCodigo, ...MIOS_FOODS.filter((x) => x.id !== f.id)];
+    await write(K.misAlimentos, MIOS_FOODS);
+  },
+
   async createRecipe(n) {
     const todos = [...MIOS_FOODS, ...FOODS];
     const total = { kcal: 0, protein_g: 0, carbs_g: 0, fat_g: 0, fiber_g: 0 };

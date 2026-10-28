@@ -338,6 +338,36 @@ export const supabaseStore: Store = {
     return toFood(data as FoodRow);
   },
 
+  async findByBarcode(code) {
+    const limpio = code.replace(/[\s-]/g, "");
+    const { data, error } = await db()
+      .from("foods")
+      .select("id, name, source, source_ref, license, kcal_100g, protein_100g, carbs_100g, fat_100g, fiber_100g")
+      .eq("barcode", limpio)
+      .is("deleted_at", null)
+      .limit(1)
+      .maybeSingle();
+    if (error) throw error;
+    return data ? toFood(data as FoodRow) : null;
+  },
+
+  async rememberFood(f, barcode) {
+    // Se guarda como alimento del usuario, con su licencia de origen intacta.
+    const { error } = await db().from("foods").insert({
+      name: f.name,
+      barcode: barcode.replace(/[\s-]/g, ""),
+      source: "user",
+      license: f.license,
+      owner_id: await uid(),
+      kcal_100g: f.per100g.kcal,
+      protein_100g: f.per100g.protein_g ?? 0,
+      carbs_100g: f.per100g.carbs_g ?? 0,
+      fat_100g: f.per100g.fat_g ?? 0,
+      fiber_100g: f.per100g.fiber_g ?? null,
+    });
+    if (error && !String(error.message).includes("duplicate")) throw error;
+  },
+
   async createRecipe(n) {
     const owner = await uid();
     const { data, error } = await db()
