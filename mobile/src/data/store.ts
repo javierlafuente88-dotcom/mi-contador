@@ -116,6 +116,7 @@ export const store: Store = {
       id: `user:${Date.now()}:${n.name}`,
       name: n.name.trim(),
       license: "own",
+      allergens: n.allergens ?? [],
       per100g: {
         kcal: n.kcal100,
         protein_g: n.protein100,

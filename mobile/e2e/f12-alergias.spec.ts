@@ -90,7 +90,7 @@ test.describe("F12 — Alergias", () => {
     await page.getByRole("button", { name: "Apio", exact: true }).click();
 
     // Aceptarlo en silencio sería prometer un aviso que no va a llegar.
-    await expect(page.getByText(/todavía no detecta en ningún alimento/)).toBeVisible();
+    await expect(page.getByText(/ninguno de nuestros alimentos trae marcado/)).toBeVisible();
   });
 
   test("F12-E4: las alergias declaradas sobreviven a recargar", async ({ page }) => {
@@ -181,6 +181,66 @@ test.describe("F12 — Alergias", () => {
     await expect(
       page.getByRole("button", { name: /Almendras crudas.*lleva frutos secos/ })
     ).toBeVisible();
+  });
+
+
+  /* --- Un alimento que creas tu tambien puede llevar alergenos (S11) --- */
+
+  test("F12-H5: un alimento creado por ti con alérgeno avisa igual", async ({ page }) => {
+    const errores = vigilar(page);
+    await declararDesdeBusqueda(page, "Sésamo");
+
+    await page.getByLabel("Buscar alimento").fill("hummus de mi barrio");
+    await page.getByRole("button", { name: "Crear este alimento" }).click();
+    await page.getByLabel("Calorías por 100 g").fill("180");
+    await page.getByLabel("Proteína por 100 g (g)").fill("8");
+    await page.getByLabel("Carbohidratos por 100 g (g)").fill("14");
+    await page.getByLabel("Grasa por 100 g (g)").fill("10");
+
+    // Sesamo no lo trae marcado ningun alimento nuestro: aqui si se puede poner.
+    await page.getByRole("button", { name: "Sésamo", exact: true }).click();
+    await page.getByRole("button", { name: "Guardar alimento" }).click();
+
+    await page.getByLabel("Buscar alimento").fill("hummus");
+    await expect(
+      page.getByRole("button", { name: /hummus de mi barrio.*lleva sésamo/ })
+    ).toBeVisible();
+    await page.getByRole("button", { name: /hummus de mi barrio/ }).click();
+    await expect(page.getByRole("button", { name: /^Registrar en/ })).toHaveCount(0);
+    sinErrores(errores);
+  });
+
+  test("F12-E8: no marcar nada es «no declarado», y la pantalla lo dice", async ({ page }) => {
+    await page.getByRole("button", { name: "Añadir" }).first().click();
+    await page.getByLabel("Buscar alimento").fill("invento sin etiqueta");
+    await page.getByRole("button", { name: "Crear este alimento" }).click();
+
+    // Lo contrario —dar por hecho que no lleva nada— seria una promesa falsa.
+    await expect(page.getByText(/queda como «no declarado»/)).toBeVisible();
+    await expect(page.getByText(/no dirá que este alimento es seguro/)).toBeVisible();
+  });
+
+  test("F12-E9: una receta hereda el alérgeno de un alimento que creaste tú", async ({ page }) => {
+    await declararDesdeBusqueda(page, "Sésamo");
+    await page.getByLabel("Buscar alimento").fill("tahini casero");
+    await page.getByRole("button", { name: "Crear este alimento" }).click();
+    await page.getByLabel("Calorías por 100 g").fill("595");
+    await page.getByLabel("Grasa por 100 g (g)").fill("54");
+    await page.getByRole("button", { name: "Sésamo", exact: true }).click();
+    await page.getByRole("button", { name: "Guardar alimento" }).click();
+    await page.getByRole("button", { name: "Cancelar" }).click();
+
+    await page.getByRole("button", { name: "Elegir de la carta" }).first().click();
+    await page.getByRole("button", { name: "Crear una receta" }).click();
+    await page.getByLabel("Nombre").fill("Mi salsa");
+    await page.getByLabel("Buscar ingrediente").fill("tahini");
+    await page.getByRole("button", { name: /^tahini casero,/ }).click();
+    await page.getByLabel("Cantidad en gramos").fill("50");
+    await page.getByRole("button", { name: "Añadir a la receta" }).click();
+    await page.getByRole("button", { name: "Guardar receta" }).click();
+
+    // El agujero que tapamos: el alergeno viaja del alimento propio a la receta.
+    await expect(page.getByRole("button", { name: /Mi salsa.*lleva sésamo/ })).toBeVisible();
   });
 
   test("F12-A1: la pantalla de alergias es accesible", async ({ page }) => {

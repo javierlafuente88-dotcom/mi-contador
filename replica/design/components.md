@@ -131,7 +131,15 @@ tokens     danger sobre surface, con icono Y texto
 regla      si hay alergia declarada, el plato NO se puede añadir con un toque:
            exige confirmación explícita. La original propuso merluza a alguien
            que había declarado alergia al pescado.
-a11y       role="alert" al aparecer
+donde      la carta (S13), la busqueda de alimentos (S06) y el detalle de ambas.
+           La misma regla por las dos puertas: el riesgo no cambia segun por
+           donde entres.
+lista      en la fila, el aviso va DELANTE de las calorias y en danger, pero no
+           las tapa. Un aviso en el gris del dato no se lee como aviso.
+vacio      ausencia de alergeno NO es "no lleva", es "no declarado", y se dice.
+           Al crear un alimento se piden los 14 y se avisa de esa diferencia.
+a11y       role="alert" al aparecer. El color nunca va solo: la palabra
+           ("lleva pescado") esta escrita en la fila.
 ```
 
 ### GoalGuard — suelo de seguridad

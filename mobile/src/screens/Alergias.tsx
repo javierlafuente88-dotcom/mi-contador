@@ -8,9 +8,9 @@ import type { Alergeno } from "../data/types";
 
 /** Declarar alergias e intolerancias.
  *
- *  Los 14 de declaración obligatoria en la UE. Los seis primeros son los que
- *  nuestros alimentos saben reconocer hoy; el resto se pueden declarar, pero
- *  la app avisa de que todavía no los detecta en ningún alimento.
+ *  Los 14 de declaración obligatoria en la UE. Los primeros son los que traen
+ *  marcados nuestros 49 alimentos; el resto se pueden declarar, pero la app
+ *  avisa de que ahí no saltará —solo en los alimentos que cree el usuario.
  *
  *  Decir «no detecto esto» es más útil que aceptarlo en silencio y dar una
  *  falsa sensación de que está cubierto.
@@ -54,7 +54,7 @@ export function Alergias({ onVolver }: { onVolver: () => void }) {
       />
 
       <Body muted style={type.xs}>
-        Los que la app sabe reconocer hoy
+        Los que traen marcados nuestros alimentos
       </Body>
       <View style={s.chips}>
         {TODOS.filter((t) => t.detectado).map((t) => (
@@ -70,8 +70,8 @@ export function Alergias({ onVolver }: { onVolver: () => void }) {
       <Divider />
 
       <Body muted style={type.xs}>
-        Los demás de la lista de la UE. Puedes declararlos, pero todavía no hay
-        ningún alimento que los traiga marcados.
+        Los demás de la lista de la UE. Ninguno de nuestros 49 alimentos los trae
+        marcado, pero sí puedes ponérselos a los que crees tú.
       </Body>
       <View style={s.chips}>
         {TODOS.filter((t) => !t.detectado).map((t) => (
@@ -91,8 +91,9 @@ export function Alergias({ onVolver }: { onVolver: () => void }) {
             tone="danger"
             text={
               `Has declarado ${sinDeteccion.length === 1 ? "un alérgeno que" : "alérgenos que"} ` +
-              "la app todavía no detecta en ningún alimento, así que no te avisará de " +
-              "ellos. Prefiero decírtelo a que confíes en un aviso que no va a llegar."
+              "ninguno de nuestros alimentos trae marcado, así que ahí no te avisará. " +
+              "Solo saltará en los alimentos que crees tú y se lo pongas. Prefiero " +
+              "decírtelo a que confíes en un aviso que no va a llegar."
             }
           />
         </>

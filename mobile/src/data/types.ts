@@ -74,6 +74,8 @@ export type NuevoAlimento = {
   carbs100: number;
   fat100: number;
   fiber100?: number;
+  /** Lo que el usuario declare que lleva. Vacio es "no declarado". */
+  allergens?: Alergeno[];
 };
 
 export type NuevaReceta = {

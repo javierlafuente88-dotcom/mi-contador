@@ -87,4 +87,18 @@ test.describe("capturas de referencia", () => {
     await page.getByLabel("Buscar alimento").fill("a");
     await page.screenshot({ path: `${DESTINO}/S06-con-alergia.png`, fullPage: true });
   });
+
+  test("S11 crear alimento con alergenos", async ({ page }) => {
+    await empezarLimpio(page);
+    await altaCompleta(page);
+    await page.getByRole("button", { name: "Añadir" }).first().click();
+    await page.getByLabel("Buscar alimento").fill("hummus de mi barrio");
+    await page.getByRole("button", { name: "Crear este alimento" }).click();
+    await page.getByLabel("Calorías por 100 g").fill("180");
+    await page.getByLabel("Proteína por 100 g (g)").fill("8");
+    await page.getByLabel("Carbohidratos por 100 g (g)").fill("14");
+    await page.getByLabel("Grasa por 100 g (g)").fill("10");
+    await page.getByRole("button", { name: "Sésamo", exact: true }).click();
+    await page.screenshot({ path: `${DESTINO}/S11-crear-alimento.png`, fullPage: true });
+  });
 });

@@ -340,6 +340,7 @@ export const supabaseStore: Store = {
         carbs_100g: n.carbs100,
         fat_100g: n.fat100,
         fiber_100g: n.fiber100 ?? null,
+        allergens: n.allergens ?? [],
       })
       .select("id, name, source, source_ref, license, kcal_100g, protein_100g, carbs_100g, fat_100g, fiber_100g, allergens")
       .single();

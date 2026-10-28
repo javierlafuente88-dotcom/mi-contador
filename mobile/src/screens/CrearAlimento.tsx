@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from "react";
 import { View } from "react-native";
-import { Body, Button, Field, Notice, Screen, Title } from "../design/primitives";
+import { Body, Button, Chip, Divider, Field, Notice, Screen, Title } from "../design/primitives";
 import { space, type } from "../design/tokens";
 import { store } from "../data";
-import type { Food } from "../data/types";
+import { ALERGENOS_UE } from "../data/alergenos";
+import type { Alergeno, Food } from "../data/types";
 
 /** S11 — Crear un alimento.
  *
@@ -14,6 +15,11 @@ import type { Food } from "../data/types";
  *  calorías, se avisa. No se bloquea —las etiquetas redondean y a veces no
  *  cuadran de verdad— pero tampoco se traga un dato imposible en silencio.
  *  Es el mismo control que usamos para validar la semilla de USDA.
+ *
+ *  Y pregunta por los alergenos. Sin esto, un alimento creado aqui nunca
+ *  dispararia un aviso, ni el; ni las recetas que lo lleven. Se pregunta
+ *  dejando claro que no marcar nada significa "no lo has dicho", no
+ *  "no lleva": lo segundo seria una promesa que no podemos hacer.
  */
 
 export function CrearAlimento({
@@ -31,7 +37,14 @@ export function CrearAlimento({
   const [carb, setCarb] = useState("");
   const [gras, setGras] = useState("");
   const [fibra, setFibra] = useState("");
+  const [alergenos, setAlergenos] = useState<Alergeno[]>([]);
   const [guardando, setGuardando] = useState(false);
+
+  function alternar(a: Alergeno) {
+    setAlergenos((prev) =>
+      prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a]
+    );
+  }
 
   const n = (v: string) => {
     const x = parseFloat(v.replace(",", "."));
@@ -84,6 +97,7 @@ export function CrearAlimento({
         carbs100: vCarb,
         fat100: vGras,
         fiber100: vFibra || undefined,
+        allergens: alergenos,
       });
       onCreado(f);
     } finally {
@@ -110,6 +124,29 @@ export function CrearAlimento({
 
       {!!avisoAtwater && <Notice text={avisoAtwater} />}
 
+      <Divider />
+
+      <Body muted style={type.xs}>
+        ¿Lleva alguno de estos? Míralo en la etiqueta
+      </Body>
+      <View style={a.chips}>
+        {ALERGENOS_UE.map((t) => (
+          <Chip
+            key={t.id}
+            label={t.label}
+            selected={alergenos.includes(t.id)}
+            onPress={() => alternar(t.id)}
+          />
+        ))}
+      </View>
+      <Body muted style={type.sm}>
+        {alergenos.length === 0
+          ? "Si no marcas nada, queda como «no declarado». La app no dirá que este alimento es seguro, solo que no sabe."
+          : "Esto se avisará cuando vayas a registrarlo, y también en las recetas que lo lleven."}
+      </Body>
+
+      <View style={{ height: space[5] }} />
+
       <Button label={guardando ? "Guardando…" : "Guardar alimento"} disabled={!listo} onPress={guardar} />
       <View style={{ height: space[3] }} />
       <Button label="Cancelar" variant="ghost" onPress={onCancel} />
@@ -117,3 +154,13 @@ export function CrearAlimento({
     </Screen>
   );
 }
+
+const a = {
+  chips: {
+    flexDirection: "row" as const,
+    flexWrap: "wrap" as const,
+    gap: space[2],
+    marginTop: space[2],
+    marginBottom: space[2],
+  },
+};

@@ -427,23 +427,42 @@ blanco, 6,7:1, pasa AA de sobra).
 El color no es el único portador: la palabra «lleva pescado» está escrita ahí, así que
 quien no distinga el rojo lo sigue leyendo igual.
 
+### Crear un alimento pregunta por los alérgenos
+
+Quedaba el tercer agujero, el que yo mismo había anotado: un alimento creado por el
+usuario no llevaba alérgenos, así que nunca disparaba un aviso —ni él, ni las recetas
+que lo usaran—. La pantalla de crear pide ahora los catorce, en chips.
+
+**No marcar nada no significa «no lleva».** La pantalla lo dice con esas palabras:
+*«queda como no declarado. La app no dirá que este alimento es seguro, solo que no
+sabe.»* Dar por hecho lo contrario sería una promesa que no podemos cumplir con un dato
+que no tenemos.
+
+Aquí sí están los catorce, no los cinco de la semilla: cuando eres tú quien mira la
+etiqueta, nuestra capacidad de detección no pinta nada. Eso obligó a corregir el texto
+de la pantalla de alergias, que decía «todavía no detecta en ningún alimento» y había
+dejado de ser cierto: ahora dice que no salta en **nuestros** alimentos, pero sí en los
+que crees tú. Una frase que se queda vieja en una pantalla de alergias es exactamente
+el problema que esta función intenta evitar.
+
 ### Lo que todavía no cubre
 
-**Un alimento que crees tú no lleva alérgenos.** `crearAlimento` pide calorías y
-macros, no alérgenos, así que nunca saltará un aviso sobre él. Es menos grave de lo
-que parece —lo creaste tú, sabes lo que es— pero se arrastra: si lo metes en una
-receta, la receta tampoco los hereda. Poner los catorce en esa pantalla es trabajo de
-otro rato; dejarlo sin decir sería peor.
+**Lo que llega por código de barras no trae alérgenos.** Open Food Facts sí tiene un
+campo `allergens_tags`, así que esto es un hueco nuestro, no suyo: no lo pedimos. Se
+puede arreglar, y conviene decir que está sin hacer en vez de que parezca cubierto
+porque el resto lo está.
 
-Tampoco cubre **producto envasado**, ni lo que llega de Open Food Facts por código de
-barras: los alérgenos son de alimento genérico. Las trazas y los ingredientes ocultos
-no se deducen de un nombre, y la etiqueta sigue mandando.
+Y nunca cubrirá **el producto envasado concreto**: los alérgenos de la semilla son de
+alimento genérico. Las trazas y los ingredientes ocultos no se deducen de un nombre, y
+la etiqueta sigue mandando.
 
 ### Pruebas
 
-12 casos nuevos (F12), todos en verde. En la carta: el plato que choca y no se añade de
+15 casos nuevos (F12), todos en verde. En la carta: el plato que choca y no se añade de
 un toque, el que no choca y sigue siéndolo, la confirmación que no se queda pegada, dos
 alérgenos nombrados a la vez, el alérgeno que no sabemos detectar, la persistencia al
 recargar, la receta propia que hereda, y accesibilidad. En la búsqueda: el alimento que
 choca, el que no, la confirmación que no se arrastra de un alimento a otro, y que la
-declaración hecha en la carta se respeta en la búsqueda.
+declaración hecha en la carta se respeta en la búsqueda. Al crear: el alimento propio
+con alérgeno que avisa igual, el «no declarado» dicho en pantalla, y la receta que
+hereda el alérgeno de un alimento tuyo.

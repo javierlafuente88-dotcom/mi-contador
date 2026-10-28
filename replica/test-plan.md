@@ -91,4 +91,7 @@ falla, hace daño en vez de molestar.
 | F12-H4 | un alimento que no choca sigue siendo de un toque |
 | F12-E6 | la confirmación no se arrastra de un alimento a otro |
 | F12-E7 | lo declarado en la carta se respeta en la búsqueda: **una sola lista**, no dos |
+| F12-H5 | un alimento **creado por ti** con alergeno declarado avisa igual |
+| F12-E8 | no marcar ningun alergeno al crearlo queda como «no declarado», y la pantalla lo dice |
+| F12-E9 | una receta hereda el alergeno de un alimento que creaste tu |
 | F12-A1 | la pantalla de alergias pasa axe (wcag2a + wcag2aa, sin graves) |
