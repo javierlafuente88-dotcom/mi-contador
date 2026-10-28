@@ -13,7 +13,8 @@ import {
 } from "../design/primitives";
 import { color, space, tabular, type } from "../design/tokens";
 import { kcalOf, store } from "../data";
-import type { Food } from "../data/types";
+import { choque, listar } from "../data/alergenos";
+import type { Alergeno, Food } from "../data/types";
 
 /** S06 buscar + S07 detalle, en una hoja.
  *  El estado sin resultados NUNCA es una pantalla vacia: es una accion.
@@ -26,17 +27,33 @@ export function AddFood({
   onConfirm,
   onCrearAlimento,
   onCodigo,
+  onAlergias,
 }: {
   slotName: string;
   onCancel: () => void;
   onConfirm: (food: Food, grams: number) => void;
   onCrearAlimento: (nombreSugerido: string) => void;
   onCodigo: () => void;
+  onAlergias: () => void;
 }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Food[] | null>(null);
   const [picked, setPicked] = useState<Food | null>(null);
   const [grams, setGrams] = useState("100");
+  const [misAlergenos, setMisAlergenos] = useState<Alergeno[]>([]);
+  const [confirmado, setConfirmado] = useState(false);
+
+  useEffect(() => {
+    let vivo = true;
+    store.listMyAllergens().then((a) => vivo && setMisAlergenos(a));
+    return () => {
+      vivo = false;
+    };
+  }, []);
+
+  /** Lo mismo que hace la carta: un alimento suelto puede llevar el alergeno
+   *  igual que un plato. El riesgo no cambia por la puerta que uses. */
+  const choca = (f: Food) => choque(f.allergens, misAlergenos);
 
   useEffect(() => {
     let alive = true;
@@ -81,6 +98,19 @@ export function AddFood({
           </Body>
         )}
 
+        {choca(picked).length > 0 && (
+          <>
+            <View style={{ height: space[4] }} />
+            <Notice
+              tone="danger"
+              text={
+                `Este alimento lleva ${listar(choca(picked))}, que has declarado. ` +
+                "Si lo registras, lo haces a sabiendas."
+              }
+            />
+          </>
+        )}
+
         <View style={{ height: space[5] }} />
 
         <Field
@@ -118,13 +148,26 @@ export function AddFood({
 
         <View style={{ height: space[6] }} />
 
-        <Button
-          label={`Registrar en ${slotName}`}
-          disabled={!ok}
-          onPress={() => onConfirm(picked, gramsNum)}
-        />
+        {choca(picked).length > 0 && !confirmado ? (
+          <Button
+            label="Lo sé, quiero registrarlo igualmente"
+            variant="danger"
+            onPress={() => setConfirmado(true)}
+          />
+        ) : (
+          <Button
+            label={`Registrar en ${slotName}`}
+            variant={choca(picked).length > 0 ? "danger" : "primary"}
+            disabled={!ok}
+            onPress={() => onConfirm(picked, gramsNum)}
+          />
+        )}
         <View style={{ height: space[3] }} />
-        <Button label="Elegir otro alimento" variant="ghost" onPress={() => setPicked(null)} />
+        <Button
+          label="Elegir otro alimento"
+          variant="ghost"
+          onPress={() => { setPicked(null); setConfirmado(false); }}
+        />
       </Screen>
     );
   }
@@ -170,14 +213,30 @@ export function AddFood({
           <MenuLine
             key={f.id}
             name={f.name}
-            value={`${f.per100g.kcal} kcal/100 g`}
+            // El aviso va delante, pero sin tapar las calorias.
+            value={
+              choca(f).length > 0
+                ? `lleva ${listar(choca(f))} · ${f.per100g.kcal} kcal/100 g`
+                : `${f.per100g.kcal} kcal/100 g`
+            }
+            tone={choca(f).length > 0 ? "danger" : undefined}
             accessibilityHint="Abre la cantidad"
-            onPress={() => setPicked(f)}
+            onPress={() => { setConfirmado(false); setPicked(f); }}
           />
         ))
       )}
 
       <View style={{ height: space[6] }} />
+      <Button
+        label={
+          misAlergenos.length > 0
+            ? `Mis alergias (${misAlergenos.length})`
+            : "Declarar alergias"
+        }
+        variant="ghost"
+        onPress={onAlergias}
+      />
+      <View style={{ height: space[3] }} />
       <Button label="Cancelar" variant="ghost" onPress={onCancel} />
       <View style={{ height: space[6] }} />
     </Screen>

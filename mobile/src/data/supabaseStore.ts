@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getSupabase } from "./supabaseClient";
-import type { Food, Goal, LogEntry, MealSlot, Profile, Recipe, Store, WeightEntry } from "./types";
+import type { Alergeno, Food, Goal, LogEntry, MealSlot, Profile, Recipe, Store, WeightEntry } from "./types";
 
 /** El mismo contrato que el almacen falso del hito 1.
  *  Ninguna pantalla sabe cual de los dos esta usando. */
@@ -28,6 +28,7 @@ type FoodRow = {
   carbs_100g: number | null;
   fat_100g: number | null;
   fiber_100g: number | null;
+  allergens: string[] | null;
 };
 
 function toFood(r: FoodRow): Food {
@@ -43,6 +44,7 @@ function toFood(r: FoodRow): Food {
       fat_g: r.fat_100g ?? undefined,
       fiber_g: r.fiber_100g ?? undefined,
     },
+    allergens: (r.allergens ?? []) as Alergeno[],
   };
 }
 
@@ -53,6 +55,7 @@ type FoodOfRecipe = {
   carbs_100g: number | null;
   fat_100g: number | null;
   fiber_100g: number | null;
+  allergens: string[] | null;
 };
 
 /** PostgREST devuelve la relación anidada como objeto o como lista según
@@ -81,6 +84,10 @@ function toRecipe(r: RecipeRow): Recipe {
   const total = { kcal: 0, protein_g: 0, carbs_g: 0, fat_g: 0, fiber_g: 0 };
   let gramos = 0;
   const ingredientes: Recipe["ingredients"] = [];
+  // Los alergenos de una receta no se guardan: se heredan de lo que lleva.
+  // Guardarlos en la fila los dejaria viejos al corregir un ingrediente, y en
+  // una alergia "viejo" significa un aviso que no salta.
+  const alergenos = new Set<string>();
 
   for (const ing of r.recipe_ingredients ?? []) {
     const f = unoSolo(ing.foods);
@@ -92,6 +99,7 @@ function toRecipe(r: RecipeRow): Recipe {
     total.fat_g += Number(f.fat_100g ?? 0) * k;
     total.fiber_g += Number(f.fiber_100g ?? 0) * k;
     gramos += Number(ing.grams);
+    for (const a of f.allergens ?? []) alergenos.add(a);
     ingredientes.push({ name: f.name, grams: Number(ing.grams) });
   }
 
@@ -113,6 +121,7 @@ function toRecipe(r: RecipeRow): Recipe {
       fiber_g: redondear(total.fiber_g),
     },
     ingredients: ingredientes,
+    allergens: [...alergenos].sort() as Alergeno[],
   };
 }
 
@@ -229,7 +238,7 @@ export const supabaseStore: Store = {
   async getFood(id) {
     const { data, error } = await db()
       .from("foods")
-      .select("id, name, source, source_ref, license, kcal_100g, protein_100g, carbs_100g, fat_100g, fiber_100g")
+      .select("id, name, source, source_ref, license, kcal_100g, protein_100g, carbs_100g, fat_100g, fiber_100g, allergens")
       .eq("id", id)
       .maybeSingle();
     if (error) throw error;
@@ -241,7 +250,7 @@ export const supabaseStore: Store = {
     let q = db()
       .from("recipes")
       .select(
-        "id, name, servings, tags, prep_minutes, recipe_ingredients(grams, foods(name, kcal_100g, protein_100g, carbs_100g, fat_100g, fiber_100g))"
+        "id, name, servings, tags, prep_minutes, recipe_ingredients(grams, foods(name, kcal_100g, protein_100g, carbs_100g, fat_100g, fiber_100g, allergens))"
       )
       .is("deleted_at", null)
       .order("name");
@@ -260,7 +269,7 @@ export const supabaseStore: Store = {
     const { data, error } = await db()
       .from("recipes")
       .select(
-        "id, name, servings, tags, prep_minutes, recipe_ingredients(grams, foods(name, kcal_100g, protein_100g, carbs_100g, fat_100g, fiber_100g))"
+        "id, name, servings, tags, prep_minutes, recipe_ingredients(grams, foods(name, kcal_100g, protein_100g, carbs_100g, fat_100g, fiber_100g, allergens))"
       )
       .eq("id", id)
       .maybeSingle();
@@ -332,7 +341,7 @@ export const supabaseStore: Store = {
         fat_100g: n.fat100,
         fiber_100g: n.fiber100 ?? null,
       })
-      .select("id, name, source, source_ref, license, kcal_100g, protein_100g, carbs_100g, fat_100g, fiber_100g")
+      .select("id, name, source, source_ref, license, kcal_100g, protein_100g, carbs_100g, fat_100g, fiber_100g, allergens")
       .single();
     if (error) throw error;
     return toFood(data as FoodRow);
@@ -342,7 +351,7 @@ export const supabaseStore: Store = {
     const limpio = code.replace(/[\s-]/g, "");
     const { data, error } = await db()
       .from("foods")
-      .select("id, name, source, source_ref, license, kcal_100g, protein_100g, carbs_100g, fat_100g, fiber_100g")
+      .select("id, name, source, source_ref, license, kcal_100g, protein_100g, carbs_100g, fat_100g, fiber_100g, allergens")
       .eq("barcode", limpio)
       .is("deleted_at", null)
       .limit(1)
@@ -439,6 +448,30 @@ export const supabaseStore: Store = {
       .delete()
       .eq("user_id", await uid())
       .eq("local_date", localDate);
+    if (error) throw error;
+  },
+
+  async listMyAllergens() {
+    const { data, error } = await db()
+      .from("user_allergens")
+      .select("allergen")
+      .eq("user_id", await uid());
+    if (error) throw error;
+    return (data ?? []).map((r) => r.allergen as Alergeno);
+  },
+
+  async saveMyAllergens(a) {
+    // La lista completa reemplaza la anterior: lo que ya no esta, se quita.
+    const user = await uid();
+    const { error: eBorrar } = await db()
+      .from("user_allergens")
+      .delete()
+      .eq("user_id", user);
+    if (eBorrar) throw eBorrar;
+    if (a.length === 0) return;
+    const { error } = await db()
+      .from("user_allergens")
+      .insert(a.map((al) => ({ user_id: user, allergen: al, severity: "allergy" })));
     if (error) throw error;
   },
 

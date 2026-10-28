@@ -12,6 +12,7 @@ import { Auth } from "./src/screens/Auth";
 import { Day } from "./src/screens/Day";
 import { Onboarding } from "./src/screens/Onboarding";
 import { Codigo } from "./src/screens/Codigo";
+import { Alergias } from "./src/screens/Alergias";
 import { CrearAlimento } from "./src/screens/CrearAlimento";
 import { CrearReceta } from "./src/screens/CrearReceta";
 import { Progreso } from "./src/screens/Progreso";
@@ -30,7 +31,8 @@ type Route =
   | { name: "progreso" }
   | { name: "crearAlimento"; slotId: string; nombre: string }
   | { name: "crearReceta"; slotId: string }
-  | { name: "codigo"; slotId: string };
+  | { name: "codigo"; slotId: string }
+  | { name: "alergias"; slotId: string; volverA: "carta" | "add" };
 
 // Resuelven tambien lo que haya creado el usuario, no solo la semilla.
 const foodById = (id: string): Food | undefined => buscarAlimento(id);
@@ -209,6 +211,19 @@ export default function App() {
             onCancel={() => setRoute({ name: "day" })}
             onElegir={(receta, grams) => confirmAddRecipe(route.slotId, receta, grams)}
             onCrearReceta={() => setRoute({ name: "crearReceta", slotId: route.slotId })}
+            onAlergias={() => setRoute({ name: "alergias", slotId: route.slotId, volverA: "carta" })}
+          />
+        )}
+
+        {route.name === "alergias" && (
+          <Alergias
+            onVolver={() =>
+              setRoute(
+                route.volverA === "carta"
+                  ? { name: "carta", slotId: route.slotId }
+                  : { name: "add", slotId: route.slotId }
+              )
+            }
           />
         )}
 
@@ -221,6 +236,9 @@ export default function App() {
               setRoute({ name: "crearAlimento", slotId: route.slotId, nombre })
             }
             onCodigo={() => setRoute({ name: "codigo", slotId: route.slotId })}
+            onAlergias={() =>
+              setRoute({ name: "alergias", slotId: route.slotId, volverA: "add" })
+            }
           />
         )}
       </View>

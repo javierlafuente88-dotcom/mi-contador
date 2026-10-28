@@ -334,3 +334,116 @@ Aparte de las pruebas, **una consulta real** a la API para comprobar que los nom
 de campo son los correctos: `energy-kcal_100g`, `proteins_100g`,
 `carbohydrates_100g`, `fat_100g`, `fiber_100g`. Los cinco, confirmados. Simular
 respuestas sin haber visto una de verdad es simular tus propias suposiciones.
+
+---
+
+## 2026-10-28 · S14: respetar las alergias declaradas
+
+La última `must` que además es un riesgo de salud. En las reseñas de la original hay
+una persona que **declaró alergia al pescado y la app le propuso merluza dos veces en
+cinco platos**. Un contador de calorías que ignora una alergia declarada no es
+incómodo: hace daño.
+
+### La regla
+
+Con una alergia declarada, el plato **no se puede añadir de un toque**. El botón de
+añadir no está: en su sitio hay un aviso que nombra el alérgeno y un botón que dice
+«Lo sé, quiero añadirlo igualmente». Solo después aparece el de añadir.
+
+No se bloquea del todo a propósito. Es su comida, no la nuestra, y nuestro dato puede
+estar incompleto. Lo que no se permite es añadirlo **sin darse cuenta**.
+
+La confirmación se borra al salir del plato: otro plato es otra decisión. Hay una
+prueba que lo comprueba, porque una confirmación pegada sería el fallo más fácil de
+cometer y el más difícil de ver.
+
+### De dónde salen los alérgenos, y de dónde no
+
+USDA **no trae alérgenos**. La asignación la hice a mano, alimento por alimento,
+siguiendo los 14 de declaración obligatoria de la UE (Reglamento 1169/2011):
+`tools/build_allergens.py`, 49 alimentos revisados, **16 con alérgeno declarado**.
+
+Los otros 33 se quedan vacíos, y eso es una afirmación distinta de «no tiene»:
+**ausencia de dato no es ausencia de alérgeno**. La pantalla lo dice con esas
+palabras. Una ayuda presentada como garantía es peor que no tener nada.
+
+Dos decisiones que no son obvias:
+- **La avena lleva gluten** en esta lista. Su proteína es avenina, no gliadina, pero
+  entra en «cereales que contienen gluten» del anexo II.
+- **Los fideos de huevo** llevan dos: gluten y huevo. Asignar por el nombre habría
+  pillado uno.
+
+### Los alérgenos de una receta no se guardan
+
+Se **derivan** de sus ingredientes, en los tres sitios: la semilla, el almacén local y
+el de Supabase. La tabla `recipes` no tiene columna `allergens` a propósito. Un valor
+guardado se queda viejo en cuanto se corrige un ingrediente, y en una alergia «viejo»
+significa **un aviso que no salta**.
+
+Eso vale también para **las recetas que creas tú**: heredan lo que lleven sus
+ingredientes, y hay una prueba que lo comprueba. Era el agujero más probable.
+
+### Un agujero que encontré al revisar, no al construir
+
+Al mirar el almacén de Supabase vi que `listRecipes` **no pedía la columna
+`allergens`** y que la receta no la llevaba. En modo local el aviso funcionaba; contra
+la base de datos real habría sido **inerte y silencioso**: declaras la alergia, no ves
+ningún aviso, y deduces que el plato es seguro. Peor que no tener la función.
+
+Arreglado: los cinco `select` piden ahora `allergens`, y `toRecipe` las une.
+
+### Lo que la app dice que no sabe hacer
+
+Se pueden declarar los 14, pero solo **5** aparecen hoy en algún alimento: gluten,
+huevo, leche, pescado y frutos secos. Si declaras uno de los otros nueve, la pantalla
+avisa: *«Prefiero decírtelo a que confíes en un
+aviso que no va a llegar»*. Aceptarlo en silencio sería prometer una protección que no
+existe.
+
+### La segunda puerta: la búsqueda de alimentos
+
+Al terminar la carta quedaba un agujero obvio: **quien buscara «merluza» a mano no
+veía nada.** El dato ya estaba en el alimento; faltaba enseñarlo. Es el mismo riesgo
+por otra puerta, así que S06 tiene ahora exactamente la misma regla: aviso en la fila
+antes de abrir, aviso bajo el título al abrir, y el botón de registrar sustituido por
+«Lo sé, quiero registrarlo igualmente».
+
+La declaración es **una sola**: se puede declarar desde la carta o desde la búsqueda, y
+las dos leen la misma lista. Hay una prueba que lo comprueba, porque dos listas
+separadas es el fallo que no se nota hasta que alguien se fía de la que no tocó.
+
+De paso, los 14 alérgenos pasaron a `src/data/alergenos.ts`, que los usan las tres
+pantallas. Y **cuáles sabemos detectar ya no es una lista escrita a mano**: se calcula
+mirando la semilla. Si mañana se marca sésamo en un alimento, la pantalla deja de decir
+que no lo detecta sin que nadie se acuerde de tocar nada.
+
+### Un aviso en gris no es un aviso
+
+La primera versión del aviso en la lista salía con el mismo gris que las calorías: se
+leía como un dato más, no como una advertencia. Lo vi mirando la captura, no leyendo el
+código. `MenuLine` tiene ahora un `tone="danger"` que tiñe el valor (#a8321e sobre
+blanco, 6,7:1, pasa AA de sobra).
+
+El color no es el único portador: la palabra «lleva pescado» está escrita ahí, así que
+quien no distinga el rojo lo sigue leyendo igual.
+
+### Lo que todavía no cubre
+
+**Un alimento que crees tú no lleva alérgenos.** `crearAlimento` pide calorías y
+macros, no alérgenos, así que nunca saltará un aviso sobre él. Es menos grave de lo
+que parece —lo creaste tú, sabes lo que es— pero se arrastra: si lo metes en una
+receta, la receta tampoco los hereda. Poner los catorce en esa pantalla es trabajo de
+otro rato; dejarlo sin decir sería peor.
+
+Tampoco cubre **producto envasado**, ni lo que llega de Open Food Facts por código de
+barras: los alérgenos son de alimento genérico. Las trazas y los ingredientes ocultos
+no se deducen de un nombre, y la etiqueta sigue mandando.
+
+### Pruebas
+
+12 casos nuevos (F12), todos en verde. En la carta: el plato que choca y no se añade de
+un toque, el que no choca y sigue siéndolo, la confirmación que no se queda pegada, dos
+alérgenos nombrados a la vez, el alérgeno que no sabemos detectar, la persistencia al
+recargar, la receta propia que hereda, y accesibilidad. En la búsqueda: el alimento que
+choca, el que no, la confirmación que no se arrastra de un alimento a otro, y que la
+declaración hecha en la carta se respeta en la búsqueda.

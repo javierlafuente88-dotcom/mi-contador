@@ -1,22 +1,24 @@
 # Paridad con la original
 
-2026-10-27 · build `8ca3c29` · referencia: Fitia iOS 25.2.1
+2026-10-28 · referencia: Fitia iOS 25.2.1
 
 ## El número
 
-# 20,9 / 100
+# 41,8 / 100
 
-**4 de 14 must-have.** Un 20,9 % es un 20,9 %: estamos al principio del hito 2 y el
-marcador lo dice sin maquillaje.
+**9 de 14 must-have.** Ha subido de 20,9 a 41,8 en dos días de hito 2: la carta, el
+peso, crear alimentos y recetas, el código de barras y el respeto a las alergias.
+Sigue sin ser publicable: faltan cinco must-have y el marcador lo dice sin maquillaje.
 
 | área | puntuación | funciones |
 | --- | --- | --- |
 | onboarding | **100,0** | 2 |
 | núcleo | **75,0** | 2 |
-| registro | 23,1 | 6 |
-| datos | 12,5 | 5 |
-| plan | 8,8 | 8 |
-| objetivos, nutrición, progreso, motivación, ayuno, integraciones, plataforma, coach | **0,0** | 16 |
+| progreso | **66,7** | 4 |
+| datos | 62,5 | 5 |
+| registro | 34,6 | 6 |
+| plan | 26,5 | 8 |
+| objetivos, nutrición, motivación, ayuno, integraciones, plataforma, coach | **0,0** | 12 |
 
 Lo construido está bien construido; lo que falta es casi todo lo demás.
 

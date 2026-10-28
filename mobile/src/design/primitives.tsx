@@ -107,12 +107,15 @@ export function MenuLine({
   onPress,
   onLongPress,
   accessibilityHint,
+  tone,
 }: {
   name: string;
   value: string;
   onPress?: () => void;
   onLongPress?: () => void;
   accessibilityHint?: string;
+  /** "danger" tiñe el valor: un aviso en gris de dato no se lee como aviso. */
+  tone?: "danger";
 }) {
   const content = (
     <View style={s.line}>
@@ -121,7 +124,9 @@ export function MenuLine({
       </Text>
       {/* La guia de puntos es decorativa: el lector de pantalla no la lee. */}
       <View style={s.lineLead} accessible={false} importantForAccessibility="no" />
-      <Text style={s.lineValue}>{value}</Text>
+      <Text style={[s.lineValue, tone === "danger" && { color: color.danger }]}>
+        {value}
+      </Text>
     </View>
   );
   if (!onPress && !onLongPress) return content;

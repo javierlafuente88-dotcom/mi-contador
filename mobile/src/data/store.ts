@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import raw from "./foods.json";
 import rawRecipes from "./recipes.json";
-import type { Food, Goal, LogEntry, MealSlot, NuevaReceta, NuevoAlimento, Profile, Recipe, Store, WeightEntry } from "./types";
+import type { Alergeno, Food, Goal, LogEntry, MealSlot, NuevaReceta, NuevoAlimento, Profile, Recipe, Store, WeightEntry } from "./types";
 
 /** Almacen falso del hito 1. Mismas firmas que tendra el de Supabase,
  *  asi que /replica-backend lo sustituye sin tocar ninguna pantalla. */
@@ -13,6 +13,7 @@ const K = {
   weights: "v1.weights",
   misAlimentos: "v1.misAlimentos",
   misRecetas: "v1.misRecetas",
+  misAlergenos: "v1.misAlergenos",
   slots: "v1.slots",
 };
 
@@ -30,6 +31,7 @@ const FOODS: Food[] = (raw as { foods: SeedFood[] }).foods.map((f) => ({
   usdaFdcId: f.usda_fdc_id,
   usdaDescription: f.usda_description,
   license: f.license,
+  allergens: (f as unknown as { alergenos?: Alergeno[] }).alergenos ?? [],
   per100g: f.per_100g,
 }));
 
@@ -52,6 +54,7 @@ const RECIPES: Recipe[] = (rawRecipes as { recetas: SeedRecipe[] }).recetas.map(
   gramsPerServing: r.gramos_por_racion,
   perServing: r.por_racion,
   ingredients: r.ingredientes.map((i) => ({ name: i.alimento, grams: i.gramos })),
+  allergens: (r as unknown as { alergenos?: Alergeno[] }).alergenos ?? [],
 }));
 
 const DEFAULT_SLOTS: MealSlot[] = [
@@ -145,6 +148,9 @@ export const store: Store = {
     const total = { kcal: 0, protein_g: 0, carbs_g: 0, fat_g: 0, fiber_g: 0 };
     let gramos = 0;
     const ing: Recipe["ingredients"] = [];
+    // Una receta tuya hereda los alergenos de sus ingredientes igual que las
+    // de la carta. Si no, al crearla te quedarias sin el aviso.
+    const alergenos = new Set<Alergeno>();
     for (const i of n.ingredients) {
       const f = todos.find((x) => x.id === i.foodId);
       if (!f) continue;
@@ -155,6 +161,7 @@ export const store: Store = {
       total.fat_g += (f.per100g.fat_g ?? 0) * k;
       total.fiber_g += (f.per100g.fiber_g ?? 0) * k;
       gramos += i.grams;
+      for (const a of f.allergens ?? []) alergenos.add(a);
       ing.push({ name: f.name, grams: i.grams });
     }
     const raciones = Math.max(1, n.servings);
@@ -173,6 +180,7 @@ export const store: Store = {
         fiber_g: Math.round((total.fiber_g / raciones) * 10) / 10,
       },
       ingredients: ing,
+      allergens: [...alergenos].sort(),
       mine: true,
     };
     MIAS_RECETAS = [r, ...MIAS_RECETAS];
@@ -208,6 +216,14 @@ export const store: Store = {
     await write(K.entries, [...all, entry]);
     return entry;
   },
+  async listMyAllergens() {
+    return read<Alergeno[]>(K.misAlergenos, []);
+  },
+
+  async saveMyAllergens(a) {
+    await write(K.misAlergenos, a);
+  },
+
   async listWeights() {
     const all = await read<WeightEntry[]>(K.weights, []);
     return [...all].sort((a, b) => a.localDate.localeCompare(b.localDate));

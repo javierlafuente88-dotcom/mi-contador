@@ -38,7 +38,7 @@ Catalogo de recetas navegable y filtrable,plan,must,no,yes,"LO QUE QUITARON. 131
 Elegir el plato de una lista sin coste,plan,must,no,yes,"EL FLUJO CLAVE F06. Objetivo 2 toques y gratis | Tres toques: abrir la carta, abrir la receta, anadir. Sin limite de cambios"
 Generacion de plan sin moneda virtual,plan,must,no,yes,"67 resenas nota media 1.46 sobre las monedas | No existe ninguna moneda, credito ni token en el codigo ni en la base"
 Intercambiar un plato sin rehacer el plan,plan,must,no,no,Rehacer borra los dias futuros en la original
-Respetar alergias e intolerancias declaradas,plan,must,yes,no,Declarada la alergia al pescado y le propusieron merluza
+Respetar alergias e intolerancias declaradas,plan,must,yes,yes,"S14. 14 alergenos UE; 16 de 49 alimentos con dato; con alergia declarada ni el plato ni el alimento suelto se anaden de un toque"
 Preferencias de alimentos y exclusiones,plan,should,yes,no,S14
 Variedad del plan alta equilibrada minima,plan,could,yes,no,S14
 Tipos de dieta keto vegana baja en carbos,plan,should,yes,no,La IA genero recetas con papa en modo keto

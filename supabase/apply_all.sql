@@ -1,10 +1,10 @@
 -- ============================================================
--- TODO EN UNO: las dos migraciones y los 49 alimentos.
+-- TODO EN UNO: las dos migraciones, los 49 alimentos y sus alergenos.
 -- Pegar entero en el editor SQL del panel de Supabase y ejecutar.
--- Generado el 2026-10-27 desde supabase/migrations/ y supabase/seed.sql
+-- Generado desde supabase/migrations/, seed.sql y seed_allergens.sql (2026-10-28)
 -- ============================================================
 
--- ---------- 1 de 3: esquema ----------
+-- ---------- 1 de 4: esquema ----------
 -- Esquema inicial — contador de calorías
 -- Postgres 15+ (Supabase). Todas las horas en UTC, timestamptz siempre.
 -- RLS activado en todo lo que pertenece a un usuario.
@@ -374,7 +374,7 @@ create policy read_recipes on recipes
 create policy write_own_recipe on recipes
   for all using (owner_id = auth.uid()) with check (owner_id = auth.uid());
 
--- ---------- 2 de 3: extras de Supabase ----------
+-- ---------- 2 de 4: extras de Supabase ----------
 -- Lo que el esquema base no puede saber: el pegamento con Supabase.
 -- Se aplica DESPUES de 20261027000001_schema.sql
 
@@ -506,7 +506,7 @@ create unique index foods_source_ref_uniq on foods (source, source_ref)
 alter table log_entries add constraint grams_sane check (grams > 0 and grams <= 10000);
 alter table weight_entries add constraint kg_sane check (kg > 20 and kg < 400);
 
--- ---------- 3 de 3: alimentos ----------
+-- ---------- 3 de 4: alimentos ----------
 -- Semilla de alimentos genericos. Generado por tools/gen_seed_sql.py
 -- Fuente: USDA FoodData Central (SR Legacy), dominio publico.
 -- Clave: (source, source_ref) = ('usda', fdcId). Reejecutar no duplica.
@@ -1001,3 +1001,40 @@ insert into foods (name, source, source_ref, license, kcal_100g, protein_100g, c
     fat_100g = excluded.fat_100g,
     fiber_100g = excluded.fiber_100g,
     verified_at = now();
+
+-- ---------- 4 de 4: alergenos ----------
+-- Alergenos de los alimentos genericos. Generado por tools/build_allergens.py
+-- Lista de 14 alergenos de la UE. NO sustituye a leer la etiqueta.
+
+update foods set allergens = array['frutos-secos']::text[]
+  where source = 'usda' and source_ref = '170567';
+update foods set allergens = array['pescado']::text[]
+  where source = 'usda' and source_ref = '171986';
+update foods set allergens = array['gluten']::text[]
+  where source = 'usda' and source_ref = '169705';
+update foods set allergens = array['pescado']::text[]
+  where source = 'usda' and source_ref = '171956';
+update foods set allergens = array['gluten','huevo']::text[]
+  where source = 'usda' and source_ref = '169732';
+update foods set allergens = array['gluten']::text[]
+  where source = 'usda' and source_ref = '168894';
+update foods set allergens = array['huevo']::text[]
+  where source = 'usda' and source_ref = '173424';
+update foods set allergens = array['leche']::text[]
+  where source = 'usda' and source_ref = '171269';
+update foods set allergens = array['leche']::text[]
+  where source = 'usda' and source_ref = '171265';
+update foods set allergens = array['leche']::text[]
+  where source = 'usda' and source_ref = '173410';
+update foods set allergens = array['pescado']::text[]
+  where source = 'usda' and source_ref = '175161';
+update foods set allergens = array['gluten']::text[]
+  where source = 'usda' and source_ref = '174924';
+update foods set allergens = array['leche']::text[]
+  where source = 'usda' and source_ref = '173414';
+update foods set allergens = array['leche']::text[]
+  where source = 'usda' and source_ref = '172223';
+update foods set allergens = array['pescado']::text[]
+  where source = 'usda' and source_ref = '171998';
+update foods set allergens = array['leche']::text[]
+  where source = 'usda' and source_ref = '171284';

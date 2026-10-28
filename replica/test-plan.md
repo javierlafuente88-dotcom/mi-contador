@@ -71,3 +71,24 @@ cd mobile && npx playwright test
 
 Cada spec falla si hay **un solo error de consola** o una respuesta 5xx, y pasa un
 escáner de accesibilidad por cada pantalla.
+
+## F12 — Respetar las alergias declaradas (`e2e/f12-alergias.spec.ts`)
+
+Origen: reseña de la original en la que una persona declaró alergia al pescado y le
+propusieron merluza dos veces en cinco platos. Es la única `must` del plan que, si
+falla, hace daño en vez de molestar.
+
+| id | qué comprueba |
+| --- | --- |
+| F12-H1 | con el alérgeno declarado, el plato **no se añade de un toque**: el botón de añadir no existe hasta confirmar a sabiendas |
+| F12-H2 | un plato que no choca sigue siendo de un toque: el aviso no se dispara de más |
+| F12-E1 | la confirmación **no se queda pegada** al pasar a otro plato |
+| F12-E2 | dos alérgenos declarados se nombran los dos |
+| F12-E3 | un alérgeno que no sabemos detectar se dice en pantalla, no se finge |
+| F12-E4 | las alergias declaradas sobreviven a recargar |
+| F12-E5 | una receta creada por el usuario **hereda** los alérgenos de sus ingredientes |
+| F12-H3 | en la **búsqueda** (S06), un alimento suelto con el alérgeno tampoco se registra de un toque |
+| F12-H4 | un alimento que no choca sigue siendo de un toque |
+| F12-E6 | la confirmación no se arrastra de un alimento a otro |
+| F12-E7 | lo declarado en la carta se respeta en la búsqueda: **una sola lista**, no dos |
+| F12-A1 | la pantalla de alergias pasa axe (wcag2a + wcag2aa, sin graves) |

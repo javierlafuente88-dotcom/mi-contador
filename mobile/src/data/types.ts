@@ -18,10 +18,18 @@ export type Goal = {
   fatG: number;
 };
 
+/** Codigos de la lista de 14 alergenos de declaracion obligatoria en la UE. */
+export type Alergeno =
+  | "gluten" | "huevo" | "leche" | "pescado" | "frutos-secos" | "soja"
+  | "crustaceos" | "moluscos" | "cacahuetes" | "sesamo" | "apio"
+  | "mostaza" | "sulfitos" | "altramuces";
+
 export type Food = {
   id: string;
   name: string;
   barcode?: string;
+  /** Vacio NO significa "sin alergenos": significa "no declarado". */
+  allergens?: Alergeno[];
   usdaFdcId?: number;
   usdaDescription?: string;
   license: "public-domain" | "odbl" | "own";
@@ -53,6 +61,8 @@ export type Recipe = {
     fiber_g?: number;
   };
   ingredients: { name: string; grams: number }[];
+  /** Heredados de los ingredientes. Vacio = no declarado, no "libre de". */
+  allergens?: Alergeno[];
   /** true si es del usuario: entonces se puede borrar. */
   mine?: boolean;
 };
@@ -121,6 +131,9 @@ export interface Store {
   /** Un peso por dia: volver a guardar el mismo dia lo sustituye. */
   saveWeight(localDate: string, kg: number): Promise<void>;
   removeWeight(localDate: string): Promise<void>;
+  /** Alergenos que el usuario ha declarado. */
+  listMyAllergens(): Promise<Alergeno[]>;
+  saveMyAllergens(a: Alergeno[]): Promise<void>;
   addEntry(e: Omit<LogEntry, "id">): Promise<LogEntry>;
   removeEntry(id: string): Promise<void>;
 }

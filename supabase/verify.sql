@@ -26,6 +26,15 @@ politicas as (
 alimentos as (
   select count(*)::int n from foods
 ),
+-- 16 alimentos con alergeno declarado. Los otros 33 no es que no lo tengan:
+-- es que no hay dato. La app dice esa diferencia en pantalla.
+con_alergeno as (
+  select count(*)::int n from foods where cardinality(allergens) > 0
+),
+merluza_pescado as (
+  select count(*)::int n from foods
+  where source_ref = '171956' and 'pescado' = any(allergens)
+),
 funciones as (
   select count(*)::int n from pg_proc p
   join pg_namespace ns on ns.oid = p.pronamespace and ns.nspname = 'public'
@@ -85,5 +94,9 @@ select * from (
   select 12, 'unaccent funciona',                  unaccent_vivo.n::text,                        case when unaccent_vivo.n = 1 then 'OK' else 'MAL: la extension no resuelve' end from unaccent_vivo
   union all
   select 13, 'Nombres con acentos rotos',          acentos_datos.n::text,                        case when acentos_datos.n = 0 then 'OK' else 'MAL: los datos entraron en latin-1' end from acentos_datos
+  union all
+  select 14, 'Alimentos con alergeno declarado',   con_alergeno.n::text,                         case when con_alergeno.n = 16 then 'OK' else 'MAL: falta seed_allergens.sql' end from con_alergeno
+  union all
+  select 15, 'La merluza lleva pescado',           merluza_pescado.n::text,                      case when merluza_pescado.n = 1 then 'OK' else 'MAL' end from merluza_pescado
 ) t
 order by ord;

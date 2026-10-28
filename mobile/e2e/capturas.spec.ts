@@ -63,4 +63,28 @@ test.describe("capturas de referencia", () => {
     await page.getByLabel("Cantidad en gramos").fill("250");
     await page.screenshot({ path: `${DESTINO}/S07-detalle.png`, fullPage: true });
   });
+
+  test("S14 alergias y plato bloqueado", async ({ page }) => {
+    await empezarLimpio(page);
+    await altaCompleta(page);
+    await page.getByRole("button", { name: "Elegir de la carta" }).first().click();
+    await page.getByRole("button", { name: "Declarar alergias" }).click();
+    await page.getByRole("button", { name: "Pescado", exact: true }).click();
+    await page.screenshot({ path: `${DESTINO}/S14-alergias.png`, fullPage: true });
+
+    await page.getByRole("button", { name: "Volver" }).click();
+    await page.getByRole("button", { name: /Merluza al horno con patata/ }).click();
+    await page.screenshot({ path: `${DESTINO}/S14-plato-bloqueado.png`, fullPage: true });
+  });
+
+  test("S06 busqueda con alergia declarada", async ({ page }) => {
+    await empezarLimpio(page);
+    await altaCompleta(page);
+    await page.getByRole("button", { name: "Añadir" }).first().click();
+    await page.getByRole("button", { name: "Declarar alergias" }).click();
+    await page.getByRole("button", { name: "Pescado", exact: true }).click();
+    await page.getByRole("button", { name: "Volver" }).click();
+    await page.getByLabel("Buscar alimento").fill("a");
+    await page.screenshot({ path: `${DESTINO}/S06-con-alergia.png`, fullPage: true });
+  });
 });

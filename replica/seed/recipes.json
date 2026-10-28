@@ -35,7 +35,11 @@
         "fat_g": 3.9,
         "fiber_g": 7.9
       },
-      "gramos_por_racion": 350.0
+      "gramos_por_racion": 350.0,
+      "alergenos": [
+        "gluten",
+        "leche"
+      ]
     },
     {
       "nombre": "Batata con queso fresco",
@@ -70,7 +74,10 @@
         "fat_g": 19.6,
         "fiber_g": 5.0
       },
-      "gramos_por_racion": 265.0
+      "gramos_por_racion": 265.0,
+      "alergenos": [
+        "leche"
+      ]
     },
     {
       "nombre": "Bocadillo de atún",
@@ -110,7 +117,11 @@
         "fat_g": 8.4,
         "fiber_g": 2.6
       },
-      "gramos_por_racion": 205.0
+      "gramos_por_racion": 205.0,
+      "alergenos": [
+        "gluten",
+        "pescado"
+      ]
     },
     {
       "nombre": "Cerdo con alubias",
@@ -149,7 +160,8 @@
         "fat_g": 13.8,
         "fiber_g": 11.2
       },
-      "gramos_por_racion": 215.0
+      "gramos_por_racion": 215.0,
+      "alergenos": []
     },
     {
       "nombre": "Ensalada de garbanzos",
@@ -195,7 +207,8 @@
         "fat_g": 15.0,
         "fiber_g": 16.0
       },
-      "gramos_por_racion": 340.0
+      "gramos_por_racion": 340.0,
+      "alergenos": []
     },
     {
       "nombre": "Ensalada de maíz y aguacate",
@@ -241,7 +254,8 @@
         "fat_g": 18.5,
         "fiber_g": 9.6
       },
-      "gramos_por_racion": 305.0
+      "gramos_por_racion": 305.0,
+      "alergenos": []
     },
     {
       "nombre": "Frijoles con arroz",
@@ -281,7 +295,8 @@
         "fat_g": 5.1,
         "fiber_g": 9.4
       },
-      "gramos_por_racion": 184.0
+      "gramos_por_racion": 184.0,
+      "alergenos": []
     },
     {
       "nombre": "Judías verdes con huevo",
@@ -317,7 +332,10 @@
         "fat_g": 21.3,
         "fiber_g": 6.4
       },
-      "gramos_por_racion": 328.0
+      "gramos_por_racion": 328.0,
+      "alergenos": [
+        "huevo"
+      ]
     },
     {
       "nombre": "Lentejas con verduras",
@@ -357,7 +375,8 @@
         "fat_g": 5.6,
         "fiber_g": 11.1
       },
-      "gramos_por_racion": 180.0
+      "gramos_por_racion": 180.0,
+      "alergenos": []
     },
     {
       "nombre": "Manzana con almendras",
@@ -388,7 +407,10 @@
         "fat_g": 10.2,
         "fiber_g": 6.1
       },
-      "gramos_por_racion": 170.0
+      "gramos_por_racion": 170.0,
+      "alergenos": [
+        "frutos-secos"
+      ]
     },
     {
       "nombre": "Merluza al horno con patata",
@@ -427,7 +449,10 @@
         "fat_g": 12.9,
         "fiber_g": 4.3
       },
-      "gramos_por_racion": 390.0
+      "gramos_por_racion": 390.0,
+      "alergenos": [
+        "pescado"
+      ]
     },
     {
       "nombre": "Pavo con calabacín",
@@ -461,7 +486,8 @@
         "fat_g": 11.8,
         "fiber_g": 2.0
       },
-      "gramos_por_racion": 358.0
+      "gramos_por_racion": 358.0,
+      "alergenos": []
     },
     {
       "nombre": "Pollo con arroz y brócoli",
@@ -500,7 +526,8 @@
         "fat_g": 14.2,
         "fiber_g": 3.3
       },
-      "gramos_por_racion": 438.0
+      "gramos_por_racion": 438.0,
+      "alergenos": []
     },
     {
       "nombre": "Revuelto de champiñones",
@@ -536,7 +563,10 @@
         "fat_g": 21.1,
         "fiber_g": 1.2
       },
-      "gramos_por_racion": 248.0
+      "gramos_por_racion": 248.0,
+      "alergenos": [
+        "huevo"
+      ]
     },
     {
       "nombre": "Salmón con espinacas",
@@ -570,7 +600,10 @@
         "fat_g": 19.9,
         "fiber_g": 2.6
       },
-      "gramos_por_racion": 268.0
+      "gramos_por_racion": 268.0,
+      "alergenos": [
+        "pescado"
+      ]
     },
     {
       "nombre": "Tortilla de patata al horno",
@@ -610,7 +643,10 @@
         "fat_g": 11.5,
         "fiber_g": 2.1
       },
-      "gramos_por_racion": 185.0
+      "gramos_por_racion": 185.0,
+      "alergenos": [
+        "huevo"
+      ]
     },
     {
       "nombre": "Tostada con tomate y aceite",
@@ -646,7 +682,10 @@
         "fat_g": 10.1,
         "fiber_g": 2.3
       },
-      "gramos_por_racion": 128.0
+      "gramos_por_racion": 128.0,
+      "alergenos": [
+        "gluten"
+      ]
     },
     {
       "nombre": "Yogur con fresas y almendras",
@@ -682,7 +721,12 @@
         "fat_g": 12.7,
         "fiber_g": 3.9
       },
-      "gramos_por_racion": 265.0
+      "gramos_por_racion": 265.0,
+      "alergenos": [
+        "frutos-secos",
+        "leche"
+      ]
     }
-  ]
+  ],
+  "_alergenos": "Heredados de los ingredientes. Si un ingrediente no declara, la receta tampoco: ausencia de dato no es ausencia de alergeno."
 }

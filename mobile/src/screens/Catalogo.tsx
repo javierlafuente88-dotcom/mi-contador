@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import {
   Body,
+  Notice,
   Button,
   Chip,
   Divider,
@@ -12,7 +13,8 @@ import {
 } from "../design/primitives";
 import { color, space, tabular, type } from "../design/tokens";
 import { store } from "../data";
-import type { Recipe } from "../data/types";
+import { choque, listar } from "../data/alergenos";
+import type { Alergeno, Recipe } from "../data/types";
 
 /** S13 — el catálogo de recetas.
  *
@@ -46,22 +48,27 @@ export function Catalogo({
   onCancel,
   onElegir,
   onCrearReceta,
+  onAlergias,
 }: {
   slotName: string;
   restanKcal: number | null;
   onCancel: () => void;
   onElegir: (receta: Recipe, grams: number) => void;
   onCrearReceta: () => void;
+  onAlergias: () => void;
 }) {
   const [recetas, setRecetas] = useState<Recipe[] | null>(null);
   const [momento, setMomento] = useState<string | null>(null);
   const [atributos, setAtributos] = useState<string[]>([]);
   const [soloQueCaben, setSoloQueCaben] = useState(false);
   const [abierta, setAbierta] = useState<Recipe | null>(null);
+  const [misAlergenos, setMisAlergenos] = useState<Alergeno[]>([]);
+  const [confirmado, setConfirmado] = useState(false);
 
   useEffect(() => {
     let vivo = true;
     store.listRecipes().then((r) => vivo && setRecetas(r));
+    store.listMyAllergens().then((a) => vivo && setMisAlergenos(a));
     return () => {
       vivo = false;
     };
@@ -77,6 +84,9 @@ export function Catalogo({
     }
     return r;
   }, [recetas, momento, atributos, soloQueCaben, restanKcal]);
+
+  /** Alergenos declarados que lleva esta receta. */
+  const choca = (r: Recipe) => choque(r.allergens, misAlergenos);
 
   const hayFiltros = !!momento || atributos.length > 0 || soloQueCaben;
 
@@ -98,6 +108,19 @@ export function Catalogo({
           {abierta.servings === 1 ? "ración" : "raciones"} · {gramos} g por ración
         </Body>
 
+        {choca(abierta).length > 0 && (
+          <>
+            <View style={{ height: space[4] }} />
+            <Notice
+              tone="danger"
+              text={
+                `Este plato lleva ${listar(choca(abierta))}, ` +
+                "que has declarado. Si lo añades, lo haces a sabiendas."
+              }
+            />
+          </>
+        )}
+
         <View style={{ height: space[5] }} />
 
         <Text style={s.seccion}>Lleva</Text>
@@ -117,12 +140,30 @@ export function Catalogo({
 
         <View style={{ height: space[6] }} />
 
-        <Button
-          label={`Añadir a ${slotName}`}
-          onPress={() => onElegir(abierta, gramos)}
-        />
+        {choca(abierta).length > 0 ? (
+          <>
+            {!confirmado ? (
+              <Button
+                label="Lo sé, quiero añadirlo igualmente"
+                variant="danger"
+                onPress={() => setConfirmado(true)}
+              />
+            ) : (
+              <Button
+                label={`Añadir a ${slotName}`}
+                variant="danger"
+                onPress={() => onElegir(abierta, gramos)}
+              />
+            )}
+          </>
+        ) : (
+          <Button
+            label={`Añadir a ${slotName}`}
+            onPress={() => onElegir(abierta, gramos)}
+          />
+        )}
         <View style={{ height: space[3] }} />
-        <Button label="Volver a la carta" variant="ghost" onPress={() => setAbierta(null)} />
+        <Button label="Volver a la carta" variant="ghost" onPress={() => { setAbierta(null); setConfirmado(false); }} />
         {abierta.mine && (
           <>
             <View style={{ height: space[3] }} />
@@ -209,9 +250,16 @@ export function Catalogo({
             <MenuLine
               key={r.id}
               name={r.name}
-              value={`${Math.round(r.perServing.kcal)} kcal · ${r.prepMinutes} min${r.mine ? " · tuya" : ""}`}
+              // El aviso va delante de las calorias, pero no las tapa: la
+              // carta sigue siendo una carta.
+              value={
+                choca(r).length > 0
+                  ? `lleva ${listar(choca(r))} · ${Math.round(r.perServing.kcal)} kcal`
+                  : `${Math.round(r.perServing.kcal)} kcal · ${r.prepMinutes} min${r.mine ? " · tuya" : ""}`
+              }
+              tone={choca(r).length > 0 ? "danger" : undefined}
               accessibilityHint="Abre la receta"
-              onPress={() => setAbierta(r)}
+              onPress={() => { setConfirmado(false); setAbierta(r); }}
             />
           ))}
         </>
@@ -219,6 +267,16 @@ export function Catalogo({
 
       <View style={{ height: space[5] }} />
       <Button label="Crear una receta" variant="secondary" onPress={onCrearReceta} />
+      <View style={{ height: space[3] }} />
+      <Button
+        label={
+          misAlergenos.length > 0
+            ? `Mis alergias (${misAlergenos.length})`
+            : "Declarar alergias"
+        }
+        variant="ghost"
+        onPress={onAlergias}
+      />
       <View style={{ height: space[3] }} />
       <Button label="Cancelar" variant="ghost" onPress={onCancel} />
       <View style={{ height: space[6] }} />
