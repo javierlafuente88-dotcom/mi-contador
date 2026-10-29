@@ -126,4 +126,16 @@ test.describe("capturas de referencia", () => {
     await page.getByText(/se mueve a/).scrollIntoViewIfNeeded();
     await page.screenshot({ path: `${DESTINO}/S26-quitar-comida.png` });
   });
+
+  test("S27 cambiar el objetivo", async ({ page }) => {
+    await empezarLimpio(page);
+    await altaCompleta(page);
+    await page.getByRole("button", { name: "Cambiar el objetivo" }).click();
+    await page.screenshot({ path: `${DESTINO}/S27-objetivo.png`, fullPage: true });
+
+    // El suelo de seguridad, que es el motivo de que esta pantalla exista
+    // como existe y no como en la original.
+    await page.getByLabel("Calorías al día", { exact: true }).fill("900");
+    await page.screenshot({ path: `${DESTINO}/S27-suelo.png` });
+  });
 });

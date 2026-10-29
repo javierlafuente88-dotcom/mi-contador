@@ -4,22 +4,23 @@
 
 ## El número
 
-# 45,6 / 100
+# 49,4 / 100
 
-**11 de 14 must-have.** Ha subido de 20,9 a 45,6 en el hito 2: la carta, el peso,
+**12 de 14 must-have.** Ha subido de 20,9 a 49,4 en el hito 2: la carta, el peso,
 crear alimentos y recetas, el código de barras, el respeto a las alergias, el
-desglose de macros y las comidas editables. Sigue sin ser publicable: faltan tres
-must-have y el marcador lo dice sin maquillaje.
+desglose de macros, las comidas editables y el objetivo editable. Sigue sin ser
+publicable: faltan dos must-have y el marcador lo dice sin maquillaje.
 
 | área | puntuación | funciones |
 | --- | --- | --- |
 | onboarding | **100,0** | 2 |
 | núcleo | **100,0** | 2 |
+| objetivos | 75,0 | 2 |
 | progreso | **66,7** | 4 |
 | datos | 62,5 | 5 |
 | plan | 35,3 | 8 |
 | registro | 34,6 | 6 |
-| objetivos, nutrición, motivación, ayuno, integraciones, plataforma, coach | **0,0** | 12 |
+| nutrición, motivación, ayuno, integraciones, plataforma, coach | **0,0** | 10 |
 
 Lo construido está bien construido; lo que falta es casi todo lo demás.
 
@@ -81,8 +82,8 @@ su ficha de tienda y las 2.451 reseñas de `replica/reviews.csv`.
 
 ### Todavía no publicable
 
-Por la regla de la skill: **3 must-have sin hacer**. No por fallos — no hay ningún
-S1 ni S2 abierto y las 187 pruebas pasan — sino porque la app todavía no hace lo
+Por la regla de la skill: **2 must-have sin hacer**. No por fallos — no hay ningún
+S1 ni S2 abierto y las 210 pruebas pasan — sino porque la app todavía no hace lo
 suficiente.
 
 Lo que sí se puede decir: **lo que existe funciona y está probado**, y en siete de
@@ -93,14 +94,13 @@ nueve flujos comparables ya nos comportamos mejor que la original.
 ## Lo que queda, por orden
 
 Las cinco de la primera versión de este documento están hechas, y también las
-comidas editables. Quedan estas tres.
+comidas y el objetivo editables. Quedan estas dos.
 
-1. **Objetivos editables por el usuario**. En la original es premium. El alta
-   calcula bien, pero si no te convence su cuenta no tienes dónde tocarla.
-2. **Base de alimentos por país**. La columna `country_code` está en el esquema
+1. **Base de alimentos por país**. La columna `country_code` está en el esquema
    desde el principio y no hay pantalla que la use. Es arquitectura, no un extra:
    la original particiona por país porque un «pan» mexicano no es uno español.
-3. **Leer el código de barras con la cámara**. La búsqueda por código ya funciona
-   contra Open Food Facts; falta la cámara, y eso pide compilación nativa.
+2. **Leer el código de barras con la cámara**. La búsqueda por código ya funciona
+   contra Open Food Facts; falta la cámara, y eso pide compilación nativa: es un
+   salto de otra clase, no otra pantalla más.
 
-Las tres son `must`. Hacerlas pone la paridad por encima del 55 %.
+Las dos son `must`. Hacerlas pone la paridad por encima del 55 %.

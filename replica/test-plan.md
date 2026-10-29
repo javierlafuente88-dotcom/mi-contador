@@ -140,3 +140,27 @@ ajustes es un contador en el que no se puede confiar.
 | F14-E7 | quitar una comida recién añadida no habla de mover nada, porque no hay nada |
 | F14-E8 | lo registrado **otros días** también se mueve (se mete por debajo: no hay interfaz para anotar en otro día) |
 | F14-A1 | la pantalla pasa axe (wcag2a + wcag2aa, sin graves) |
+
+## F15 — Cambiar el objetivo (`e2e/f15-objetivo.spec.ts`)
+
+En la original esto es premium: el cuestionario calcula un número y, si no te
+convence, pagas o te aguantas.
+
+El caso que manda es **N1**. Dos reseñas independientes cuentan que la original
+acepta déficits peligrosos, y los 1.200 kcal son nuestra respuesta a eso. Dejar
+que se editen sin suelo sería quitarnos lo único con lo que de verdad podemos
+decir que somos más seguros.
+
+| id | qué comprueba |
+| --- | --- |
+| F15-H1 | cambiar las calorías se ve en el diario |
+| F15-H2 | cambiar los macros se ve en el desglose del diario |
+| F15-N1 | **por debajo de 1.200 no se guarda**: error en el campo, explicación y botón apagado |
+| F15-N2 | 1.200 justo sí se puede: el suelo es suelo, no pared |
+| F15-E1 | si los macros no suman las calorías se avisa, pero **se deja guardar**: es tu cuenta |
+| F15-E2 | «Cuadrar» ajusta los carbohidratos, que son el resto en la fórmula del alta |
+| F15-E3 | «Volver a calcularlo» usa el **peso más reciente**, no el del alta |
+| F15-E4 | sin pesarse, dice que usa el del alta en vez de callárselo |
+| F15-E5 | el objetivo cambiado sobrevive a recargar |
+| F15-E6 | el campo en blanco dice «escribe un número», no «no bajamos de 1200» |
+| F15-A1 | la pantalla pasa axe (wcag2a + wcag2aa, sin graves) |

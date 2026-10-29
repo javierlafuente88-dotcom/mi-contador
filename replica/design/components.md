@@ -195,8 +195,32 @@ regla      por debajo de 1.200 kcal la base de datos rechaza el objetivo.
            La interfaz lo explica antes, sin dramatizar y sin culpar:
            "Este objetivo está por debajo de lo que recomendamos.
             No podemos ponerlo como meta."
+donde      S01 (alta) y S27 (cambiar el objetivo). El suelo se aplica en los
+           DOS sitios: hacer el objetivo editable es justo el cambio que se
+           lo podia llevar por delante
+limite     1.200 JUSTO se puede. Es un suelo, no una pared: un limite que en
+           la practica empieza en 1.201 es otro limite. Hay prueba (F15-N2)
 nota       el texto definitivo lo debe revisar alguien con formación en nutrición.
            No es mi decisión y no debería serlo.
+```
+
+### GoalEditor — cambiar el objetivo (S27)
+```
+que hace   tipo, calorias y los tres macros en gramos. En la original es premium
+suelo      GoalGuard. Por debajo de 1.200: error en el campo, explicacion y
+           Guardar apagado. Cuarto sitio donde vive el suelo, junto a buildGoal,
+           el check de Postgres y la traduccion del error en supabaseStore
+macros     las calorias SON los macros (4/4/9). Si no cuadran se dice con la
+           diferencia exacta y hay un boton para cuadrar los CARBOHIDRATOS,
+           que son el resto en la formula del alta.
+           AVISA, no bloquea: no hace dano a nadie y puede que lo quieras asi.
+           El suelo se aplica; esto se avisa. No es la misma clase de cosa
+un aviso   mientras las calorias esten bajo el suelo, el desajuste de macros
+           no se enseña: un problema cada vez, y primero el que importa
+recalcular usa el ULTIMO peso anotado, no el del alta, y DICE cual usa.
+           El perfil no se toca por debajo: cambiarle el peso al usuario sin
+           decirselo es lo que esta app no hace
+pantallas  S27, entrada desde S04
 ```
 
 ### Chip de filtro
@@ -221,6 +245,11 @@ regla      las tarjetas NO llevan sombra. Se separan con borde.
            Solo lleva sombra lo que flota: Sheet y menús emergentes.
 razon      la misma sombra gris bajo cada tarjeta es la marca de interfaz
            hecha en serie, y además no aporta información.
+NUNCA DOS  una fila con borde inferior seguida de un Divider pinta DOS rayas
+           juntas, y eso no se lee como separación: se lee como un fallo.
+           La última fila de una lista va sin borde, o no va el Divider.
+           Cometido dos veces (S26 y S27) y las dos veces lo encontró mirar
+           la captura, no las pruebas. Por eso está escrito aquí.
 ```
 
 ---

@@ -13,6 +13,7 @@ import { Day } from "./src/screens/Day";
 import { Onboarding } from "./src/screens/Onboarding";
 import { Codigo } from "./src/screens/Codigo";
 import { Comidas } from "./src/screens/Comidas";
+import { Objetivo } from "./src/screens/Objetivo";
 import { Alergias } from "./src/screens/Alergias";
 import { CrearAlimento } from "./src/screens/CrearAlimento";
 import { CrearReceta } from "./src/screens/CrearReceta";
@@ -34,7 +35,8 @@ type Route =
   | { name: "crearReceta"; slotId: string }
   | { name: "codigo"; slotId: string }
   | { name: "alergias"; slotId: string; volverA: "carta" | "add" }
-  | { name: "comidas" };
+  | { name: "comidas" }
+  | { name: "objetivo" };
 
 // Resuelven tambien lo que haya creado el usuario, no solo la semilla.
 const foodById = (id: string): Food | undefined => buscarAlimento(id);
@@ -121,6 +123,37 @@ export default function App() {
     setRoute({ name: "day" });
   }
 
+  /** Lo que saldría del cuestionario HOY. No es lo que salió el día del alta:
+   *  si te has pesado desde entonces, manda la báscula. El perfil se quedó con
+   *  el peso de aquel día y anotar un peso nuevo no lo toca, así que sin esto
+   *  «volver a calcularlo» devolvería un número viejo con cara de nuevo. */
+  const [recalculo, setRecalculo] = useState<{
+    goal: Goal;
+    peso: { kg: number; deLaBascula: boolean };
+  } | null>(null);
+
+  const prepararObjetivo = useCallback(async () => {
+    const p = await store.getProfile();
+    if (!p || !goal) {
+      // Sin perfil no hay nada que recalcular, pero la pantalla tiene que
+      // abrirse igual: editar a mano sigue valiendo, y un destino que no
+      // pinta nada deja al usuario encerrado sin botón de volver.
+      if (goal) setRecalculo({ goal, peso: { kg: 0, deLaBascula: false } });
+      return;
+    }
+    const pesos = await store.listWeights();
+    const ultimo = pesos.at(-1);
+    const kg = ultimo?.kg ?? p.weightKg;
+    const { goal: g } = buildGoal({ ...p, weightKg: kg }, goal?.type ?? "maintain");
+    setRecalculo({ goal: g, peso: { kg, deLaBascula: !!ultimo } });
+  }, [goal]);
+
+  async function guardarObjetivo(g: Goal) {
+    await store.saveGoal(g);
+    setGoal(g);
+    setRoute({ name: "day" });
+  }
+
   /** Las comidas cambian el diario entero, así que después hay que releer las
    *  dos cosas: la lista y lo registrado, que puede haber cambiado de sitio. */
   async function recargarComidas() {
@@ -181,6 +214,10 @@ export default function App() {
             onCarta={(slotId) => setRoute({ name: "carta", slotId })}
             onProgreso={() => setRoute({ name: "progreso" })}
             onComidas={() => setRoute({ name: "comidas" })}
+            onObjetivo={async () => {
+              await prepararObjetivo();
+              setRoute({ name: "objetivo" });
+            }}
             onRemove={remove}
           />
         )}
@@ -213,6 +250,16 @@ export default function App() {
 
         {route.name === "progreso" && (
           <Progreso goal={goal} onVolver={() => setRoute({ name: "day" })} />
+        )}
+
+        {route.name === "objetivo" && goal && recalculo && (
+          <Objetivo
+            goal={goal}
+            calculado={recalculo.goal}
+            pesoUsado={recalculo.peso}
+            onGuardar={guardarObjetivo}
+            onVolver={() => setRoute({ name: "day" })}
+          />
         )}
 
         {route.name === "comidas" && (

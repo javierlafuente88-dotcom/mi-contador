@@ -632,3 +632,80 @@ están aplicando.
 mapa de la original; esta pantalla no existe allí, porque allí el número de
 comidas no se edita, se compra. No la he metido en `recon.md` para no ensuciar el
 mapa de la otra app con una pantalla nuestra.
+
+---
+
+## El objetivo se toca
+
+En la original, el cuestionario calcula un número y, si no te convence, pagas o
+te aguantas: editar los objetivos es premium. Aquí se toca, y gratis.
+
+Se cambian el tipo (bajar, mantener, ganar, recomposición), las calorías y los
+tres macros en gramos.
+
+### Con suelo, y el suelo es el motivo de todo lo demás
+
+Dos reseñas independientes de la original cuentan que acepta déficits
+peligrosos. Los 1.200 kcal son nuestra respuesta a eso, y ya estaban en tres
+sitios: `buildGoal` los aplica, Postgres los tiene como `check (kcal_target >=
+1200)`, y `supabaseStore` traduce ese error a una frase en claro.
+
+Hacer los objetivos editables es exactamente el cambio que podría haberse
+llevado esa protección por delante. No lo hace: la pantalla es el cuarto sitio.
+Por debajo de 1.200 el campo da error, se explica, y Guardar se apaga.
+
+El texto costó varias vueltas. No riñe y no dice «consulta a un profesional» como
+quien se quita de en medio:
+
+> Por debajo de 1.200 kcal al día no se come bien, y no es algo que se arregle
+> teniendo cuidado. Si tu caso necesita menos, eso lo lleva alguien que te vea:
+> nosotros no sabemos lo suficiente de ti para ponerlo.
+
+Y **1.200 justo sí se puede**. Es un suelo, no una pared: hay una prueba para eso
+(F15-N2), porque un límite que en la práctica empieza en 1.201 es otro límite.
+
+### Los macros se avisan, no se bloquean
+
+Las calorías SON los macros: 4 por gramo de proteína y de carbohidrato, 9 por el
+de grasa. Si pones unos macros que no suman tu meta, el diario acaba enseñando
+dos cifras que no se hablan entre ellas.
+
+Así que se dice, con la diferencia exacta, y hay un botón para cuadrar los
+carbohidratos — que son el resto en la fórmula del alta, porque la proteína va
+por peso corporal y la grasa por porcentaje de la energía.
+
+Pero **no bloquea**. Que los macros no cuadren con las calorías no hace daño a
+nadie, y puede que lo quieras así. El suelo se aplica; esto se avisa. No es la
+misma clase de cosa y no merece la misma respuesta.
+
+### Un fallo viejo que salió a la luz aquí
+
+«Volver a calcularlo» tenía que rehacer la cuenta del cuestionario. Al escribirlo
+me encontré con que **anotar un peso nuevo nunca ha tocado `profile.weightKg`**.
+El perfil se quedó con el peso del día del alta, para siempre.
+
+Hasta ahora no se notaba, porque el objetivo se calculaba una vez y ya. En el
+momento en que hay un botón para recalcular, el fallo se vuelve visible: te
+devolvería un número viejo con cara de nuevo.
+
+Así que el recálculo usa **el último peso anotado** si lo hay, y lo dice en vez de
+dar un número suelto: «Saldría 2.030 kcal, con los 75 kg que anotaste la última
+vez». Sin báscula, dice que usa el del alta y dónde pesarse. No he tocado el
+perfil por debajo: cambiarle el peso al usuario sin decírselo es justo el tipo de
+cosa que esta app no hace.
+
+### Dos rayas seguidas, otra vez
+
+El mismo fallo de maquetación que en la pantalla de comidas, cometido de nuevo
+dos pantallas después: una fila con borde inferior seguida de un `Divider`. Lo vi
+en la captura. Queda anotado en `components.md` para que sea una regla y no una
+cosa que me vuelva a pasar.
+
+### Lo que no he tocado
+
+**«Recomposición» da los mismos números que «Mantener».** `buildGoal` no tiene
+una rama para `recomp`, así que cae en el `delta = 0` de mantener, y la proteína
+es 1,6 g/kg en los cuatro casos. Es una opción que parece una elección y no lo
+es. Está en `features.csv` como función aparte (`should`, sin hacer en las dos
+apps) y arreglarla es decidir qué debe hacer, no un cabo suelto de esta pantalla.
+Lo digo aquí para que no parezca que está hecho porque el botón existe.

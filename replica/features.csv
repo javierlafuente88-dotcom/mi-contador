@@ -1,7 +1,7 @@
 feature,area,priority,original,clone,notes
 Cuestionario de alta y perfil,onboarding,must,yes,yes,S01. Sexo edad altura peso actividad objetivo
 Calculo de calorias y macros objetivo,onboarding,must,yes,yes,"S02. Formula abierta Mifflin-St Jeor o Harris-Benedict | Mifflin-St Jeor, formula publica"
-Objetivos editables por el usuario,objetivos,must,yes,no,Premium en la original. Gratis en la nuestra
+Objetivos editables por el usuario,objetivos,must,yes,yes,"Premium en la original. Gratis en la nuestra | Calorias y los tres macros. El suelo de 1200 sigue aplicandose aqui tambien: 1200 justo si, menos no. Los macros que no cuadran se avisan, no se bloquean"
 Objetivos distintos por dia,objetivos,could,yes,no,La original lo anadio en v23.2.3 jul 2026
 Objetivo de recomposicion corporal,objetivos,should,no,no,3 resenas lo piden. La original solo ofrece bajar mantener o ganar
 Limite de seguridad en el deficit,seguridad,must,no,yes,"La original acepta deficits peligrosos. 2 resenas independientes | Suelo de 1200 kcal aplicado en buildGoal, no es un aviso ignorable"
