@@ -30,8 +30,8 @@ Reportar alimento con datos erroneos,datos,should,yes,no,S25. Existe pero no res
 Base de alimentos por pais,datos,must,yes,partial,La original la particiona por pais. Es arquitectura no un extra | Columna country_code lista en el esquema; sin pantalla para cambiarla
 Base de alimentos abierta Open Food Facts,datos,must,no,no,Nuestra via. Peor cobertura inicial. Riesgo numero 1
 Base de alimentos USDA FoodData Central,datos,must,no,yes,"49 alimentos genericos, emparejados por fdcId con 4 filtros y verificados con Atwater"
-Numero de comidas al dia configurable,plan,must,yes,partial,Hasta 5 en la original. 4 en el plan gratis | 4 comidas por defecto sin tope en el modelo; falta la pantalla para editarlas
-Merienda y comidas culturales propias,plan,should,no,no,10 resenas. Un usuario pide hasta 10 comidas
+Numero de comidas al dia configurable,plan,must,yes,yes,"Hasta 5 en la original. 4 en el plan gratis | Sin tope: renombrar, reordenar, anadir y quitar. Quitar MUEVE lo registrado a otra comida, de todos los dias, y lo dice antes"
+Merienda y comidas culturales propias,plan,should,no,yes,"10 resenas. Un usuario pide hasta 10 comidas | Las comidas las pone y las llama el usuario; diez caben"
 Porcentaje de calorias por comida,plan,should,yes,no,S14
 Plan de comidas automatico,plan,should,yes,no,Premium. El corazon del conflicto actual
 Catalogo de recetas navegable y filtrable,plan,must,no,yes,"LO QUE QUITARON. 131 resenas sobre recetas. Nuestro diferenciador | 18 recetas propias. Filtros por momento del dia y por atributos, combinables"

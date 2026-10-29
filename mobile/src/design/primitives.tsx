@@ -62,16 +62,21 @@ export function Button({
   onPress,
   variant = "primary",
   disabled,
+  a11yLabel,
 }: {
   label: string;
   onPress: () => void;
   variant?: "primary" | "secondary" | "ghost" | "danger";
   disabled?: boolean;
+  /** Para cuando el texto visible se repite y solo tiene sentido por donde
+   *  esta: cuatro botones "Subir" seguidos se leen igual y no se sabe cual
+   *  es cual. Aqui va el nombre completo: "Subir Merienda". */
+  a11yLabel?: string;
 }) {
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={label}
+      accessibilityLabel={a11yLabel ?? label}
       accessibilityState={{ disabled: !!disabled }}
       disabled={disabled}
       onPress={onPress}

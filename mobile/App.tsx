@@ -12,6 +12,7 @@ import { Auth } from "./src/screens/Auth";
 import { Day } from "./src/screens/Day";
 import { Onboarding } from "./src/screens/Onboarding";
 import { Codigo } from "./src/screens/Codigo";
+import { Comidas } from "./src/screens/Comidas";
 import { Alergias } from "./src/screens/Alergias";
 import { CrearAlimento } from "./src/screens/CrearAlimento";
 import { CrearReceta } from "./src/screens/CrearReceta";
@@ -32,7 +33,8 @@ type Route =
   | { name: "crearAlimento"; slotId: string; nombre: string }
   | { name: "crearReceta"; slotId: string }
   | { name: "codigo"; slotId: string }
-  | { name: "alergias"; slotId: string; volverA: "carta" | "add" };
+  | { name: "alergias"; slotId: string; volverA: "carta" | "add" }
+  | { name: "comidas" };
 
 // Resuelven tambien lo que haya creado el usuario, no solo la semilla.
 const foodById = (id: string): Food | undefined => buscarAlimento(id);
@@ -119,6 +121,24 @@ export default function App() {
     setRoute({ name: "day" });
   }
 
+  /** Las comidas cambian el diario entero, así que después hay que releer las
+   *  dos cosas: la lista y lo registrado, que puede haber cambiado de sitio. */
+  async function recargarComidas() {
+    setSlots(await store.listMealSlots());
+    await refresh();
+  }
+
+  async function guardarComidas(nuevas: MealSlot[]) {
+    await store.saveMealSlots(nuevas);
+    await recargarComidas();
+    setRoute({ name: "day" });
+  }
+
+  async function quitarComida(id: string, moverA: string) {
+    await store.deleteMealSlot(id, moverA);
+    await recargarComidas();
+  }
+
   async function remove(entryId: string) {
     await store.removeEntry(entryId);
     await refresh();
@@ -160,6 +180,7 @@ export default function App() {
             onAdd={(slotId) => setRoute({ name: "add", slotId })}
             onCarta={(slotId) => setRoute({ name: "carta", slotId })}
             onProgreso={() => setRoute({ name: "progreso" })}
+            onComidas={() => setRoute({ name: "comidas" })}
             onRemove={remove}
           />
         )}
@@ -192,6 +213,15 @@ export default function App() {
 
         {route.name === "progreso" && (
           <Progreso goal={goal} onVolver={() => setRoute({ name: "day" })} />
+        )}
+
+        {route.name === "comidas" && (
+          <Comidas
+            slots={slots}
+            onGuardar={guardarComidas}
+            onQuitar={quitarComida}
+            onVolver={() => setRoute({ name: "day" })}
+          />
         )}
 
         {route.name === "carta" && goal && (

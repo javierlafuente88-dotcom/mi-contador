@@ -115,3 +115,28 @@ fibra» cuando lo cierto es «no lo sé».
 | F13-E4 | los totales sobreviven a recargar |
 | F13-E5 | un plato de la carta también desglosa, no solo los alimentos sueltos |
 | F13-A1 | el diario con macros pasa axe (wcag2a + wcag2aa, sin graves) |
+
+## F14 — Editar las comidas del día (`e2e/f14-comidas.spec.ts`)
+
+La original te deja cinco comidas, y cuatro en el plan gratis. El tope no sale de
+la nutrición: sale del precio. Aquí son filas en una tabla y no hay tope.
+
+El caso que de verdad importa es **E3**, y su hermano **E8**: quitar una comida no
+puede borrar lo que comiste. Que dejes de merendar hoy no cambia lo que
+merendaste el martes pasado, y un contador que pierde registros al tocar los
+ajustes es un contador en el que no se puede confiar.
+
+| id | qué comprueba |
+| --- | --- |
+| F14-H1 | renombrar una comida se ve en el diario |
+| F14-H2 | se pueden añadir: seis, cuando la original da cuatro gratis |
+| F14-H3 | subir y bajar cambia el orden del diario |
+| F14-E1 | una comida sin nombre no se puede guardar |
+| F14-E2 | sin cambios, Guardar está apagado |
+| F14-E3 | quitar una comida **mueve** lo registrado y lo dice antes de tocarlo; el total no se mueve |
+| F14-E4 | «Dejarlo» no quita nada |
+| F14-E5 | con una sola comida no se ofrece quitarla: el diario necesita un sitio donde anotar |
+| F14-E6 | los cambios sobreviven a recargar |
+| F14-E7 | quitar una comida recién añadida no habla de mover nada, porque no hay nada |
+| F14-E8 | lo registrado **otros días** también se mueve (se mete por debajo: no hay interfaz para anotar en otro día) |
+| F14-A1 | la pantalla pasa axe (wcag2a + wcag2aa, sin graves) |

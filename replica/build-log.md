@@ -565,3 +565,70 @@ detecta en qué orden corriste las pruebas.
 
 Ahora las capturas se saltan en escritorio. Por eso **todas** han cambiado en este
 commit: han pasado de ser de escritorio a ser de móvil, que es lo que decían ser.
+
+---
+
+## Las comidas del día se editan
+
+Cuatro comidas fijas: Desayuno, Almuerzo, Merienda, Cena. Estaban clavadas en el
+código desde el hito 1, aunque la base de datos nunca tuvo tope — `meal_slots` es
+una tabla, y ya decía en un comentario «sin límite de 3 ni de 4. Si alguien
+quiere 7 comidas, son 7 filas». Faltaba la pantalla.
+
+Ahora se pueden renombrar, reordenar, añadir y quitar. Sin tope. La original te
+da cinco, y cuatro en el plan gratis; ese número no sale de la nutrición, sale
+del precio. Diez reseñas piden merienda y comidas propias, y una pide diez.
+
+### Quitar una comida no puede borrar lo que comiste
+
+Esta es la decisión de la función, y se parece mucho a las dos anteriores.
+
+Si quitas «Merienda», ¿qué pasa con las lentejas que anotaste ahí el martes? El
+esquema ya tenía una opinión: `meal_slot_id` es `on delete set null`, o sea que
+Postgres conserva el registro y lo deja sin comida. Pero eso, en la pantalla,
+habría sido lo peor de los dos mundos: el diario agrupa por comida, así que el
+registro **desaparecería de la vista y seguiría sumando en el total**. Un número
+que no cuadra con nada de lo que se ve.
+
+Así que lo registrado se **mueve** a otra comida, y se dice cuál antes de tocar
+nada: «Lo que ya tengas registrado en Merienda se mueve a Almuerzo, de todos los
+días. No se borra nada de lo que comiste.»
+
+El orden importa y por eso está escrito en el código: primero se mueven los
+registros, **después** se borra la comida. Al revés, `on delete set null` se
+adelantaría y los dejaría huérfanos.
+
+Renombrar y reordenar se guardan con el botón Guardar. Quitar va aparte y es
+inmediato, porque toca lo que ya tienes anotado y eso se pregunta en el momento,
+no se mete en un lote junto a un cambio de nombre.
+
+### Lo que encontró mirar la pantalla, otra vez
+
+Dos cosas, con las once pruebas ya en verde:
+
+**Cuatro «Subir / Bajar / Quitar» idénticos.** Con la vista se sabe cuál es cuál
+porque están debajo de su comida. Con un lector de pantalla se oye «Subir, Bajar,
+Quitar, Subir, Bajar, Quitar…» y no hay forma de saber qué se está pulsando. Axe
+no lo detecta: los botones tienen nombre, solo que el mismo. Ahora el texto
+visible sigue siendo corto — la columna es estrecha — pero el que se lee en voz
+alta dice «Quitar Merienda». El primitivo `Button` tiene un `a11yLabel` para
+eso.
+
+Y la etiqueta del campo pasó de «Comida 3» a «Nombre de la comida 3», que es lo
+que de verdad estás editando.
+
+**Dos rayas seguidas** entre la última comida y «Añadir una comida»: el borde de
+la fila más el separador. Parecía un fallo de maquetación porque lo era.
+
+### Lo que no está
+
+El **reparto de calorías por comida**. La columna `kcal_percent` existe en el
+esquema y el trigger de alta la rellena (25 / 35 / 10 / 30), pero nada la usa ni
+la enseña. Es otra función de la lista, no un cabo suelto de esta. La pantalla lo
+dice en voz baja al final, para que nadie dé por hecho que esos porcentajes se
+están aplicando.
+
+**Sobre el identificador:** S26 es nuestro. `recon.md` llega hasta S25, que es el
+mapa de la original; esta pantalla no existe allí, porque allí el número de
+comidas no se edita, se compra. No la he metido en `recon.md` para no ensuciar el
+mapa de la otra app con una pantalla nuestra.

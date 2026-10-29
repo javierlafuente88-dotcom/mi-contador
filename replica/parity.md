@@ -1,15 +1,15 @@
 # Paridad con la original
 
-2026-10-28 · referencia: Fitia iOS 25.2.1
+2026-10-29 · referencia: Fitia iOS 25.2.1
 
 ## El número
 
-# 43,7 / 100
+# 45,6 / 100
 
-**10 de 14 must-have.** Ha subido de 20,9 a 43,7 en dos días de hito 2: la carta, el
-peso, crear alimentos y recetas, el código de barras, el respeto a las alergias y el
-desglose de macros en el diario. Sigue sin ser publicable: faltan cuatro must-have y
-el marcador lo dice sin maquillaje.
+**11 de 14 must-have.** Ha subido de 20,9 a 45,6 en el hito 2: la carta, el peso,
+crear alimentos y recetas, el código de barras, el respeto a las alergias, el
+desglose de macros y las comidas editables. Sigue sin ser publicable: faltan tres
+must-have y el marcador lo dice sin maquillaje.
 
 | área | puntuación | funciones |
 | --- | --- | --- |
@@ -17,8 +17,8 @@ el marcador lo dice sin maquillaje.
 | núcleo | **100,0** | 2 |
 | progreso | **66,7** | 4 |
 | datos | 62,5 | 5 |
+| plan | 35,3 | 8 |
 | registro | 34,6 | 6 |
-| plan | 26,5 | 8 |
 | objetivos, nutrición, motivación, ayuno, integraciones, plataforma, coach | **0,0** | 12 |
 
 Lo construido está bien construido; lo que falta es casi todo lo demás.
@@ -81,8 +81,8 @@ su ficha de tienda y las 2.451 reseñas de `replica/reviews.csv`.
 
 ### Todavía no publicable
 
-Por la regla de la skill: **4 must-have sin hacer**. No por fallos — no hay ningún
-S1 ni S2 abierto y las 170 pruebas pasan — sino porque la app todavía no hace lo
+Por la regla de la skill: **3 must-have sin hacer**. No por fallos — no hay ningún
+S1 ni S2 abierto y las 187 pruebas pasan — sino porque la app todavía no hace lo
 suficiente.
 
 Lo que sí se puede decir: **lo que existe funciona y está probado**, y en siete de
@@ -92,19 +92,15 @@ nueve flujos comparables ya nos comportamos mejor que la original.
 
 ## Lo que queda, por orden
 
-Las cinco de la primera versión de este documento están hechas: la carta, el peso,
-crear alimentos y recetas, el código de barras y el respeto a las alergias. Quedan
-estas cuatro.
+Las cinco de la primera versión de este documento están hechas, y también las
+comidas editables. Quedan estas tres.
 
-1. **Número de comidas al día configurable**. El modelo ya aguanta cualquier
-   número; faltan las cuatro fijas y la pantalla para cambiarlas. Diez reseñas
-   piden merienda y comidas propias, y una pide hasta diez.
-2. **Objetivos editables por el usuario**. En la original es premium. El alta
+1. **Objetivos editables por el usuario**. En la original es premium. El alta
    calcula bien, pero si no te convence su cuenta no tienes dónde tocarla.
-3. **Base de alimentos por país**. La columna `country_code` está en el esquema
+2. **Base de alimentos por país**. La columna `country_code` está en el esquema
    desde el principio y no hay pantalla que la use. Es arquitectura, no un extra:
    la original particiona por país porque un «pan» mexicano no es uno español.
-4. **Leer el código de barras con la cámara**. La búsqueda por código ya funciona
+3. **Leer el código de barras con la cámara**. La búsqueda por código ya funciona
    contra Open Food Facts; falta la cámara, y eso pide compilación nativa.
 
-Las cuatro son `must`. Hacerlas pone la paridad por encima del 55 %.
+Las tres son `must`. Hacerlas pone la paridad por encima del 55 %.

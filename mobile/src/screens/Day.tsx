@@ -59,6 +59,7 @@ export function Day({
   onAdd,
   onCarta,
   onProgreso,
+  onComidas,
   onRemove,
 }: {
   dateLabel: string;
@@ -70,6 +71,7 @@ export function Day({
   onAdd: (slotId: string) => void;
   onCarta: (slotId: string) => void;
   onProgreso: () => void;
+  onComidas: () => void;
   onRemove: (entryId: string) => void;
 }) {
   /** Una entrada puede ser un alimento suelto o una receta de la carta. */
@@ -244,6 +246,11 @@ export function Day({
           decirte lo que sabemos.
         </Body>
       )}
+
+      {/* Abajo y en ghost a proposito: se toca una vez y no se vuelve. */}
+      <View style={{ marginTop: space[5] }}>
+        <Button label="Editar las comidas" variant="ghost" onPress={onComidas} />
+      </View>
 
       <View style={{ height: space[7] }} />
     </Screen>

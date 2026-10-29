@@ -113,4 +113,17 @@ test.describe("capturas de referencia", () => {
     await page.getByRole("button", { name: "Sésamo", exact: true }).click();
     await page.screenshot({ path: `${DESTINO}/S11-crear-alimento.png`, fullPage: true });
   });
+
+  test("S26 editar las comidas", async ({ page }) => {
+    await empezarLimpio(page);
+    await altaCompleta(page);
+    await page.getByRole("button", { name: "Editar las comidas" }).click();
+    await page.screenshot({ path: `${DESTINO}/S26-comidas.png`, fullPage: true });
+
+    // Y el aviso de que lo registrado se mueve, que es la pantalla que de
+    // verdad hay que mirar antes de confiar en ella.
+    await page.getByRole("button", { name: "Quitar Merienda", exact: true }).click();
+    await page.getByText(/se mueve a/).scrollIntoViewIfNeeded();
+    await page.screenshot({ path: `${DESTINO}/S26-quitar-comida.png` });
+  });
 });

@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getSupabase } from "./supabaseClient";
+import { esNueva } from "./types";
 import type { Alergeno, Food, Goal, LogEntry, MealSlot, Profile, Recipe, Store, WeightEntry } from "./types";
 
 /** El mismo contrato que el almacen falso del hito 1.
@@ -222,6 +223,53 @@ export const supabaseStore: Store = {
       .order("position");
     if (error) throw error;
     return (data ?? []) as MealSlot[];
+  },
+
+  async saveMealSlots(slots) {
+    const user = await uid();
+    // Las bajas no pasan por aqui nunca: van por deleteMealSlot, que antes
+    // mueve lo registrado. Aqui solo hay altas, renombres y reordenes.
+    for (const [i, s] of slots.entries()) {
+      if (esNueva(s.id)) continue;
+      const { error } = await db()
+        .from("meal_slots")
+        .update({ name: s.name, position: i + 1 })
+        .eq("id", s.id)
+        .eq("user_id", user);
+      if (error) throw error;
+    }
+
+    // Las nuevas traen un id provisional de la pantalla; el de verdad lo
+    // pone Postgres.
+    const nuevas = slots
+      .map((s, i) => ({ s, i }))
+      .filter(({ s }) => esNueva(s.id));
+    if (nuevas.length > 0) {
+      const { error } = await db()
+        .from("meal_slots")
+        .insert(nuevas.map(({ s, i }) => ({ user_id: user, name: s.name, position: i + 1 })));
+      if (error) throw error;
+    }
+  },
+
+  async deleteMealSlot(id, moverA) {
+    const user = await uid();
+    // Primero se mueve lo registrado, y solo despues se borra la comida. Al
+    // reves, `on delete set null` dejaria los registros sin comida: seguirian
+    // sumando en el total y no se verian en ninguna parte del diario.
+    const { error: eMover } = await db()
+      .from("log_entries")
+      .update({ meal_slot_id: moverA })
+      .eq("meal_slot_id", id)
+      .eq("user_id", user);
+    if (eMover) throw eMover;
+
+    const { error } = await db()
+      .from("meal_slots")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user);
+    if (error) throw error;
   },
 
   async searchFoods(query) {

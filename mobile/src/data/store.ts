@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import raw from "./foods.json";
 import rawRecipes from "./recipes.json";
+import { esNueva } from "./types";
 import type { Alergeno, Food, Goal, LogEntry, MealSlot, NuevaReceta, NuevoAlimento, Profile, Recipe, Store, WeightEntry } from "./types";
 
 /** Almacen falso del hito 1. Mismas firmas que tendra el de Supabase,
@@ -100,6 +101,30 @@ export const store: Store = {
   },
   async listMealSlots() {
     return read<MealSlot[]>(K.slots, DEFAULT_SLOTS);
+  },
+  async saveMealSlots(slots) {
+    // Se renumera aqui, y el id provisional de la pantalla se cambia por uno
+    // de verdad: igual que hara Postgres. La pantalla entrega orden y nombres,
+    // nada mas.
+    await write(
+      K.slots,
+      slots.map((s, i) => ({
+        id: esNueva(s.id) ? `comida:${Date.now()}:${i}` : s.id,
+        name: s.name,
+        position: i + 1,
+      })),
+    );
+  },
+  async deleteMealSlot(id, moverA) {
+    const slots = await read<MealSlot[]>(K.slots, DEFAULT_SLOTS);
+    await write(
+      K.slots,
+      slots.filter((s) => s.id !== id).map((s, i) => ({ ...s, position: i + 1 })),
+    );
+    // Lo registrado se MUEVE, no se borra. De todos los dias, no solo de hoy.
+    const all = await read<LogEntry[]>(K.entries, []);
+    const tocadas = all.map((e) => (e.mealSlotId === id ? { ...e, mealSlotId: moverA } : e));
+    await write(K.entries, tocadas);
   },
   async searchFoods(query) {
     const todos = [...MIOS_FOODS, ...FOODS];

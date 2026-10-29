@@ -112,6 +112,14 @@ export interface Store {
   getGoal(): Promise<Goal | null>;
   saveGoal(g: Goal): Promise<void>;
   listMealSlots(): Promise<MealSlot[]>;
+  /** La lista entera reemplaza a la anterior: anadir, renombrar y reordenar.
+   *  Las posiciones se renumeran al guardar, asi que la pantalla solo tiene
+   *  que entregar el orden que quiere. */
+  saveMealSlots(slots: MealSlot[]): Promise<void>;
+  /** Borra una comida y MUEVE a otra lo que ya estaba registrado en ella.
+   *  Nunca borra registros: que dejes de merendar no significa que no
+   *  merendaras el martes pasado. */
+  deleteMealSlot(id: string, moverA: string): Promise<void>;
   searchFoods(query: string): Promise<Food[]>;
   getFood(id: string): Promise<Food | null>;
   /** El catalogo. Sin monedas, sin limites, sin generar nada:
@@ -139,3 +147,8 @@ export interface Store {
   addEntry(e: Omit<LogEntry, "id">): Promise<LogEntry>;
   removeEntry(id: string): Promise<void>;
 }
+
+/** Id provisional de una comida que la pantalla acaba de crear y que todavia
+ *  no existe en ningun almacen. El almacen lo cambia por el suyo al guardar. */
+export const NUEVA = "nueva:";
+export const esNueva = (id: string) => id.startsWith(NUEVA);

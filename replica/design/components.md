@@ -98,6 +98,28 @@ a11y       texto plano en orden etiqueta-valor; sin aria-label duplicado
 pantallas  S04
 ```
 
+### MealEditor — editar las comidas (S26)
+```
+que hace  renombrar, reordenar, anadir y quitar. Sin tope: la original da 5,
+          y 4 gratis, pero ese numero sale del precio, no de la nutricion
+guardado  nombres y orden van con el boton Guardar. QUITAR va aparte y es
+          inmediato: toca lo registrado, y eso se pregunta en el momento,
+          no se mete en un lote junto a un cambio de nombre
+quitar    lo registrado NO se borra: se MUEVE a la comida de encima (o la de
+          debajo si es la primera), y se dice cual antes de tocar nada.
+          "de todos los dias", porque es de todos los dias
+orden     primero mover los registros, DESPUES borrar la comida. Al reves,
+          `on delete set null` los deja huerfanos: invisibles en el diario
+          agrupado por comida, y sumando en el total
+limite    la ultima no se quita. El diario necesita un sitio donde anotar
+a11y      el texto visible es corto ("Subir") porque la columna es estrecha;
+          el leido nombra su comida ("Subir Merienda"). Cuatro botones con
+          el mismo nombre pasan axe y son inusables con lector de pantalla
+tokens    campo: Field · acciones: Button ghost · aviso: Notice danger ·
+          confirmar: Button danger. Sin iconos de flecha: palabras
+pantallas  S26, entrada desde S04
+```
+
 ### MealGroup — bloque de comida
 ```
 variantes  cualquier nombre que el usuario cree (Desayuno, Merienda, Pre-entreno...)
@@ -129,6 +151,10 @@ tokens     primario: bg accent, texto on-accent, radio input ·
            peligro: bg danger, texto on-accent
 a11y       elemento de botón real. Cargando mantiene la etiqueta y añade
            aria-busy; el texto no se sustituye por un spinner mudo.
+           Cuando el texto visible se repite y solo tiene sentido por dónde
+           está (cuatro "Subir" en una lista), `a11yLabel` da el nombre
+           completo: "Subir Merienda". Varios botones con el mismo nombre
+           pasan axe y son inusables con lector de pantalla.
 copy       dice lo que hace: "Registrar", "Guardar cambios", "Borrar receta".
            Nunca "Enviar". Nunca una flecha pegada al texto.
 ```
