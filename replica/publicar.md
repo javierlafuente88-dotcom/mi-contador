@@ -1,0 +1,105 @@
+# Publicar la app y usarla desde el móvil
+
+La app funciona como sitio web estático: HTML, JavaScript y un par de imágenes.
+Eso se puede colgar gratis en GitHub Pages, añadirlo a la pantalla de inicio del
+móvil, y se abre como una app. Vale igual para iPhone y para Android.
+
+**No hace falta instalar ni contratar ninguna API.** Las dos que usa ya están:
+Supabase (creado, con el esquema aplicado) y Open Food Facts (abierta, sin
+clave).
+
+---
+
+## Lo que hay que decidir antes
+
+**El repositorio tiene que ser público.** GitHub Pages desde uno privado pide
+plan de pago. No hay nada secreto: todo el código está escrito de cero y la
+clave que se publica es la `sb_publishable_`, que no da acceso a nada por sí
+sola. Lo que protege los datos son las políticas RLS, probadas contra la base
+real con 8 de 8 aislado. La `sb_secret_` no está en el proyecto y no debe
+estarlo nunca.
+
+Dicho de otro modo: **esa clave va a ser visible en el navegador de cualquiera,
+y es como tiene que ser.** Las variables `EXPO_PUBLIC_*` se incrustan dentro del
+JavaScript al compilar, así que esto pasaría igual en cualquier hosting.
+
+---
+
+## Los pasos
+
+**1. Crear el repositorio en GitHub** y empujar el proyecto. Hoy está solo en
+disco, sin remoto.
+
+```bash
+git remote add origin https://github.com/TUUSUARIO/mi-contador.git
+git push -u origin master
+```
+
+**2. Que el nombre del repositorio coincida con la ruta.** GitHub Pages sirve en
+`TUUSUARIO.github.io/mi-contador/`, una subcarpeta, y la app tiene que saberlo o
+sale **una página en blanco sin ningún error que lo explique**. Está puesto en
+`mobile/app.json`:
+
+```json
+"experiments": { "baseUrl": "/mi-contador" }
+```
+
+Si llamas al repositorio de otra forma, cambia ahí el nombre. Si lo llamas
+`TUUSUARIO.github.io`, se sirve en la raíz: entonces quita `baseUrl` entero.
+
+**3. Guardar las dos variables como secretos del repositorio.** En
+`Settings → Secrets and variables → Actions → New repository secret`, con estos
+nombres exactos, y los valores que están en `mobile/.env.local`:
+
+- `EXPO_PUBLIC_SUPABASE_URL`
+- `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+
+**4. Encender Pages.** En `Settings → Pages`, en «Source» elegir **GitHub
+Actions** (no «Deploy from a branch»).
+
+**5. Ya está.** Cada vez que se empuje a `master`, el flujo de
+`.github/workflows/pages.yml` compila y publica. La primera vez tarda un par de
+minutos; la dirección sale en la pestaña Actions y en Settings → Pages.
+
+**6. Decirle a Supabase cuál es esa dirección.** En el panel de Supabase,
+`Authentication → URL Configuration`, añadir
+`https://TUUSUARIO.github.io/mi-contador/` a las URLs de redirección. Sin esto,
+el correo de confirmación de la cuenta no vuelve a la app.
+
+**7. En el móvil:** abrir la dirección, y en el menú del navegador «Añadir a la
+pantalla de inicio». Queda con su icono y su nombre, y se abre sin la barra del
+navegador.
+
+---
+
+## Lo que no va a funcionar, y por qué
+
+**Leer el código de barras con la cámara.** No está construido: necesita
+compilación nativa, que es justo lo que este camino evita. Buscar escribiendo el
+número de código **sí funciona**, contra Open Food Facts.
+
+**Sin conexión.** La app necesita internet para hablar con Supabase. Estaba ya
+en la lista de huecos conocidos y sigue ahí.
+
+---
+
+## Lo que hay que mirar de vez en cuando
+
+**Supabase pausa los proyectos del plan gratis tras una semana sin actividad.**
+Usándola a diario no pasa nunca. Si se deja un mes, hay que despausarla desde su
+panel: no se pierde nada, pero la app no responderá hasta que se haga.
+
+---
+
+## Dos detalles que se arreglaron al preparar esto
+
+La plantilla HTML que genera Expo venía con `lang="en"` y el título `mobile`.
+Lo primero haría que un lector de pantalla leyese un texto en español con
+fonética inglesa; lo segundo es el nombre que habría quedado bajo el icono en la
+pantalla de inicio. Hay una plantilla propia en `mobile/public/index.html`.
+
+Y hay un fichero vacío, `mobile/public/.nojekyll`, que parece basura y no lo es:
+GitHub Pages pasa todo por Jekyll, y **Jekyll se salta las carpetas que empiezan
+por guión bajo**. El JavaScript de la app vive en `_expo/`. Sin ese fichero, el
+sitio se publica sin su código y sale en blanco. Es un fallo que no se puede
+reproducir en local, porque solo lo hace GitHub.

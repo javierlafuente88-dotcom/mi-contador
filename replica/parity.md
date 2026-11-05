@@ -96,11 +96,19 @@ nueve flujos comparables ya nos comportamos mejor que la original.
 Las cinco de la primera versión de este documento están hechas, y también las
 comidas y el objetivo editables. Quedan estas dos.
 
-1. **Base de alimentos por país**. La columna `country_code` está en el esquema
-   desde el principio y no hay pantalla que la use. Es arquitectura, no un extra:
-   la original particiona por país porque un «pan» mexicano no es uno español.
+1. **Base de alimentos por país**. Y no es una pantalla: la arquitectura está
+   entera (columna, índice y el filtro ya puesto en `search_foods`). Lo que
+   falta son **datos**: los 49 alimentos son genéricos de USDA y tienen
+   `country_code` nulo, así que un selector de país filtraría una base donde
+   todo es genérico y daría siempre los mismos 49. Hace falta importar productos
+   por país de Open Food Facts; es trabajo de datos, no de interfaz.
 2. **Leer el código de barras con la cámara**. La búsqueda por código ya funciona
    contra Open Food Facts; falta la cámara, y eso pide compilación nativa: es un
    salto de otra clase, no otra pantalla más.
 
 Las dos son `must`. Hacerlas pone la paridad por encima del 55 %.
+
+Una nota sobre la segunda: la app se publica como sitio web (`replica/publicar.md`),
+y por ese camino la cámara no sale de `expo-camera`, que es nativo. Tendría que
+hacerse con la cámara del navegador, que es otra implementación. No es imposible,
+pero no es «lo mismo pero luego»: es volver a escribirlo.

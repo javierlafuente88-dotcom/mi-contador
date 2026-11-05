@@ -1,0 +1,66 @@
+# Publica la app en GitHub Pages cada vez que se empuja a master.
+#
+# Compila aquí en vez de subir la carpeta `dist` al repositorio: `dist` está
+# en .gitignore a propósito, porque es resultado, no fuente. Si se subiera a
+# mano, antes o después habría una versión publicada que no corresponde a
+# ningún commit.
+name: Publicar en GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  # Para poder lanzarlo a mano desde la pestaña Actions.
+  workflow_dispatch:
+
+# Lo que Pages necesita para poder desplegar.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Si se empujan dos cosas seguidas, que no se pisen los despliegues.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  construir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Instalar dependencias
+        working-directory: mobile
+        run: npm ci
+
+      - name: Exportar el sitio
+        working-directory: mobile
+        # Estas dos acaban DENTRO del JavaScript compilado y se pueden leer en
+        # el navegador: así está diseñado. La clave publishable no da acceso a
+        # nada por sí sola, lo que protege los datos son las políticas RLS.
+        # Van como secretos del repositorio para no tenerlas escritas aquí.
+        env:
+          EXPO_PUBLIC_DATA_SOURCE: supabase
+          EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+          EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+        run: npx expo export --platform web
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: mobile/dist
+
+  desplegar:
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
+    steps:
+      - id: pages
+        uses: actions/deploy-pages@v4

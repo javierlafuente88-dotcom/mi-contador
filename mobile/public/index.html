@@ -1,0 +1,49 @@
+<!doctype html>
+<!-- Plantilla propia. La que genera Expo pone lang="en" y el título "mobile",
+     y las dos cosas se ven: el lector de pantalla leería un texto en español
+     con fonética inglesa, y "mobile" es el nombre que quedaría bajo el icono
+     al añadirla a la pantalla de inicio. -->
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover" />
+    <title>mi-contador</title>
+    <meta name="description" content="Contador de calorías: la cuenta del día, con una carta de platos en vez de un plan que se paga." />
+
+    <!-- Para «añadir a la pantalla de inicio»: sin barra del navegador, y el
+         color de la barra de estado a juego con el fondo de la app. -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="mi-contador" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="manifest" href="manifest.webmanifest" />
+
+    <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
+    <style id="expo-reset">
+      /* These styles make the body full-height */
+      html,
+      body {
+        height: 100%;
+      }
+      /* These styles disable body scrolling if you are using <ScrollView> */
+      body {
+        overflow: hidden;
+      }
+      /* These styles make the root element full-height */
+      #root {
+        display: flex;
+        height: 100%;
+        flex: 1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <noscript>
+      Esta app necesita JavaScript para funcionar. Actívalo y vuelve a cargar la
+      página.
+    </noscript>
+    <div id="root"></div>
+  </body>
+</html>

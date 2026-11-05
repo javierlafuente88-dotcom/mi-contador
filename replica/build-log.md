@@ -709,3 +709,107 @@ es 1,6 g/kg en los cuatro casos. Es una opción que parece una elección y no lo
 es. Está en `features.csv` como función aparte (`should`, sin hacer en las dos
 apps) y arreglarla es decidir qué debe hacer, no un cabo suelto de esta pantalla.
 Lo digo aquí para que no parezca que está hecho porque el botón existe.
+
+---
+
+## La app, puesta donde se pueda usar
+
+Hasta aquí la app vivía en el PC: para verla en el móvil había que levantar un
+servidor y un túnel, y apagar el ordenador la apagaba. Eso no es tenerla.
+
+El camino elegido es publicarla como **sitio estático**. `expo export --platform
+web` deja una carpeta con HTML, JavaScript y un par de imágenes, y eso se cuelga
+gratis en GitHub Pages. Se añade a la pantalla de inicio y se abre como una app,
+en iPhone y en Android igual.
+
+Los otros dos caminos se descartaron por lo que cuestan: un `.apk` de Android
+es gratis pero deja fuera el iPhone, y el iPhone pide el programa de Apple, 99 $
+al año, que choca de frente con la regla de no pagar nada. Los pasos están en
+`replica/publicar.md`.
+
+### Tres cosas que se arreglaron al mirar lo que se iba a publicar
+
+**`lang="en"` en una app entera en español.** La plantilla HTML que genera Expo
+viene así. Un lector de pantalla habría leído todos nuestros textos con fonética
+inglesa — después de haberle puesto nombre a cada botón para que se entendieran.
+
+**El título era `mobile`.** El nombre que `create-expo-app` deja por defecto, y
+el que habría quedado escrito debajo del icono en la pantalla de inicio.
+
+Las dos salen de la misma plantilla, así que ahora hay una propia en
+`mobile/public/index.html`, con su manifiesto al lado para que el icono y el
+nombre salgan bien al añadirla.
+
+**Y una que no se puede reproducir en local.** GitHub Pages pasa todo por
+Jekyll, y Jekyll **se salta las carpetas que empiezan por guión bajo**. El
+JavaScript compilado vive en `_expo/`. Publicado tal cual, el sitio habría
+salido en blanco, sin error en ninguna parte, y buscándolo en el navegador no se
+habría encontrado nada: en local funciona. Por eso hay un fichero vacío llamado
+`mobile/public/.nojekyll`, que parece basura y es lo único que hace que esto
+funcione.
+
+### La ruta
+
+GitHub Pages sirve en `usuario.github.io/repositorio/`, una subcarpeta, y la
+exportación por defecto pide sus ficheros desde la raíz: página en blanco otra
+vez. Se arregla con `experiments.baseUrl` en `app.json`, que está puesto a
+`/mi-contador`.
+
+Probado de las dos maneras antes de escribirlo, sirviendo la carpeta exportada
+en local: en la raíz y colgando de `/mi-contador/`. En las dos arranca, monta y
+no da un solo error de consola. Y se comprobó que ponerlo no rompe el servidor
+de desarrollo con el que corren las 220 pruebas.
+
+### El secreto que no lo es
+
+La URL de Supabase y la clave `sb_publishable_` **se incrustan dentro del
+JavaScript** al compilar, así que cualquiera puede leerlas en el navegador. Es
+como está diseñado: esa clave no da acceso a nada por sí sola, y lo que protege
+los datos son las políticas RLS, que probamos contra la base real con 8 de 8
+aislado. La `sb_secret_` no está en el proyecto.
+
+Van como secretos del repositorio en el flujo de GitHub Actions, no escritas en
+el fichero. No porque sean secretas, sino porque el día que alguien copie ese
+fichero para otro proyecto no se lleve puesta la base de este.
+
+El flujo compila en GitHub en vez de subir la carpeta `dist`, que está en
+`.gitignore` a propósito. Si se subiera a mano, antes o después habría una
+versión publicada que no corresponde a ningún commit.
+
+---
+
+## La base por país no se construye, y el motivo no es pereza
+
+Era uno de los dos `must` que quedaban, así que fui a hacerlo y me encontré con
+esto:
+
+```
+alimentos con country_code distinto de null:  0 de 49
+```
+
+Los 49 son genéricos de USDA: arroz, lentejas, plátano. No son de ningún país
+porque no tienen por qué serlo.
+
+La arquitectura está entera y lleva ahí desde el principio: la columna
+`country_code` en `foods`, su índice, el campo en `profiles`, y la función
+`search_foods` ya filtra con `f.country_code is null or f.country_code = pais`.
+Lo único que falta son **los datos**, no la pantalla.
+
+Si construyera hoy el selector de país, filtraría una base en la que todos los
+alimentos son genéricos. Elegir México, Perú o España daría exactamente los
+mismos 49 resultados. Sería un ajuste que no ajusta nada: la clase de cosa que
+hace que la app parezca más completa de lo que es, que es justo lo contrario de
+lo que venimos haciendo con «no declarado» y con «sin datos».
+
+Tampoco cambiaría el código de barras: los códigos son únicos en todo el mundo y
+preguntamos al punto global de Open Food Facts, que devuelve el producto venga
+de donde venga.
+
+Así que en `features.csv` se queda en **`partial`**, con la nota de que falta
+importar alimentos por país. El marcador de paridad no sube por esto, y es
+correcto que no suba.
+
+Lo que haría falta de verdad: importar de Open Food Facts los productos de cada
+país con su `country_code`. Medimos la cobertura al principio del proyecto —
+18.075 productos en México, 6.870 en Chile, 2.861 en Perú — así que hay con qué.
+Es un trabajo de datos, no de interfaz, y es su propia tarea.

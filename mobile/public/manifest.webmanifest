@@ -1,0 +1,20 @@
+{
+  "name": "mi-contador",
+  "short_name": "mi-contador",
+  "description": "Contador de calorías: la cuenta del día, con una carta de platos en vez de un plan que se paga.",
+  "lang": "es",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
