@@ -1,5 +1,12 @@
 # Publicar la app y usarla desde el móvil
 
+> **Hecho el 2026-11-05.** Está en
+> **https://javierlafuente88-dotcom.github.io/mi-contador/**, repositorio
+> público `javierlafuente88-dotcom/mi-contador`, los dos secretos guardados y
+> Pages sirviendo desde GitHub Actions. Quedan dos cosas que solo se pueden
+> hacer desde el panel de Supabase, y están al final: **despausar el proyecto**
+> y **añadir esa dirección a las URLs de redirección**.
+
 La app funciona como sitio web estático: HTML, JavaScript y un par de imágenes.
 Eso se puede colgar gratis en GitHub Pages, añadirlo a la pantalla de inicio del
 móvil, y se abre como una app. Vale igual para iPhone y para Android.
@@ -31,12 +38,12 @@ JavaScript al compilar, así que esto pasaría igual en cualquier hosting.
 disco, sin remoto.
 
 ```bash
-git remote add origin https://github.com/TUUSUARIO/mi-contador.git
+git remote add origin https://github.com/javierlafuente88-dotcom/mi-contador.git
 git push -u origin master
 ```
 
 **2. Que el nombre del repositorio coincida con la ruta.** GitHub Pages sirve en
-`TUUSUARIO.github.io/mi-contador/`, una subcarpeta, y la app tiene que saberlo o
+`javierlafuente88-dotcom.github.io/mi-contador/`, una subcarpeta, y la app tiene que saberlo o
 sale **una página en blanco sin ningún error que lo explique**. Está puesto en
 `mobile/app.json`:
 
@@ -45,7 +52,7 @@ sale **una página en blanco sin ningún error que lo explique**. Está puesto e
 ```
 
 Si llamas al repositorio de otra forma, cambia ahí el nombre. Si lo llamas
-`TUUSUARIO.github.io`, se sirve en la raíz: entonces quita `baseUrl` entero.
+`javierlafuente88-dotcom.github.io`, se sirve en la raíz: entonces quita `baseUrl` entero.
 
 **3. Guardar las dos variables como secretos del repositorio.** En
 `Settings → Secrets and variables → Actions → New repository secret`, con estos
@@ -63,7 +70,7 @@ minutos; la dirección sale en la pestaña Actions y en Settings → Pages.
 
 **6. Decirle a Supabase cuál es esa dirección.** En el panel de Supabase,
 `Authentication → URL Configuration`, añadir
-`https://TUUSUARIO.github.io/mi-contador/` a las URLs de redirección. Sin esto,
+`https://javierlafuente88-dotcom.github.io/mi-contador/` a las URLs de redirección. Sin esto,
 el correo de confirmación de la cuenta no vuelve a la app.
 
 **7. En el móvil:** abrir la dirección, y en el menú del navegador «Añadir a la
@@ -88,6 +95,15 @@ en la lista de huecos conocidos y sigue ahí.
 **Supabase pausa los proyectos del plan gratis tras una semana sin actividad.**
 Usándola a diario no pasa nunca. Si se deja un mes, hay que despausarla desde su
 panel: no se pierde nada, pero la app no responderá hasta que se haga.
+
+**Y pasó el mismo día de publicar.** El 2026-11-05, recién subido el sitio,
+`azsxooxujlbyckxakzgv.supabase.co` ya no resolvía por DNS: ni siquiera devuelve
+un error de servidor, el nombre directamente no existe. Así se ve un proyecto
+pausado desde fuera, y conviene saberlo porque **no se parece a una avería**:
+la app carga perfecta, entera, y solo falla al intentar entrar en una cuenta.
+
+Se arregla en `supabase.com/dashboard`, abriendo el proyecto y pulsando el
+botón de reanudar. Tarda uno o dos minutos y no se pierde ningún dato.
 
 ---
 
