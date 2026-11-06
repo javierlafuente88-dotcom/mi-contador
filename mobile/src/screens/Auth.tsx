@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Platform, View } from "react-native";
 import { Body, Button, Field, Notice, Screen, Title } from "../design/primitives";
 import { space, type } from "../design/tokens";
@@ -7,7 +7,14 @@ import { getSupabase } from "../data/supabaseClient";
 /** Entrar o crear cuenta. Solo aparece cuando la app habla con Supabase.
  *  Con el almacen local no hace falta cuenta para nada. */
 
-export function Auth({ onSignedIn }: { onSignedIn: () => void }) {
+export function Auth({
+  onSignedIn,
+  aviso,
+}: {
+  onSignedIn: () => void;
+  /** Por que se ha vuelto aqui, cuando no es simplemente que no haya sesion. */
+  aviso?: string | null;
+}) {
   const [mode, setMode] = useState<"in" | "up">("in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,6 +31,27 @@ export function Auth({ onSignedIn }: { onSignedIn: () => void }) {
   // aparte, que es otra implementacion: mejor no ensenar un boton que no lleva
   // a ninguna parte.
   const conGoogle = Platform.OS === "web";
+
+  // Cuando Google o Supabase rechazan algo, la razon viene colgada de la
+  // direccion y no llega al codigo por ningun otro sitio. Si no se lee, se
+  // vuelve aqui sin mas y parece que no hubieras pulsado el boton.
+  const [vuelta, setVuelta] = useState<string | null>(null);
+  useEffect(() => {
+    if (Platform.OS !== "web") return;
+    const trozos = new URLSearchParams(
+      window.location.hash.replace(/^#/, "") + "&" + window.location.search.replace(/^\?/, "")
+    );
+    const fallo = trozos.get("error_description") || trozos.get("error");
+    if (fallo) {
+      setVuelta(decodeURIComponent(fallo.replace(/\+/g, " ")));
+      return;
+    }
+    // Volver con la sesion colgada de la direccion y seguir aqui significa que
+    // nadie la ha recogido. Sin esto es un callejon mudo.
+    if (trozos.get("access_token") || trozos.get("code")) {
+      setVuelta("Google respondió, pero la sesión no se completó. Vuelve a intentarlo.");
+    }
+  }, []);
 
   async function entrarConGoogle() {
     const sb = getSupabase();
@@ -131,6 +159,8 @@ export function Auth({ onSignedIn }: { onSignedIn: () => void }) {
 
       {!!error && <Notice tone="danger" text={error} />}
       {!!info && <Notice tone="success" text={info} />}
+      {!!vuelta && <Notice tone="danger" text={vuelta} />}
+      {!!aviso && <Notice tone="danger" text={aviso} />}
 
       <Button
         label={busy ? "Un momento…" : mode === "in" ? "Entrar" : "Crear cuenta"}

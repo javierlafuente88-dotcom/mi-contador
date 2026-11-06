@@ -84,8 +84,16 @@ export default function App() {
     setRoute(g ? { name: "day" } : { name: "onboarding" });
   }, [refresh]);
 
+  // Si el arranque falla, la pantalla de entrar tiene que decir por que. Antes
+  // se volvia a ella en silencio, y eso se ve igual que no haber entrado: el
+  // usuario repite lo mismo una y otra vez sin ninguna pista de que ha pasado.
+  const [falloArranque, setFalloArranque] = useState<string | null>(null);
+
   useEffect(() => {
-    bootstrap().catch(() => setRoute({ name: "auth" }));
+    bootstrap().catch((e: unknown) => {
+      setFalloArranque(e instanceof Error ? e.message : String(e));
+      setRoute({ name: "auth" });
+    });
   }, [bootstrap]);
 
   async function finishOnboarding(p: Profile, type: GoalType) {
@@ -197,7 +205,14 @@ export default function App() {
         )}
 
         {route.name === "auth" && (
-          <Auth onSignedIn={() => { setRoute({ name: "loading" }); bootstrap(); }} />
+          <Auth
+            aviso={falloArranque}
+            onSignedIn={() => {
+              setFalloArranque(null);
+              setRoute({ name: "loading" });
+              bootstrap();
+            }}
+          />
         )}
 
         {route.name === "onboarding" && <Onboarding onDone={finishOnboarding} />}
