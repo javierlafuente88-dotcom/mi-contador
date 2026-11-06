@@ -73,6 +73,23 @@ minutos; la dirección sale en la pestaña Actions y en Settings → Pages.
 `https://javierlafuente88-dotcom.github.io/mi-contador/` a las URLs de redirección. Sin esto,
 el correo de confirmación de la cuenta no vuelve a la app.
 
+> Hecho el 2026-11-06. **Site URL** puesta a esa dirección (estaba en
+> `http://localhost:3000`, el valor de desarrollo) y dos URLs de redirección
+> guardadas: la exacta y `…/mi-contador/**` para cualquier ruta interna.
+
+**7. Entrar sin esperar al correo.** En `Authentication → Sign In / Providers`
+está apagado **Confirm email**, así que crear la cuenta te mete dentro al
+instante. No es solo comodidad: **el plan gratis manda del orden de dos o tres
+correos por hora**, y con la confirmación encendida un par de intentos seguidos
+dejan al usuario esperando un correo que no va a llegar, sin que la app pueda
+explicarlo. Lo que se pierde es la comprobación de que el correo es tuyo —
+asumible mientras la app sea de una persona; si algún día la usan otros, hay que
+volver a encenderlo y subir el límite de correos con un servidor propio.
+
+La pantalla de alta mira si Supabase ha devuelto sesión en vez de dar por
+supuesto que hace falta confirmar, así que funciona con el ajuste en cualquiera
+de las dos posiciones.
+
 **7. En el móvil:** abrir la dirección, y en el menú del navegador «Añadir a la
 pantalla de inicio». Queda con su icono y su nombre, y se abre sin la barra del
 navegador.

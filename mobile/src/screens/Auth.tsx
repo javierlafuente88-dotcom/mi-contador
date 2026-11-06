@@ -30,13 +30,19 @@ export function Auth({ onSignedIn }: { onSignedIn: () => void }) {
     setInfo(null);
     try {
       if (mode === "up") {
-        const { error } = await sb.auth.signUp({
+        const { data, error } = await sb.auth.signUp({
           email: email.trim(),
           password,
           options: { data: { locale: "es" } },
         });
         if (error) throw error;
-        setInfo("Te hemos enviado un correo para confirmar la cuenta.");
+        // Con la confirmación por correo apagada, Supabase devuelve la sesión
+        // aquí mismo y ya estás dentro. Si algún día se vuelve a encender, no
+        // viene sesión y entonces sí hay que esperar al correo. Se mira lo que
+        // ha pasado en vez de darlo por supuesto: anunciar un correo que no se
+        // ha enviado deja al usuario esperando algo que no va a llegar.
+        if (data.session) onSignedIn();
+        else setInfo("Te hemos enviado un correo para confirmar la cuenta.");
       } else {
         const { error } = await sb.auth.signInWithPassword({
           email: email.trim(),
