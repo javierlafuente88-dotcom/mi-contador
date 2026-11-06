@@ -21,7 +21,12 @@ export function getSupabase(): SupabaseClient | null {
   if (!url || !publicKey) return null;
   client = createClient(url, publicKey, {
     auth: {
-      storage: AsyncStorage,
+      // En web, el almacen por defecto de Supabase (localStorage). AsyncStorage
+      // en el navegador no guarda nada: se queda en memoria y se pierde al
+      // cambiar de pagina. Eso rompia entrar con Google, porque el codigo de
+      // verificacion se guarda antes de salir y hay que leerlo al volver; y
+      // dejaba la sesion sin sobrevivir a recargar. En movil si es almacen real.
+      storage: Platform.OS === "web" ? undefined : AsyncStorage,
       autoRefreshToken: true,
       persistSession: true,
       // Google devuelve al usuario con la sesion colgada de la direccion, asi
