@@ -90,7 +90,27 @@ La pantalla de alta mira si Supabase ha devuelto sesión en vez de dar por
 supuesto que hace falta confirmar, así que funciona con el ajuste en cualquiera
 de las dos posiciones.
 
-**7. En el móvil:** abrir la dirección, y en el menú del navegador «Añadir a la
+**8. Entrar con Google.** En `Authentication → Sign In / Providers` el
+proveedor **Google** está encendido, con el identificador y el secreto del
+cliente OAuth creado en Google Cloud (proyecto `tensile-cable-485620-k5`,
+cliente `mi-contador web`). Ahí están puestos el origen de JavaScript
+`https://javierlafuente88-dotcom.github.io` y la URL de retorno
+`https://azsxooxujlbyckxakzgv.supabase.co/auth/v1/callback`.
+
+Dos cosas que cuestan tiempo si no se saben:
+
+- **Google ya no deja ver un secreto después de crearlo.** En la ficha del
+  cliente solo aparecen los cuatro últimos caracteres. Si se pierde, no se
+  recupera: hay que añadir otro con `+ Add secret` y copiarlo en ese momento.
+  Un cliente admite dos como mucho, así que para crear un tercero hay que
+  inhabilitar y borrar uno.
+- **El botón solo sale en la web.** El viaje de ida y vuelta a Google necesita
+  una dirección del navegador; en móvil nativo haría falta abrir un navegador
+  aparte, que es otra implementación. Por lo mismo, `detectSessionInUrl` se
+  enciende solo en web, que es donde Google deja la sesión colgada de la
+  dirección al volver.
+
+**9. En el móvil:** abrir la dirección, y en el menú del navegador «Añadir a la
 pantalla de inicio». Queda con su icono y su nombre, y se abre sin la barra del
 navegador.
 
