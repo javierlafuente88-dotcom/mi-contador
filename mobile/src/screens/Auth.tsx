@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { Body, Button, Field, Notice, Screen, Title } from "../design/primitives";
 import { space, type } from "../design/tokens";
 import { getSupabase } from "../data/supabaseClient";
@@ -18,6 +18,35 @@ export function Auth({ onSignedIn }: { onSignedIn: () => void }) {
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   const passOk = password.length >= 8;
   const ready = emailOk && passOk && !busy;
+
+  // Entrar con Google se hace saliendo a su pagina y volviendo aqui, y eso solo
+  // existe en un navegador. En movil nativo haria falta abrir un navegador
+  // aparte, que es otra implementacion: mejor no ensenar un boton que no lleva
+  // a ninguna parte.
+  const conGoogle = Platform.OS === "web";
+
+  async function entrarConGoogle() {
+    const sb = getSupabase();
+    if (!sb) {
+      setError("Falta la configuración de Supabase en .env.local");
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    setInfo(null);
+    // Se vuelve a esta misma direccion, sin lo que colgara Google de ella. Si
+    // se mandara la direccion entera, cada vuelta arrastraria la anterior.
+    const volverA = window.location.origin + window.location.pathname;
+    const { error } = await sb.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: volverA },
+    });
+    // Si sale bien, el navegador ya se esta yendo y no hay nada que contar.
+    if (error) {
+      setBusy(false);
+      setError("No hemos podido abrir Google. Entra con tu correo.");
+    }
+  }
 
   async function submit() {
     const sb = getSupabase();
@@ -72,6 +101,19 @@ export function Auth({ onSignedIn }: { onSignedIn: () => void }) {
 
       <View style={{ height: space[5] }} />
 
+      {conGoogle && (
+        <>
+          <Button
+            label="Continuar con Google"
+            disabled={busy}
+            onPress={entrarConGoogle}
+          />
+          <Body muted style={{ marginTop: space[4], marginBottom: space[4], ...type.sm }}>
+            {mode === "in" ? "O entra con tu correo" : "O crea la cuenta con tu correo"}
+          </Body>
+        </>
+      )}
+
       <Field
         label="Correo"
         value={email}
@@ -92,6 +134,9 @@ export function Auth({ onSignedIn }: { onSignedIn: () => void }) {
 
       <Button
         label={busy ? "Un momento…" : mode === "in" ? "Entrar" : "Crear cuenta"}
+        // Donde hay Google, el camino destacado es ese y este se queda en
+        // segundo plano. Sin Google es el unico, y entonces manda el.
+        variant={conGoogle ? "secondary" : "primary"}
         disabled={!ready}
         onPress={submit}
       />

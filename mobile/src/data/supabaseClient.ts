@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { Platform } from "react-native";
 import "react-native-url-polyfill/auto";
 
 /** Cliente de Supabase. Devuelve null si no hay configuracion, para que la app
@@ -23,8 +24,11 @@ export function getSupabase(): SupabaseClient | null {
       storage: AsyncStorage,
       autoRefreshToken: true,
       persistSession: true,
-      // En un movil no hay URL que leer: la sesion no viaja en la direccion.
-      detectSessionInUrl: false,
+      // Google devuelve al usuario con la sesion colgada de la direccion, asi
+      // que en web hay que leerla o el viaje de vuelta no sirve de nada. En un
+      // movil no hay direccion que leer, y ademas mirarla es trabajo inutil en
+      // cada arranque.
+      detectSessionInUrl: Platform.OS === "web",
     },
   });
   return client;
