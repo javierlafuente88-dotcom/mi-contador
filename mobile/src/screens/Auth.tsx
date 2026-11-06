@@ -7,6 +7,25 @@ import { getSupabase } from "../data/supabaseClient";
 /** Entrar o crear cuenta. Solo aparece cuando la app habla con Supabase.
  *  Con el almacen local no hace falta cuenta para nada. */
 
+/** Lo que devuelve Supabase viene en ingles y en jerga. Se traducen los que de
+ *  verdad le pueden pasar a alguien, diciendo que hacer en cada caso; el resto
+ *  se enseña tal cual, que es feo pero mejor que esconderlo. */
+function enCristiano(mensaje: string): string {
+  const m = mensaje.toLowerCase();
+  // El pase que Supabase guarda al salir dura unos minutos. Si eliges cuenta,
+  // escribes la contraseña y verificas en el movil, se puede pasar de largo.
+  if (m.includes("state has expired") || m.includes("flow state")) {
+    return "Se tardó demasiado en la pantalla de Google. Vuelve a pulsar el botón y termina sin pausas.";
+  }
+  if (m.includes("access_denied") || m.includes("access denied")) {
+    return "No diste permiso en la pantalla de Google. Si fue sin querer, vuelve a intentarlo.";
+  }
+  if (m.includes("redirect_uri") || m.includes("redirect uri")) {
+    return "La dirección de vuelta no está dada de alta. Esto hay que arreglarlo en la configuración, no es cosa tuya.";
+  }
+  return mensaje;
+}
+
 export function Auth({
   onSignedIn,
   aviso,
@@ -43,7 +62,7 @@ export function Auth({
     );
     const fallo = trozos.get("error_description") || trozos.get("error");
     if (fallo) {
-      setVuelta(decodeURIComponent(fallo.replace(/\+/g, " ")));
+      setVuelta(enCristiano(decodeURIComponent(fallo.replace(/\+/g, " "))));
       return;
     }
     // Volver con la sesion colgada de la direccion y seguir aqui significa que
