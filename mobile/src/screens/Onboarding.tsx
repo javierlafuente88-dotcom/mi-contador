@@ -42,7 +42,7 @@ const GOALS: { v: GoalType; l: string }[] = [
 export function Onboarding({
   onDone,
 }: {
-  onDone: (p: Profile, type: GoalType) => void;
+  onDone: (p: Profile, type: GoalType) => void | Promise<void>;
 }) {
   const [sex, setSex] = useState<Sex>("female");
   const [activity, setActivity] = useState<Activity>("light");
@@ -50,6 +50,25 @@ export function Onboarding({
   const [year, setYear] = useState("");
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
+  const [guardando, setGuardando] = useState(false);
+  const [fallo, setFallo] = useState<string | null>(null);
+
+  // Guardar puede fallar: no hay red, la base dice que no. Sin esto el boton
+  // se pulsa y no pasa nada, que desde fuera es identico a una app colgada.
+  async function empezar(p: Profile) {
+    setGuardando(true);
+    setFallo(null);
+    try {
+      await onDone(p, goalType);
+    } catch (e) {
+      setFallo(
+        e instanceof Error && e.message
+          ? e.message
+          : "No hemos podido guardar tus datos. Inténtalo otra vez."
+      );
+      setGuardando(false);
+    }
+  }
 
   const y = parseInt(year, 10);
   const h = parseFloat(height);
@@ -64,6 +83,13 @@ export function Onboarding({
   const errW = weight && (!w || w < 20 || w > 400) ? "Entre 20 y 400 kg" : undefined;
 
   const ready = !!y && !!h && !!w && !errYear && !errH && !errW;
+  // Lo que falta, con su nombre. Un «rellena los tres campos» no dice cual de
+  // los tres, y los que ya estan mal puestos avisan solos en su propia casilla.
+  const faltan = [
+    !y && "el año de nacimiento",
+    !h && "la altura",
+    !w && "el peso",
+  ].filter(Boolean) as string[];
   const profile: Profile | null = ready
     ? { sex, birthYear: y, heightCm: h, weightKg: w, activity }
     : null;
@@ -140,7 +166,7 @@ export function Onboarding({
 
       <View style={{ height: space[5] }} />
 
-      {preview ? (
+      {preview && (
         <>
           <Notice
             tone={preview.floored ? "danger" : "info"}
@@ -155,11 +181,22 @@ export function Onboarding({
             Grasa {preview.goal.fatG} g
           </Body>
           <View style={{ height: space[5] }} />
-          <Button label="Empezar" onPress={() => onDone(profile!, goalType)} />
         </>
-      ) : (
-        <Body muted>Rellena los tres campos y verás tu objetivo aquí mismo.</Body>
       )}
+
+      {/* El boton esta siempre, aunque falten datos. Antes no aparecia hasta
+          tenerlos todos, y eso deja la pantalla sin ninguna salida visible:
+          tocas opciones, no pasa nada, y no hay forma de saber que esperan de
+          ti. Apagado y con el motivo al lado se entiende solo. */}
+      {!!fallo && <Notice tone="danger" text={fallo} />}
+      {!ready && !!faltan.length && (
+        <Body muted>Falta rellenar {faltan.join(", ")}.</Body>
+      )}
+      <Button
+        label={guardando ? "Guardando…" : "Empezar"}
+        disabled={!ready || guardando}
+        onPress={() => profile && empezar(profile)}
+      />
       <View style={{ height: space[6] }} />
     </Screen>
   );

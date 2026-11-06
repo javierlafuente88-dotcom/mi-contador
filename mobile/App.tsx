@@ -96,10 +96,13 @@ export default function App() {
     });
   }, [bootstrap]);
 
+  // Si guardar falla, el error sube a la pantalla, que es quien puede
+  // contarlo. Aqui no se captura: tragarselo dejaria el boton sin efecto.
   async function finishOnboarding(p: Profile, type: GoalType) {
     const { goal: g } = buildGoal(p, type);
     await store.saveProfile(p);
     await store.saveGoal(g);
+    setSlots(await store.listMealSlots());
     setGoal(g);
     setRoute({ name: "day" });
   }

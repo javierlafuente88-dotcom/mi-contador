@@ -7,7 +7,7 @@ test.describe("F01 — Alta y cálculo de objetivos", () => {
     await empezarLimpio(page);
 
     await expect(page.getByText("Tus datos")).toBeVisible();
-    await expect(page.getByText("Rellena los tres campos")).toBeVisible();
+    await expect(page.getByText(/Falta rellenar/)).toBeVisible();
 
     await page.getByRole("button", { name: "Mujer" }).click();
     await page.getByLabel("Año de nacimiento").fill("1988");
@@ -24,10 +24,14 @@ test.describe("F01 — Alta y cálculo de objetivos", () => {
     sinErrores(errores);
   });
 
-  test("F01-E1: sin datos no se puede continuar", async ({ page }) => {
+  // El boton esta, apagado, y el texto dice que falta. Esconderlo dejaba la
+  // pantalla sin salida visible: se tocaban opciones y no pasaba nada.
+  test("F01-E1: sin datos el botón está apagado y dice qué falta", async ({ page }) => {
     await empezarLimpio(page);
-    await expect(page.getByRole("button", { name: "Empezar" })).toHaveCount(0);
-    await expect(page.getByText("Rellena los tres campos")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Empezar" })).toBeDisabled();
+    await expect(
+      page.getByText("Falta rellenar el año de nacimiento, la altura, el peso.")
+    ).toBeVisible();
   });
 
   test("F01-E2: valores imposibles dan error por campo", async ({ page }) => {
@@ -43,7 +47,7 @@ test.describe("F01 — Alta y cálculo de objetivos", () => {
     await page.getByLabel("Peso (kg)").fill("2");
     await expect(page.getByText("Entre 20 y 400 kg")).toBeVisible();
 
-    await expect(page.getByRole("button", { name: "Empezar" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Empezar" })).toBeDisabled();
     sinErrores(errores);
   });
 
